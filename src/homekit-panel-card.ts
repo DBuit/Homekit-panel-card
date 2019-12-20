@@ -66,8 +66,8 @@ customElements.whenDefined('card-tools').then(() => {
                                       <span class="icon on">
                                         <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                       </span>
-                                      <span class="name on">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
-                                      <span class="state on">${stateObj.state}${stateObj.attributes.unit_of_measurement ? cardTools.LitHtml` ${stateObj.attributes.unit_of_measurement}`:cardTools.LitHtml``}</span>
+                                      <span class="name on">${ent.name || stateObj.attributes.friendly_name}</span>
+                                      <span class="state on">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
                                     </div>
                                 </homekit-button>
                               </<homekit-card-item>
