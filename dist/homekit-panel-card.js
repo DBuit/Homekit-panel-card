@@ -16,6 +16,7 @@
  * possible text in templates.
  */
 const marker = `{{lit-${String(Math.random()).slice(2)}}}`;
+//# sourceMappingURL=template.js.map
 
 /**
  * @license
@@ -49,6 +50,7 @@ try {
 }
 catch (_e) {
 }
+//# sourceMappingURL=parts.js.map
 
 /**
  * @license
@@ -67,6 +69,7 @@ catch (_e) {
 // This line will be used in regexes to search for lit-html usage.
 // TODO(justinfagnani): inject version number at build time
 (window['litHtmlVersions'] || (window['litHtmlVersions'] = [])).push('1.1.2');
+//# sourceMappingURL=lit-html.js.map
 
 /**
  * @license
@@ -87,6 +90,7 @@ else if (typeof window.ShadyCSS.prepareTemplateDom === 'undefined') {
         `Please update to at least @webcomponents/webcomponentsjs@2.0.2 and ` +
         `@webcomponents/shadycss@1.3.1.`);
 }
+//# sourceMappingURL=shady-render.js.map
 
 /**
  * @license
@@ -109,6 +113,7 @@ else if (typeof window.ShadyCSS.prepareTemplateDom === 'undefined') {
  */
 window.JSCompiler_renameProperty =
     (prop, _obj) => prop;
+//# sourceMappingURL=updating-element.js.map
 
 /**
 @license
@@ -172,6 +177,7 @@ const css = (strings, ...values) => {
     const cssText = values.reduce((acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1], strings[0]);
     return new CSSResult(cssText, constructionToken);
 };
+//# sourceMappingURL=css-tag.js.map
 
 /**
  * @license
@@ -191,6 +197,7 @@ const css = (strings, ...values) => {
 // TODO(justinfagnani): inject version number at build time
 (window['litElementVersions'] || (window['litElementVersions'] = []))
     .push('2.2.1');
+//# sourceMappingURL=lit-element.js.map
 
 /**
  * Parse or format dates
@@ -519,7 +526,7 @@ fecha.parse = function (dateStr, format, i18nSettings) {
   return date;
 };
 
-var a=function(){try{(new Date).toLocaleDateString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleDateString(t,{year:"numeric",month:"long",day:"numeric"})}:function(t){return fecha.format(t,"mediumDate")},n=function(){try{(new Date).toLocaleString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleString(t,{year:"numeric",month:"long",day:"numeric",hour:"numeric",minute:"2-digit"})}:function(t){return fecha.format(t,"haDateTime")},r=function(){try{(new Date).toLocaleTimeString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleTimeString(t,{hour:"numeric",minute:"2-digit"})}:function(t){return fecha.format(t,"shortTime")};function d(e){return e.substr(0,e.indexOf("."))}function g(e){return d(e.entity_id)}function b(e,t,i){var o,s=g(t);if("binary_sensor"===s)t.attributes.device_class&&(o=e("state."+s+"."+t.attributes.device_class+"."+t.state)),o||(o=e("state."+s+".default."+t.state));else if(t.attributes.unit_of_measurement&&!["unknown","unavailable"].includes(t.state))o=t.state+" "+t.attributes.unit_of_measurement;else if("input_datetime"===s){var c;if(t.attributes.has_time)if(t.attributes.has_date)c=new Date(t.attributes.year,t.attributes.month-1,t.attributes.day,t.attributes.hour,t.attributes.minute),o=n(c,i);else{var u=new Date;c=new Date(u.getFullYear(),u.getMonth(),u.getDay(),t.attributes.hour,t.attributes.minute),o=r(c,i);}else c=new Date(t.attributes.year,t.attributes.month-1,t.attributes.day),o=a(c,i);}else o="zwave"===s?["initializing","dead"].includes(t.state)?e("state.zwave.query_stage."+t.state,"query_stage",t.attributes.query_stage):e("state.zwave.default."+t.state):e("state."+s+"."+t.state);return o||(o=e("state.default."+t.state)||e("component."+s+".state."+t.state)||t.state),o}
+var a=function(){try{(new Date).toLocaleDateString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleDateString(t,{year:"numeric",month:"long",day:"numeric"})}:function(t){return fecha.format(t,"mediumDate")},n=function(){try{(new Date).toLocaleString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleString(t,{year:"numeric",month:"long",day:"numeric",hour:"numeric",minute:"2-digit"})}:function(t){return fecha.format(t,"haDateTime")},r=function(){try{(new Date).toLocaleTimeString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleTimeString(t,{hour:"numeric",minute:"2-digit"})}:function(t){return fecha.format(t,"shortTime")};function d(e){return e.substr(0,e.indexOf("."))}function g(e){return d(e.entity_id)}function b(e,t,i){var o,s=g(t);if("binary_sensor"===s)t.attributes.device_class&&(o=e("state."+s+"."+t.attributes.device_class+"."+t.state)),o||(o=e("state."+s+".default."+t.state));else if(t.attributes.unit_of_measurement&&!["unknown","unavailable"].includes(t.state))o=t.state+" "+t.attributes.unit_of_measurement;else if("input_datetime"===s){var c;if(t.attributes.has_time)if(t.attributes.has_date)c=new Date(t.attributes.year,t.attributes.month-1,t.attributes.day,t.attributes.hour,t.attributes.minute),o=n(c,i);else{var u=new Date;c=new Date(u.getFullYear(),u.getMonth(),u.getDay(),t.attributes.hour,t.attributes.minute),o=r(c,i);}else c=new Date(t.attributes.year,t.attributes.month-1,t.attributes.day),o=a(c,i);}else o="zwave"===s?["initializing","dead"].includes(t.state)?e("state.zwave.query_stage."+t.state,"query_stage",t.attributes.query_stage):e("state.zwave.default."+t.state):e("state."+s+"."+t.state);return o||(o=e("state.default."+t.state)||e("component."+s+".state."+t.state)||t.state),o}//# sourceMappingURL=index.m.js.map
 
 var longPress = document.createElement('long-press');
 document.body.appendChild(longPress);
@@ -733,7 +740,6 @@ customElements.whenDefined('card-tools').then(() => {
             margin-bottom:-10px;
             margin-left: 4px;
             font-size: 18px;
-            color: rgb(90,90,90);
             padding-top:18px;
         }
         .homekit-card { }
@@ -755,7 +761,6 @@ customElements.whenDefined('card-tools').then(() => {
             margin-bottom: 30px;
             margin-left: 4px;
             font-size: 32px;
-            color: #fff;
             font-weight: 300;
         }
         
@@ -829,6 +834,7 @@ customElements.whenDefined('card-tools').then(() => {
           margin-left: 5px;
           font-size: 12px;
           color: rgba(255, 0, 0, 1);
+          text-transform: capitalize;
         }
         
         homekit-button .state.on {
