@@ -1,106 +1,151 @@
-# Boilerplate Card by [@iantrich](https://www.github.com/iantrich)
+# homekit-card
+Homekit style Home Assistant card
 
-A community driven boilerplate of best practices for Home Assistant Lovelace custom cards
+This card is best used with `panel: true` because the use case is to make one overview with homekit style tiles.
 
-[![GitHub Release][releases-shield]][releases]
-[![License][license-shield]](LICENSE.md)
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
+You can define multiple rows with entities which will show as a tile.
+You can add any entity which will be displayed as a tile.
+Not all entities will be displayed the way you want like the weather entity i made a custom tile within the card.
+If you think a entity should look different let me know and i can make some customizations :)
 
-![Project Maintenance][maintenance-shield]
-[![GitHub Activity][commits-shield]][commits]
+Besides that you can use a lovelace card to replace the default pop-up. I made a custom card for light pop-up to be styled like homekit. You can find the card here: https://github.com/DBuit/hass-custom-light-popup-card
+You can use any lovelace or custom lovelace card but this one i styled like homekit. If you got any good ideas for other pop-up card let me know, so i can make more :)
 
-[![Discord][discord-shield]][discord]
-[![Community Forum][forum-shield]][forum]
+# Config options
 
-## Support
-
-Hey dude! Help me out for a couple of :beers: or a :coffee:!
-
-[![coffee](https://www.buymeacoffee.com/assets/img/custom_images/black_img.png)](https://www.buymeacoffee.com/zJtVxUAgH)
-
-## Options
-
-| Name              | Type    | Requirement  | Description                                 | Default             |
-| ----------------- | ------- | ------------ | ------------------------------------------- | ------------------- |
-| type              | string  | **Required** | `custom:boilerplate-card`                   |
-| name              | string  | **Optional** | Card name                                   | `Boilerplate`       |
-| show_error        | boolean | **Optional** | Show what an error looks like for the card  | `false`             |
-| show_warning      | boolean | **Optional** | Show what a warning looks like for the card | `false`             |
-| entity            | string  | **Optional** | Home Assistant entity ID.                   | `none`              |
-| tap_action        | object  | **Optional** | Action to take on tap                       | `action: more-info` |
-| hold_action       | object  | **Optional** | Action to take on hold                      | `none`              |
-| double_tap_action | object  | **Optional** | Action to take on hold                      | `none`              |
-
-## Action Options
-
-| Name            | Type   | Requirement  | Description                                                                                                                            | Default     |
-| --------------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| action          | string | **Required** | Action to perform (more-info, toggle, call-service, navigate url, none)                                                                | `more-info` |
-| navigation_path | string | **Optional** | Path to navigate to (e.g. /lovelace/0/) when action defined as navigate                                                                | `none`      |
-| url             | string | **Optional** | URL to open on click when action is url. The URL will open in a new tab                                                                | `none`      |
-| service         | string | **Optional** | Service to call (e.g. media_player.media_play_pause) when action defined as call-service                                               | `none`      |
-| service_data    | object | **Optional** | Service data to include (e.g. entity_id: media_player.bedroom) when action defined as call-service                                     | `none`      |
-| haptic          | string | **Optional** | Haptic feedback for the [Beta IOS App](http://home-assistant.io/ios/beta) _success, warning, failure, light, medium, heavy, selection_ | `none`      |
-| repeat          | number | **Optional** | How often to repeat the `hold_action` in milliseconds.                                                                                 | `non`       |
-
-## Starting a new card from boilerplate-card
-
-### Step 1
-
-Clone this repository
-
-### Step 2
-
-Install necessary modules
-`yarn install` or `npm install`
-
-### Step 3
-
-Do a test lint & build on the project. You can see available scripts in the package.json
-`npm run build`
-
-### Step 4
-
-Search the repository for all instances of "TODO" and handle the changes/suggestions
-
-### Step 5
-
-Customize to suit your needs and contribute it back to the community
-
-
-## Starting a new card from boilerplate-card with [devcontainer][devcontainer]
-
-1. Fork and clone the repository.
-2. Open the [devcontainer][devcontainer] and run `npm start` when it's ready.
-3. The compiled `.js` file will be accessible on
-   `http://127.0.0.1:5000/boilerplate-card.js`.
-4. On a running Home Assistant installation add this to your Lovelace
-   `resources:`
-
-```yaml
-- url: "http://127.0.0.1:5000/boilerplate-card.js"
-  type: module
+Add the card
+```
+- type: "custom:homekit-card"
+  entities:
 ```
 
-_Change "127.0.0.1" to the IP of your development machine._
+Define multiple rows of tiles under entities
+```
+- title: Sensors
+  entities:
+    - entity: sensor.sensor
+      name: "Optional name"
+    - entity: binary_sensor.sensor
+      name: "Optional name"
+    - entity: light.light
+- title: Lights
+  entities:
+    - entity: light.light2
+      name: "Optional name light"
+    - entity: light.light
+```
 
-### Bonus
+Set custom pop-up card for an entire row
+```
+- title: Sensors
+  popup:
+    type: custom:custom-light-popup-card
+    # IF THE CARD AS OTHER CONFIG U CAN JUST ADD THEM UNDER THE TYPE #
+  entities:
+    - entity: sensor.sensor
+      name: "Optional name"
+    - entity: binary_sensor.sensor
+      name: "Optional name"
+    - entity: light.light
+- title: Lights
+  entities:
+    - entity: light.light2
+      name: "Optional name light"
+    - entity: light.light
+```
 
-If you need a fresh test instance you can install a fresh Home Assistant instance inside the devcontainer as well.
+If you want every card to have the same pop-up but some config of the pop-up card is not for every entity
+you can set some extended config on the specific entity
 
-1. Run the command `dc start`.
-2. Home Assistant will install and will eventually be running on port `9123`
+```
+- title: Sensors
+  popup:
+    type: custom:custom-light-popup-card
+    # IF THE CARD AS OTHER CONFIG U CAN JUST ADD THEM UNDER THE TYPE #
+  entities:
+    - entity: sensor.sensor
+      name: "Optional name"
+      popupExtend: # As example the light popup card can define scenes but these are entity specific #
+        scenes:
+          - scene: scene.ontspannen
+            color: "#FDCA64"
+            name: ontspannen
+    - entity: binary_sensor.sensor
+      name: "Optional name"
+    - entity: light.light
+- title: Lights
+  entities:
+    - entity: light.light2
+      name: "Optional name light"
+    - entity: light.light
+```
 
-## [Troubleshooting](https://github.com/thomasloven/hass-config/wiki/Lovelace-Plugins)
+If you don't want to use the same pop-up card for every entity in a row you can also set the pop-up on the entity
 
-[commits-shield]: https://img.shields.io/github/commit-activity/y/custom-cards/boilerplate-card.svg?style=for-the-badge
-[commits]: https://github.com/custom-cards/boilerplate-card/commits/master
-[devcontainer]: https://code.visualstudio.com/docs/remote/containers
-[discord]: https://discord.gg/5e9yvq
-[discord-shield]: https://img.shields.io/discord/330944238910963714.svg?style=for-the-badge
-[forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
-[forum]: https://community.home-assistant.io/c/projects/frontend
-[license-shield]: https://img.shields.io/github/license/custom-cards/boilerplate-card.svg?style=for-the-badge
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2019.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/custom-cards/boilerplate-card.svg?style=for-the-badge
-[releases]: https://github.com/custom-cards/boilerplate-card/releases
+```
+- title: Sensors
+  entities:
+    - entity: sensor.sensor
+      name: "Optional name"
+    - entity: binary_sensor.sensor
+      name: "Optional name"
+    - entity: light.light
+- title: Lights
+  entities:
+    - entity: light.light2
+      name: "Optional name light"
+    - entity: light.light
+      popup:
+        type: custom:custom-light-popup-card
+        switchWidth: 110px
+        switchHeight: 300px
+```
+
+# Example full configuration of the card with use of the custom light pop-up
+```
+- title: "Lights"
+    panel: true
+    cards:
+      - type: "custom:homekit-card"
+        entities:
+          - title: Lights
+            popup:
+              type: custom:custom-light-popup-card
+              scenesInARow: 2
+              brightnessWidth: 130px
+              brightnessHeight: 350px
+              switchWidth: 110px
+              switchHeight: 300px
+            entities: 
+              - entity: light.light1
+                popupExtend:
+                  scenes:
+                    - scene: scene.ontspannen
+                      color: "#FDCA64"
+                      name: ontspannen
+                    - scene: scene.helder
+                      color: "#FFE7C0"
+                      name: helder
+                    - scene: scene.concentreren
+                      color: "#BBEEF3"
+                      name: concentreren
+                    - scene: scene.energie
+                      color: "#8BCBDD"
+                      name: energie
+              - entity: light.light2
+              - entity: light.light3
+          - title: Outside lights
+            entities:
+              - entity: light.light4
+                name: "Frontdoor"
+                popup:
+                  type: custom:custom-light-popup-card
+                  switchWidth: 110px
+                  switchHeight: 300px
+          - title: Sensors
+            entities:
+              - entity: sensor.sensor1
+                name: "Battery"
+              - entity: binary_sensor.sensor2
+                name: "Frontdoor"
+```
