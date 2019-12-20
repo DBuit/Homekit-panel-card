@@ -221,7 +221,6 @@ customElements.whenDefined('card-tools').then(() => {
             margin-bottom:-10px;
             margin-left: 4px;
             font-size: 18px;
-            color: rgb(90,90,90);
             padding-top:18px;
         }
         .homekit-card { }
@@ -243,7 +242,6 @@ customElements.whenDefined('card-tools').then(() => {
             margin-bottom: 30px;
             margin-left: 4px;
             font-size: 32px;
-            color: #fff;
             font-weight: 300;
         }
         
