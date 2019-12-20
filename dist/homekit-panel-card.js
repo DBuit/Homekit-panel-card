@@ -548,8 +548,6 @@ customElements.whenDefined('card-tools').then(() => {
             this.config = config;
         }
         render() {
-            console.log(this.hass.language);
-            console.log(this.hass.localize);
             return cardTools.LitHtml `
       <div class="container" >
         ${this.config.home ? cardTools.LitHtml `
@@ -648,7 +646,7 @@ customElements.whenDefined('card-tools').then(() => {
         }
         _handleClick(ev, state, entity, type, row) {
             if (type == "light") {
-                if (ev.detail.action == "tap") {
+                if (ev.detail.action == "tap" || ev.detail.action == "double_tap") {
                     this._toggle(state, entity.service);
                 }
                 else if (ev.detail.action == "hold") {
