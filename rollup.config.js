@@ -32,7 +32,7 @@ const plugins = [
 
 export default [
   {
-    input: 'src/boilerplate-card.ts',
+    input: 'src/homekit-panel-card.ts',
     output: {
       dir: 'dist',
       format: 'es',
