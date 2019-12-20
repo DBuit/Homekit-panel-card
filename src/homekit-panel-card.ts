@@ -1,6 +1,8 @@
 import { LitElement, html, css } from 'lit-element';
 import {
-  computeStateDisplay
+  computeStateDisplay,
+  computeDomain,
+  domainIcon
 } from 'custom-card-helpers';
 
 var longPress = document.createElement('long-press');
@@ -50,7 +52,7 @@ customElements.whenDefined('card-tools').then(() => {
                                   <homekit-button class="${stateObj.state === "off" ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                       <div class="button-inner">
                                         <span class="${stateObj.state === "off" ? 'icon': 'icon on'}">
-                                          <ha-icon icon="${ent.icon || stateObj.attributes.icon || 'mdi:lightbulb'}" class=" ${ent.spin && stateObj.state === "on" ? 'spin': ""}"/>
+                                          <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin': ""}"/>
                                         </span>
                                         <span class="${stateObj.state === "off" ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                         <span class="${stateObj.state === "off" ? 'state': 'state on'}">${stateObj.state}${stateObj.attributes.brightness ? cardTools.LitHtml` <span class=" ${stateObj.state === "off" ? 'value': 'value on'}"><span>${Math.round(stateObj.attributes.brightness/2.55)}%</span></span>` : cardTools.LitHtml``}</span>
@@ -65,9 +67,9 @@ customElements.whenDefined('card-tools').then(() => {
                                 <homekit-button class="button on" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                     <div class="button-inner">
                                       <span class="icon on">
-                                        <ha-icon icon="${ent.icon || stateObj.attributes.icon || 'mdi:lightbulb'}" />
+                                        <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                       </span>
-                                      <span class="name on">${ent.name || stateObj.attributes.friendly_name}</span>
+                                      <span class="name on">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
                                       <span class="state on">${stateObj.state}${stateObj.attributes.unit_of_measurement ? cardTools.LitHtml` ${stateObj.attributes.unit_of_measurement}`:cardTools.LitHtml``}</span>
                                     </div>
                                 </homekit-button>
