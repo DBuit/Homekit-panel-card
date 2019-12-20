@@ -149,3 +149,7 @@ If you don't want to use the same pop-up card for every entity in a row you can 
               - entity: binary_sensor.sensor2
                 name: "Frontdoor"
 ```
+# Screenshots
+
+![desktop screenshot](screenshot.png "Desktop screenshot")
+![mobile screenshot](screenshot-mobile.png "Mobile screenshot")
