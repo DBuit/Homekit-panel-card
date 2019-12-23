@@ -1,15 +1,18 @@
 # homekit-card
 Homekit style Home Assistant card
 
-This card is best used with `panel: true` because the use case is to make one overview with homekit style tiles.
+This card is best used with `panel: true` so the card fills up the whole page.
+The purpose of this card is to fill a page with tiles in homekit style.
+You can add entities and define multiple rows with your own title to create your homekit style page.
 
-You can define multiple rows with entities which will show as a tile.
-You can add any entity which will be displayed as a tile.
-Not all entities will be displayed the way you want like the weather entity i made a custom tile within the card.
-If you think a entity should look different let me know and i can make some customizations :)
+It is possible that an entity is not standard and is not shown as you expected.
+An example of this is weather entity, for this I have therefore added a separate tile to the card so that it is displayed in the correct way. If you have an entity that is not displayed properly, create an issue.
 
-Besides that you can use a lovelace card to replace the default pop-up. I made a custom card for light pop-up to be styled like homekit. You can find the card here: https://github.com/DBuit/hass-custom-light-popup-card
-You can use any lovelace or custom lovelace card but this one i styled like homekit. If you got any good ideas for other pop-up card let me know, so i can make more :)
+You can also adjust the pop-up that opens when you hold down a tile.
+You can have the pop-up open another lovelace card so that you can show other info in the popup, you can also just use the standard.
+For lights i have developed a separate card that also has the style of homekit, which you can use well in combination with this card. You can find this card here: https://github.com/DBuit/hass-custom-light-popup-card
+
+Do you have ideas for a custom pop-up create an issue then I can see if I can help with this :)
 
 # Config options
 
