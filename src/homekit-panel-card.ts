@@ -53,22 +53,23 @@ customElements.whenDefined('card-tools').then(() => {
                 <div class="card-title" >${row.title}</div><br>
                     <div class="homekit-card">
                         ${row.entities.map(ent => {
-                          const stateObj = this.hass.states[ent.entity];
-                          var type = ent.entity.split('.')[0];
-                          var color = '#f7d959';
-                          if(entityCount == 3) {
-                            entityCount = 0;
-                          }
-                          if(entityCount == 4) {
-                            entityCount = 2;
-                          }
                           
-                          if(ent.color) {
-                            color = ent.color
-                          } else {
-                            color = this._getColorForLightEntity(stateObj, this.config.useTemperature, this.config.useBrightness);
-                          }
                           if(!ent.card) {
+                            const stateObj = this.hass.states[ent.entity];
+                            var color = '#f7d959';
+                            if(entityCount == 3) {
+                              entityCount = 0;
+                            }
+                            if(entityCount == 4) {
+                              entityCount = 2;
+                            }
+                            
+                            if(ent.color) {
+                              color = ent.color
+                            } else {
+                              color = this._getColorForLightEntity(stateObj, this.config.useTemperature, this.config.useBrightness);
+                            }
+                            var type = ent.entity.split('.')[0];
                             if(type == "light"){
                               entityCount++;
                               return stateObj ? cardTools.LitHtml`
@@ -144,21 +145,18 @@ customElements.whenDefined('card-tools').then(() => {
                               : this._notFound(ent);
                             }
                           } else {
-                            console.log('custom tile card');
-                            console.log(ent.cardStyle);
                             entityCount++;
-                            return stateObj ? cardTools.LitHtml`
+                            return cardTools.LitHtml`
                               <homekit-card-item>
-                                <homekit-button class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                <homekit-button class="button on${ent.noPadding ? ' no-padding': ''}">
                                     <div class="button-inner">
-                                      <card-maker nohass data-entity="${ent.entity}" data-card="${ent.card}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
+                                      <card-maker nohass data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
                                       </card-maker>
                                     </div>
                                 </homekit-button>
                               </<homekit-card-item>
                               ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
                             `
-                            : this._notFound(ent);
                           }
                         })}
                     </div>
@@ -177,14 +175,11 @@ customElements.whenDefined('card-tools').then(() => {
 
       this.shadowRoot.querySelectorAll("card-maker").forEach(customCard => {
           var card = {
-            type: customCard.dataset.card,
-            entities: [customCard.dataset.entity],
+            type: customCard.dataset.card
           };
+          card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
           customCard.config = card;
 
-          console.log(customCard.dataset.style);
-
-          
           let style = "";
           if(customCard.dataset.style) {
             style = customCard.dataset.style;
@@ -196,17 +191,8 @@ customElements.whenDefined('card-tools').then(() => {
             let itterations = 0;
             let interval = setInterval(function () {
               let el = customCard.children[0];
-              
-              console.log(el);
               if(el) {
-
-                console.log(customCard.childNodes);
-                console.log(customCard.children);
-
                 window.clearInterval(interval);
-                console.log('FOUND');
-                console.log(el);
-                console.log(el.shadowRoot);
 
                 var styleElement = document.createElement('style');
                 styleElement.innerHTML = style;
@@ -417,6 +403,11 @@ customElements.whenDefined('card-tools').then(() => {
         }
         .button.size-2 {
           width: 230px;
+        }
+        .button.no-padding {
+          padding: 0;
+          width: 120px;
+          height: 120px;
         }
         
         :host:last-child .button {
