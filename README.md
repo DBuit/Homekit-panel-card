@@ -25,7 +25,7 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 Add the card
 ```
 - type: "custom:homekit-card"
-  home: true
+  home: true // Optional in combination with the title
   title: "My House" // If you set home to true you get more space above your tiles and get set a title. in future more information will be shown like what entities are on and calendar events.
   useBrightness: false // use brightness of a light for icon color on tile, default true
   useTemperature: false // use temperature of a light for icon color on tile, default: false
