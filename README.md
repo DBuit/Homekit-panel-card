@@ -19,6 +19,8 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 - Show graph on tile
 - Combine entities
 - Multiple columns (we now got rows with a title)
+- Add more options for home like notifications, which entities are on, calendar events
+- Add scenes till/options
 
 # Config options
 
