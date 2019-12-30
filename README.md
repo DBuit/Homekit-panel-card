@@ -165,6 +165,7 @@ If you don't want to use the same pop-up card for every entity in a row you can 
 ```
 # Screenshots
 
+![desktop home screenshot](screenshot-home.png "Desktop home screenshot")
 ![desktop screenshot](screenshot.png "Desktop screenshot")
 ![mobile screenshot](screenshot-mobile.png "Mobile screenshot")
 
