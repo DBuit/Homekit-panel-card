@@ -131,13 +131,13 @@ customElements.whenDefined('card-tools').then(() => {
                              console.log('render other: '+entityCount);
                              return stateObj ? cardTools.LitHtml`
                               <homekit-card-item>
-                                <homekit-button class="${stateObj.state === "on" ? 'button on': 'button'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                <homekit-button class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                     <div class="button-inner">
-                                      <span class="${stateObj.state === "on" ? 'icon on': 'icon'}">
+                                      <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'icon': 'icon on'}">
                                         <ha-icon icon="${ent.icon || stateObj.attributes.icon}" />
                                       </span>
-                                      <span class="${stateObj.state === "on" ? 'name on': 'name'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                      <span class="${stateObj.state === "on" ? 'state on': 'state'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
+                                      <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
+                                      <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'state': 'state on'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
                                     </div>
                                 </homekit-button>
                               </<homekit-card-item>
