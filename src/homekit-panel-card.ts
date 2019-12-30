@@ -5,6 +5,7 @@ import {
   domainIcon
 } from 'custom-card-helpers';
 import tinycolor, { TinyColor, isReadable } from '@ctrl/tinycolor';
+import { noChange } from 'lit-html';
 
 var longPress = document.createElement('long-press');
 document.body.appendChild(longPress);
@@ -67,77 +68,91 @@ customElements.whenDefined('card-tools').then(() => {
                           } else {
                             color = this._getColorForLightEntity(stateObj, this.config.useTemperature, this.config.useBrightness);
                           }
-                          if(type == "light"){
-                            entityCount++;
-                            console.log('render light: '+entityCount);
-                            return stateObj ? cardTools.LitHtml`
+                          if(!ent.card) {
+                            if(type == "light"){
+                              entityCount++;
+                              return stateObj ? cardTools.LitHtml`
+                                  <homekit-card-item>
+                                    <homekit-button class="${stateObj.state === "on" ? 'button on': 'button'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                        <div class="button-inner">
+                                          <span class="icon" style="${stateObj.state === "on" ? 'color:'+color+';' : ''}">
+                                            <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin': ""}"/>
+                                          </span>
+                                          <span class="${stateObj.state === "on" ? 'name on': 'name'}">${ent.name || stateObj.attributes.friendly_name}</span>
+                                          <span class="${stateObj.state === "on" ? 'state on': 'state'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}${stateObj.attributes.brightness ? cardTools.LitHtml` <span class=" ${stateObj.state === "on" ? 'value on': 'value'}"><span>${Math.round(stateObj.attributes.brightness/2.55)}%</span></span>` : cardTools.LitHtml``}</span>
+                                        </div>
+                                    </homekit-button>
+                                  </homekit-card-item>
+                                  ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
+                                  `
+                                : this._notFound(ent);
+                            } else if(type == "sensor" || type == "binary_sensor"){
+                              entityCount++;
+                              return stateObj ? cardTools.LitHtml`
                                 <homekit-card-item>
-                                  <homekit-button class="${stateObj.state === "on" ? 'button on': 'button'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                  <homekit-button class="${stateObj.state !== "unavailable" ? 'button on': 'button'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                       <div class="button-inner">
-                                        <span class="icon" style="${stateObj.state === "on" ? 'color:'+color+';' : ''}">
-                                          <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin': ""}"/>
+                                        <span class="${stateObj.state !== "unavailable" ? 'icon on': 'icon'}">
+                                          <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                         </span>
-                                        <span class="${stateObj.state === "on" ? 'name on': 'name'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                        <span class="${stateObj.state === "on" ? 'state on': 'state'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}${stateObj.attributes.brightness ? cardTools.LitHtml` <span class=" ${stateObj.state === "on" ? 'value on': 'value'}"><span>${Math.round(stateObj.attributes.brightness/2.55)}%</span></span>` : cardTools.LitHtml``}</span>
+                                        <span class="${stateObj.state !== "unavailable" ? 'name on': 'name'}">${ent.name || stateObj.attributes.friendly_name}</span>
+                                        <span class="${stateObj.state !== "unavailable" ? 'state on': 'state'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
                                       </div>
                                   </homekit-button>
-                                </homekit-card-item>
+                                </<homekit-card-item>
                                 ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
-                                `
+                              `
                               : this._notFound(ent);
-                          } else if(type == "sensor" || type == "binary_sensor"){
-                            entityCount++;
-                            console.log('render sensor: '+entityCount);
-                            return stateObj ? cardTools.LitHtml`
-                              <homekit-card-item>
-                                <homekit-button class="${stateObj.state !== "unavailable" ? 'button on': 'button'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
-                                    <div class="button-inner">
-                                      <span class="${stateObj.state !== "unavailable" ? 'icon on': 'icon'}">
-                                        <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
-                                      </span>
-                                      <span class="${stateObj.state !== "unavailable" ? 'name on': 'name'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                      <span class="${stateObj.state !== "unavailable" ? 'state on': 'state'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
-                                    </div>
-                                </homekit-button>
-                              </<homekit-card-item>
-                              ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
-                            `
-                            : this._notFound(ent);
-                          } else if(type == "weather") {
-                            entityCount = entityCount + 2;
-                            console.log('render weather: '+entityCount);
-                            return stateObj ? cardTools.LitHtml`
-                              ${entityCount == 4 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
-                              <homekit-card-item>
-                                <homekit-button class="button size-2 on" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
-                                    <div class="button-inner">
-                                      <span class="icon on">
-                                        <ha-icon icon="${ent.icon || stateObj.attributes.icon || "mdi:weather-"+stateObj.state}" />
-                                      </span>
-                                      <span class="name on">${ent.name || stateObj.attributes.friendly_name}</span>
-                                      <span class="state on">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}
-                                        ${stateObj.attributes.forecast[0] && stateObj.attributes.forecast[0].precipitation ? cardTools.LitHtml`
-                                            <span class="value on">${stateObj.attributes.forecast[0].precipitation} ${this._getUnit("precipitation")}</span>
-                                        ` : cardTools.LitHtml``}
-                                      </span>
-                                    </div>
-                                </homekit-button>
-                              </<homekit-card-item>
-                              ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
-                            `
-                            : this._notFound(ent);
+                            } else if(type == "weather") {
+                              entityCount = entityCount + 2;
+                              return stateObj ? cardTools.LitHtml`
+                                ${entityCount == 4 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
+                                <homekit-card-item>
+                                  <homekit-button class="button size-2 on" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                      <div class="button-inner">
+                                        <span class="icon on">
+                                          <ha-icon icon="${ent.icon || stateObj.attributes.icon || "mdi:weather-"+stateObj.state}" />
+                                        </span>
+                                        <span class="name on">${ent.name || stateObj.attributes.friendly_name}</span>
+                                        <span class="state on">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}
+                                          ${stateObj.attributes.forecast[0] && stateObj.attributes.forecast[0].precipitation ? cardTools.LitHtml`
+                                              <span class="value on">${stateObj.attributes.forecast[0].precipitation} ${this._getUnit("precipitation")}</span>
+                                          ` : cardTools.LitHtml``}
+                                        </span>
+                                      </div>
+                                  </homekit-button>
+                                </<homekit-card-item>
+                                ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
+                              `
+                              : this._notFound(ent);
+                            } else {
+                              entityCount++;
+                              return stateObj ? cardTools.LitHtml`
+                                <homekit-card-item>
+                                  <homekit-button class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                      <div class="button-inner">
+                                        <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'icon': 'icon on'}">
+                                          <ha-icon icon="${ent.icon || stateObj.attributes.icon}" />
+                                        </span>
+                                        <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
+                                        <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'state': 'state on'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
+                                      </div>
+                                  </homekit-button>
+                                </<homekit-card-item>
+                                ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
+                              `
+                              : this._notFound(ent);
+                            }
                           } else {
-                             entityCount++;
-                             console.log('render other: '+entityCount);
-                             return stateObj ? cardTools.LitHtml`
+                            console.log('custom tile card');
+                            console.log(ent.cardStyle);
+                            entityCount++;
+                            return stateObj ? cardTools.LitHtml`
                               <homekit-card-item>
                                 <homekit-button class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                     <div class="button-inner">
-                                      <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'icon': 'icon on'}">
-                                        <ha-icon icon="${ent.icon || stateObj.attributes.icon}" />
-                                      </span>
-                                      <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                      <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'state': 'state on'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
+                                      <card-maker nohass data-entity="${ent.entity}" data-card="${ent.card}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
+                                      </card-maker>
                                     </div>
                                 </homekit-button>
                               </<homekit-card-item>
@@ -159,7 +174,53 @@ customElements.whenDefined('card-tools').then(() => {
       for (var i = 0; i < myNodelist.length; i++) {
         cardTools.longpress(myNodelist[i], {hasHold: true, hasDoubleClick: true});
       }
+
+      this.shadowRoot.querySelectorAll("card-maker").forEach(customCard => {
+          var card = {
+            type: customCard.dataset.card,
+            entities: [customCard.dataset.entity],
+          };
+          customCard.config = card;
+
+          console.log(customCard.dataset.style);
+
+          
+          let style = "";
+          if(customCard.dataset.style) {
+            style = customCard.dataset.style;
+          } else if(customCard.dataset.card == 'custom:mini-graph-card') {
+            style = ":host {height:100%;} ha-card { background: transparent; color: #000; padding:0!important; box-shadow:none; } .header {padding:0;} .header icon {color:#f7d959;} .states {padding:0;} .states .state .state__value {font-size:14px;}";
+          }
+
+          if(style != "") {
+            let itterations = 0;
+            let interval = setInterval(function () {
+              let el = customCard.children[0];
+              
+              console.log(el);
+              if(el) {
+
+                console.log(customCard.childNodes);
+                console.log(customCard.children);
+
+                window.clearInterval(interval);
+                console.log('FOUND');
+                console.log(el);
+                console.log(el.shadowRoot);
+
+                var styleElement = document.createElement('style');
+                styleElement.innerHTML = style;
+                el.shadowRoot.appendChild(styleElement);
+
+              } else if (++itterations === 10 ) {
+                window.clearInterval(interval);
+              }
+            }, 100);
+          }
+      });
     }
+
+
 
     _handleClick(ev, state, entity, type, row) {
       if(type == "light") {
@@ -297,8 +358,6 @@ customElements.whenDefined('card-tools').then(() => {
     }
 
     _getColorFromVariable(color: string): string {
-      console.log(color);
-
       if (typeof color !== "undefined" && color.substring(0, 3) === 'var') {
         return window.getComputedStyle(document.documentElement).getPropertyValue(color.substring(4).slice(0, -1)).trim();
       }
@@ -478,8 +537,11 @@ customElements.whenDefined('card-tools').then(() => {
           .break {
             display:none;
           }
-        }
+        }   
 
+        card-maker {
+          height:100%;
+        }
       `;
     }
   }
