@@ -4,6 +4,7 @@ import {
   computeDomain,
   domainIcon
 } from 'custom-card-helpers';
+import tinycolor, { TinyColor, isReadable } from '@ctrl/tinycolor';
 
 var longPress = document.createElement('long-press');
 document.body.appendChild(longPress);
@@ -25,6 +26,15 @@ customElements.whenDefined('card-tools').then(() => {
       if (!config.entities) {
         throw new Error("You need to define entities");
       }
+      if(!config.useTemperature) {
+        config.useTemperature = false;
+      }
+      if(!config.useBrightness) {
+        config.useBrightness = true;
+      }
+      if(!config.breakOnMobile) {
+        config.breakOnMobile = false;
+      }
       this.config = config;
     }
 
@@ -37,44 +47,67 @@ customElements.whenDefined('card-tools').then(() => {
             </div>
         `: cardTools.LitHtml ``}
         ${this.config.entities.map(row => {
+            var entityCount = 0;
             return cardTools.LitHtml`
                 <div class="card-title" >${row.title}</div><br>
                     <div class="homekit-card">
                         ${row.entities.map(ent => {
                           const stateObj = this.hass.states[ent.entity];
                           var type = ent.entity.split('.')[0];
+                          var color = '#f7d959';
+                          if(entityCount == 3) {
+                            entityCount = 0;
+                          }
+                          if(entityCount == 4) {
+                            entityCount = 2;
+                          }
+                          
+                          if(ent.color) {
+                            color = ent.color
+                          } else {
+                            color = this._getColorForLightEntity(stateObj, this.config.useTemperature, this.config.useBrightness);
+                          }
                           if(type == "light"){
+                            entityCount++;
+                            console.log('render light: '+entityCount);
                             return stateObj ? cardTools.LitHtml`
                                 <homekit-card-item>
-                                  <homekit-button class="${stateObj.state === "off" ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                  <homekit-button class="${stateObj.state === "on" ? 'button on': 'button'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                       <div class="button-inner">
-                                        <span class="${stateObj.state === "off" ? 'icon': 'icon on'}">
+                                        <span class="icon" style="${stateObj.state === "on" ? 'color:'+color+';' : ''}">
                                           <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin': ""}"/>
                                         </span>
-                                        <span class="${stateObj.state === "off" ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                        <span class="${stateObj.state === "off" ? 'state': 'state on'}">${stateObj.state}${stateObj.attributes.brightness ? cardTools.LitHtml` <span class=" ${stateObj.state === "off" ? 'value': 'value on'}"><span>${Math.round(stateObj.attributes.brightness/2.55)}%</span></span>` : cardTools.LitHtml``}</span>
+                                        <span class="${stateObj.state === "on" ? 'name on': 'name'}">${ent.name || stateObj.attributes.friendly_name}</span>
+                                        <span class="${stateObj.state === "on" ? 'state on': 'state'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}${stateObj.attributes.brightness ? cardTools.LitHtml` <span class=" ${stateObj.state === "on" ? 'value on': 'value'}"><span>${Math.round(stateObj.attributes.brightness/2.55)}%</span></span>` : cardTools.LitHtml``}</span>
                                       </div>
                                   </homekit-button>
                                 </homekit-card-item>
+                                ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
                                 `
                               : this._notFound(ent);
                           } else if(type == "sensor" || type == "binary_sensor"){
+                            entityCount++;
+                            console.log('render sensor: '+entityCount);
                             return stateObj ? cardTools.LitHtml`
                               <homekit-card-item>
-                                <homekit-button class="button on" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                <homekit-button class="${stateObj.state !== "unavailable" ? 'button on': 'button'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                     <div class="button-inner">
-                                      <span class="icon on">
+                                      <span class="${stateObj.state !== "unavailable" ? 'icon on': 'icon'}">
                                         <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                       </span>
-                                      <span class="name on">${ent.name || stateObj.attributes.friendly_name}</span>
-                                      <span class="state on">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
+                                      <span class="${stateObj.state !== "unavailable" ? 'name on': 'name'}">${ent.name || stateObj.attributes.friendly_name}</span>
+                                      <span class="${stateObj.state !== "unavailable" ? 'state on': 'state'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
                                     </div>
                                 </homekit-button>
                               </<homekit-card-item>
+                              ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
                             `
                             : this._notFound(ent);
                           } else if(type == "weather") {
+                            entityCount = entityCount + 2;
+                            console.log('render weather: '+entityCount);
                             return stateObj ? cardTools.LitHtml`
+                              ${entityCount == 4 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
                               <homekit-card-item>
                                 <homekit-button class="button size-2 on" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                     <div class="button-inner">
@@ -90,21 +123,25 @@ customElements.whenDefined('card-tools').then(() => {
                                     </div>
                                 </homekit-button>
                               </<homekit-card-item>
+                              ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
                             `
                             : this._notFound(ent);
                           } else {
+                             entityCount++;
+                             console.log('render other: '+entityCount);
                              return stateObj ? cardTools.LitHtml`
                               <homekit-card-item>
-                                <homekit-button class="${stateObj.state === "off" ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                <homekit-button class="${stateObj.state === "on" ? 'button on': 'button'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                     <div class="button-inner">
-                                      <span class="${stateObj.state === "off" ? 'icon': 'icon on'}">
+                                      <span class="${stateObj.state === "on" ? 'icon on': 'icon'}">
                                         <ha-icon icon="${ent.icon || stateObj.attributes.icon}" />
                                       </span>
-                                      <span class="${stateObj.state === "off" ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                      <span class="${stateObj.state === "off" ? 'state': 'state on'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
+                                      <span class="${stateObj.state === "on" ? 'name on': 'name'}">${ent.name || stateObj.attributes.friendly_name}</span>
+                                      <span class="${stateObj.state === "on" ? 'state on': 'state'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
                                     </div>
                                 </homekit-button>
                               </<homekit-card-item>
+                              ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml`<div class="break"></div>`:cardTools.LitHtml``}
                             `
                             : this._notFound(ent);
                           }
@@ -211,6 +248,63 @@ customElements.whenDefined('card-tools').then(() => {
       `;
     }
 
+
+    _getColorForLightEntity(stateObj, useTemperature, useBrightness) {
+      var color = this.config.default_color ? this.config.default_color : undefined;
+      if (stateObj) {
+        if (stateObj.attributes.rgb_color) {
+          color = `rgb(${stateObj.attributes.rgb_color.join(',')})`;
+          if (stateObj.attributes.brightness) {
+            color = this._applyBrightnessToColor(color, (stateObj.attributes.brightness + 245) / 5);
+          }
+        } else if (useTemperature && stateObj.attributes.color_temp && stateObj.attributes.min_mireds && stateObj.attributes.max_mireds) {
+          color = this._getLightColorBasedOnTemperature(stateObj.attributes.color_temp, stateObj.attributes.min_mireds, stateObj.attributes.max_mireds);
+          if (stateObj.attributes.brightness) {
+            color = this._applyBrightnessToColor(color, (stateObj.attributes.brightness + 245) / 5);
+          }
+        } else if (useBrightness && stateObj.attributes.brightness) {
+          color = this._applyBrightnessToColor(this._getDefaultColorForState(), (stateObj.attributes.brightness + 245) / 5);
+        } else {
+          color = this._getDefaultColorForState();
+        }
+      }
+      return color;
+    }
+
+    _applyBrightnessToColor(color, brightness) {
+        const colorObj = new TinyColor(this._getColorFromVariable(color));
+        if (colorObj.isValid) {
+          const validColor = colorObj.mix('black', 100 - brightness).toString();
+          if (validColor) return validColor;
+        }
+        return color;
+    }
+
+    _getLightColorBasedOnTemperature(current, min, max) {
+        const high = new TinyColor('rgb(255, 160, 0)'); // orange-ish
+        const low = new TinyColor('rgb(166, 209, 255)'); // blue-ish
+        const middle = new TinyColor('white');
+        const mixAmount = (current - min) / (max - min) * 100;
+        if (mixAmount < 50) {
+          return tinycolor(low).mix(middle, mixAmount * 2).toRgbString();
+        } else {
+          return tinycolor(middle).mix(high, (mixAmount - 50) * 2).toRgbString();
+        }
+    }
+
+    _getDefaultColorForState() {
+      return this.config.color_on ? this.config.color_on: '#f7d959';
+    }
+
+    _getColorFromVariable(color: string): string {
+      console.log(color);
+
+      if (typeof color !== "undefined" && color.substring(0, 3) === 'var') {
+        return window.getComputedStyle(document.documentElement).getPropertyValue(color.substring(4).slice(0, -1)).trim();
+      }
+      return color;
+    }
+
     static get styles() {
       return css`
         :host {
@@ -222,7 +316,9 @@ customElements.whenDefined('card-tools').then(() => {
             font-size: 18px;
             padding-top:18px;
         }
-        .homekit-card { }
+        .homekit-card {
+          overflow-x: scroll;
+        }
 
         .container {
             float: left;
@@ -231,6 +327,7 @@ customElements.whenDefined('card-tools').then(() => {
             padding: 5px 0 5px 15px;
             white-space: nowrap;
             width: 100%;
+            box-sizing: border-box;
         }
         
         .header {
@@ -247,9 +344,9 @@ customElements.whenDefined('card-tools').then(() => {
         .button {
           cursor: pointer;
           display:inline-block;
-          width: 110px;
-          height: 110px;
-          padding:5px;
+          width: 100px;
+          height: 100px;
+          padding:10px;
           background-color: rgba(255, 255, 255, 0.8);
           border-radius: 12px;
           box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
@@ -260,7 +357,7 @@ customElements.whenDefined('card-tools').then(() => {
           touch-action: auto!important;
         }
         .button.size-2 {
-          width: 240px;
+          width: 230px;
         }
         
         :host:last-child .button {
@@ -279,7 +376,7 @@ customElements.whenDefined('card-tools').then(() => {
         
         homekit-button .name {
           display:block;
-          font-size: 17px;
+          font-size: 14px;
           font-weight: 500;
           color: rgba(0, 0, 0, 0.4);
           width: 100%;
@@ -298,7 +395,7 @@ customElements.whenDefined('card-tools').then(() => {
         
         homekit-button .state {
           position: relative;
-          font-size: 17px;
+          font-size: 14px;
           color: rgba(0, 0, 0, 0.4);
           text-transform: capitalize;
           float: left;
@@ -312,7 +409,7 @@ customElements.whenDefined('card-tools').then(() => {
           visibility: visible;
           position: relative;
           margin-left: 5px;
-          font-size: 12px;
+          font-size: 11px;
           color: rgba(255, 0, 0, 1);
           text-transform: capitalize;
         }
@@ -375,6 +472,12 @@ customElements.whenDefined('card-tools').then(() => {
           overflow:hidden;
           font-weight:300;
           touch-action: auto!important;
+        }
+
+        @media only screen and (min-width: 768px) {
+          .break {
+            display:none;
+          }
         }
 
       `;
