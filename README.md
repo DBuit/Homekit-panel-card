@@ -14,6 +14,12 @@ For lights i have developed a separate card that also has the style of homekit, 
 
 Do you have ideas for a custom pop-up create an issue then I can see if I can help with this :)
 
+# TO DO
+
+- Show graph on tile
+- Combine entities
+- Multiple columns (we now got rows with a title)
+
 # Config options
 
 Add the card
@@ -161,3 +167,5 @@ If you don't want to use the same pop-up card for every entity in a row you can 
 
 ![desktop screenshot](screenshot.png "Desktop screenshot")
 ![mobile screenshot](screenshot-mobile.png "Mobile screenshot")
+
+
