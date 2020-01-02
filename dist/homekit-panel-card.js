@@ -11,13 +11,33 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
+String(Math.random()).slice(2);
 /**
- * An expression marker with embedded unique key to avoid collision with
- * possible text in templates.
- */
-const marker = `{{lit-${String(Math.random()).slice(2)}}}`;
-//# sourceMappingURL=template.js.map
-
+ * @license
+ * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */let t=!1;try{const e={get capture(){return t=!0,!1}};window.addEventListener("test",e,e),window.removeEventListener("test",e,e)}catch(t){}
+/**
+ * @license
+ * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */(window.litHtmlVersions||(window.litHtmlVersions=[])).push("1.1.2"),
 /**
  * @license
  * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -31,27 +51,7 @@ const marker = `{{lit-${String(Math.random()).slice(2)}}}`;
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-// Detect event listener options support. If the `capture` property is read
-// from the options object, then options are supported. If not, then the thrid
-// argument to add/removeEventListener is interpreted as the boolean capture
-// value so we should only pass the `capture` property.
-let eventOptionsSupported = false;
-try {
-    const options = {
-        get capture() {
-            eventOptionsSupported = true;
-            return false;
-        }
-    };
-    // tslint:disable-next-line:no-any
-    window.addEventListener('test', options, options);
-    // tslint:disable-next-line:no-any
-    window.removeEventListener('test', options, options);
-}
-catch (_e) {
-}
-//# sourceMappingURL=parts.js.map
-
+void 0===window.ShadyCSS||void 0===window.ShadyCSS.prepareTemplateDom&&console.warn("Incompatible ShadyCSS version detected. Please update to at least @webcomponents/webcomponentsjs@2.0.2 and @webcomponents/shadycss@1.3.1.")
 /**
  * @license
  * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -64,57 +64,7 @@ catch (_e) {
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
- */
-// IMPORTANT: do not change the property name or the assignment expression.
-// This line will be used in regexes to search for lit-html usage.
-// TODO(justinfagnani): inject version number at build time
-(window['litHtmlVersions'] || (window['litHtmlVersions'] = [])).push('1.1.2');
-//# sourceMappingURL=lit-html.js.map
-
-/**
- * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-if (typeof window.ShadyCSS === 'undefined') ;
-else if (typeof window.ShadyCSS.prepareTemplateDom === 'undefined') {
-    console.warn(`Incompatible ShadyCSS version detected. ` +
-        `Please update to at least @webcomponents/webcomponentsjs@2.0.2 and ` +
-        `@webcomponents/shadycss@1.3.1.`);
-}
-//# sourceMappingURL=shady-render.js.map
-
-/**
- * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-/**
- * When using Closure Compiler, JSCompiler_renameProperty(property, object) is
- * replaced at compile time by the munged name for object[property]. We cannot
- * alias this function, so we have to use a small shim that has the same
- * behavior when not compiling.
- */
-window.JSCompiler_renameProperty =
-    (prop, _obj) => prop;
-//# sourceMappingURL=updating-element.js.map
-
+ */,window.JSCompiler_renameProperty=(t,e)=>t;
 /**
 @license
 Copyright (c) 2019 The Polymer Project Authors. All rights reserved.
@@ -125,60 +75,7 @@ found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
 part of the polymer project is also subject to an additional IP rights grant
 found at http://polymer.github.io/PATENTS.txt
 */
-const supportsAdoptingStyleSheets = ('adoptedStyleSheets' in Document.prototype) &&
-    ('replace' in CSSStyleSheet.prototype);
-const constructionToken = Symbol();
-class CSSResult {
-    constructor(cssText, safeToken) {
-        if (safeToken !== constructionToken) {
-            throw new Error('CSSResult is not constructable. Use `unsafeCSS` or `css` instead.');
-        }
-        this.cssText = cssText;
-    }
-    // Note, this is a getter so that it's lazy. In practice, this means
-    // stylesheets are not created until the first element instance is made.
-    get styleSheet() {
-        if (this._styleSheet === undefined) {
-            // Note, if `adoptedStyleSheets` is supported then we assume CSSStyleSheet
-            // is constructable.
-            if (supportsAdoptingStyleSheets) {
-                this._styleSheet = new CSSStyleSheet();
-                this._styleSheet.replaceSync(this.cssText);
-            }
-            else {
-                this._styleSheet = null;
-            }
-        }
-        return this._styleSheet;
-    }
-    toString() {
-        return this.cssText;
-    }
-}
-const textFromCSSResult = (value) => {
-    if (value instanceof CSSResult) {
-        return value.cssText;
-    }
-    else if (typeof value === 'number') {
-        return value;
-    }
-    else {
-        throw new Error(`Value passed to 'css' function must be a 'css' function result: ${value}. Use 'unsafeCSS' to pass non-literal values, but
-            take care to ensure page security.`);
-    }
-};
-/**
- * Template tag which which can be used with LitElement's `style` property to
- * set element styles. For security reasons, only literal string values may be
- * used. To incorporate non-literal values `unsafeCSS` may be used inside a
- * template string part.
- */
-const css = (strings, ...values) => {
-    const cssText = values.reduce((acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1], strings[0]);
-    return new CSSResult(cssText, constructionToken);
-};
-//# sourceMappingURL=css-tag.js.map
-
+const e="adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,n=Symbol();class a{constructor(t,e){if(e!==n)throw new Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t}get styleSheet(){return void 0===this._styleSheet&&(e?(this._styleSheet=new CSSStyleSheet,this._styleSheet.replaceSync(this.cssText)):this._styleSheet=null),this._styleSheet}toString(){return this.cssText}}const r=(t,...e)=>{const r=e.reduce((e,n,r)=>e+(t=>{if(t instanceof a)return t.cssText;if("number"==typeof t)return t;throw new Error(`Value passed to 'css' function must be a 'css' function result: ${t}. Use 'unsafeCSS' to pass non-literal values, but\n            take care to ensure page security.`)})(n)+t[r+1],t[0]);return new a(r,n)};
 /**
  * @license
  * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -192,1484 +89,112 @@ const css = (strings, ...values) => {
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-// IMPORTANT: do not change the property name or the assignment expression.
-// This line will be used in regexes to search for LitElement usage.
-// TODO(justinfagnani): inject version number at build time
-(window['litElementVersions'] || (window['litElementVersions'] = []))
-    .push('2.2.1');
-//# sourceMappingURL=lit-element.js.map
-
-/**
- * Parse or format dates
- * @class fecha
- */
-var fecha = {};
-var token = /d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
-var twoDigits = '\\d\\d?';
-var threeDigits = '\\d{3}';
-var fourDigits = '\\d{4}';
-var word = '[^\\s]+';
-var literal = /\[([^]*?)\]/gm;
-var noop = function () {
-};
-
-function regexEscape(str) {
-  return str.replace( /[|\\{()[^$+*?.-]/g, '\\$&');
-}
-
-function shorten(arr, sLen) {
-  var newArr = [];
-  for (var i = 0, len = arr.length; i < len; i++) {
-    newArr.push(arr[i].substr(0, sLen));
-  }
-  return newArr;
-}
-
-function monthUpdate(arrName) {
-  return function (d, v, i18n) {
-    var index = i18n[arrName].indexOf(v.charAt(0).toUpperCase() + v.substr(1).toLowerCase());
-    if (~index) {
-      d.month = index;
-    }
-  };
-}
-
-function pad(val, len) {
-  val = String(val);
-  len = len || 2;
-  while (val.length < len) {
-    val = '0' + val;
-  }
-  return val;
-}
-
-var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-var monthNamesShort = shorten(monthNames, 3);
-var dayNamesShort = shorten(dayNames, 3);
-fecha.i18n = {
-  dayNamesShort: dayNamesShort,
-  dayNames: dayNames,
-  monthNamesShort: monthNamesShort,
-  monthNames: monthNames,
-  amPm: ['am', 'pm'],
-  DoFn: function DoFn(D) {
-    return D + ['th', 'st', 'nd', 'rd'][D % 10 > 3 ? 0 : (D - D % 10 !== 10) * D % 10];
-  }
-};
-
-var formatFlags = {
-  D: function(dateObj) {
-    return dateObj.getDate();
-  },
-  DD: function(dateObj) {
-    return pad(dateObj.getDate());
-  },
-  Do: function(dateObj, i18n) {
-    return i18n.DoFn(dateObj.getDate());
-  },
-  d: function(dateObj) {
-    return dateObj.getDay();
-  },
-  dd: function(dateObj) {
-    return pad(dateObj.getDay());
-  },
-  ddd: function(dateObj, i18n) {
-    return i18n.dayNamesShort[dateObj.getDay()];
-  },
-  dddd: function(dateObj, i18n) {
-    return i18n.dayNames[dateObj.getDay()];
-  },
-  M: function(dateObj) {
-    return dateObj.getMonth() + 1;
-  },
-  MM: function(dateObj) {
-    return pad(dateObj.getMonth() + 1);
-  },
-  MMM: function(dateObj, i18n) {
-    return i18n.monthNamesShort[dateObj.getMonth()];
-  },
-  MMMM: function(dateObj, i18n) {
-    return i18n.monthNames[dateObj.getMonth()];
-  },
-  YY: function(dateObj) {
-    return pad(String(dateObj.getFullYear()), 4).substr(2);
-  },
-  YYYY: function(dateObj) {
-    return pad(dateObj.getFullYear(), 4);
-  },
-  h: function(dateObj) {
-    return dateObj.getHours() % 12 || 12;
-  },
-  hh: function(dateObj) {
-    return pad(dateObj.getHours() % 12 || 12);
-  },
-  H: function(dateObj) {
-    return dateObj.getHours();
-  },
-  HH: function(dateObj) {
-    return pad(dateObj.getHours());
-  },
-  m: function(dateObj) {
-    return dateObj.getMinutes();
-  },
-  mm: function(dateObj) {
-    return pad(dateObj.getMinutes());
-  },
-  s: function(dateObj) {
-    return dateObj.getSeconds();
-  },
-  ss: function(dateObj) {
-    return pad(dateObj.getSeconds());
-  },
-  S: function(dateObj) {
-    return Math.round(dateObj.getMilliseconds() / 100);
-  },
-  SS: function(dateObj) {
-    return pad(Math.round(dateObj.getMilliseconds() / 10), 2);
-  },
-  SSS: function(dateObj) {
-    return pad(dateObj.getMilliseconds(), 3);
-  },
-  a: function(dateObj, i18n) {
-    return dateObj.getHours() < 12 ? i18n.amPm[0] : i18n.amPm[1];
-  },
-  A: function(dateObj, i18n) {
-    return dateObj.getHours() < 12 ? i18n.amPm[0].toUpperCase() : i18n.amPm[1].toUpperCase();
-  },
-  ZZ: function(dateObj) {
-    var o = dateObj.getTimezoneOffset();
-    return (o > 0 ? '-' : '+') + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4);
-  }
-};
-
-var parseFlags = {
-  D: [twoDigits, function (d, v) {
-    d.day = v;
-  }],
-  Do: [twoDigits + word, function (d, v) {
-    d.day = parseInt(v, 10);
-  }],
-  M: [twoDigits, function (d, v) {
-    d.month = v - 1;
-  }],
-  YY: [twoDigits, function (d, v) {
-    var da = new Date(), cent = +('' + da.getFullYear()).substr(0, 2);
-    d.year = '' + (v > 68 ? cent - 1 : cent) + v;
-  }],
-  h: [twoDigits, function (d, v) {
-    d.hour = v;
-  }],
-  m: [twoDigits, function (d, v) {
-    d.minute = v;
-  }],
-  s: [twoDigits, function (d, v) {
-    d.second = v;
-  }],
-  YYYY: [fourDigits, function (d, v) {
-    d.year = v;
-  }],
-  S: ['\\d', function (d, v) {
-    d.millisecond = v * 100;
-  }],
-  SS: ['\\d{2}', function (d, v) {
-    d.millisecond = v * 10;
-  }],
-  SSS: [threeDigits, function (d, v) {
-    d.millisecond = v;
-  }],
-  d: [twoDigits, noop],
-  ddd: [word, noop],
-  MMM: [word, monthUpdate('monthNamesShort')],
-  MMMM: [word, monthUpdate('monthNames')],
-  a: [word, function (d, v, i18n) {
-    var val = v.toLowerCase();
-    if (val === i18n.amPm[0]) {
-      d.isPm = false;
-    } else if (val === i18n.amPm[1]) {
-      d.isPm = true;
-    }
-  }],
-  ZZ: ['[^\\s]*?[\\+\\-]\\d\\d:?\\d\\d|[^\\s]*?Z', function (d, v) {
-    var parts = (v + '').match(/([+-]|\d\d)/gi), minutes;
-
-    if (parts) {
-      minutes = +(parts[1] * 60) + parseInt(parts[2], 10);
-      d.timezoneOffset = parts[0] === '+' ? minutes : -minutes;
-    }
-  }]
-};
-parseFlags.dd = parseFlags.d;
-parseFlags.dddd = parseFlags.ddd;
-parseFlags.DD = parseFlags.D;
-parseFlags.mm = parseFlags.m;
-parseFlags.hh = parseFlags.H = parseFlags.HH = parseFlags.h;
-parseFlags.MM = parseFlags.M;
-parseFlags.ss = parseFlags.s;
-parseFlags.A = parseFlags.a;
-
-
-// Some common format strings
-fecha.masks = {
-  default: 'ddd MMM DD YYYY HH:mm:ss',
-  shortDate: 'M/D/YY',
-  mediumDate: 'MMM D, YYYY',
-  longDate: 'MMMM D, YYYY',
-  fullDate: 'dddd, MMMM D, YYYY',
-  shortTime: 'HH:mm',
-  mediumTime: 'HH:mm:ss',
-  longTime: 'HH:mm:ss.SSS'
-};
-
-/***
- * Format a date
- * @method format
- * @param {Date|number} dateObj
- * @param {string} mask Format of the date, i.e. 'mm-dd-yy' or 'shortDate'
- */
-fecha.format = function (dateObj, mask, i18nSettings) {
-  var i18n = i18nSettings || fecha.i18n;
-
-  if (typeof dateObj === 'number') {
-    dateObj = new Date(dateObj);
-  }
-
-  if (Object.prototype.toString.call(dateObj) !== '[object Date]' || isNaN(dateObj.getTime())) {
-    throw new Error('Invalid Date in fecha.format');
-  }
-
-  mask = fecha.masks[mask] || mask || fecha.masks['default'];
-
-  var literals = [];
-
-  // Make literals inactive by replacing them with ??
-  mask = mask.replace(literal, function($0, $1) {
-    literals.push($1);
-    return '@@@';
-  });
-  // Apply formatting rules
-  mask = mask.replace(token, function ($0) {
-    return $0 in formatFlags ? formatFlags[$0](dateObj, i18n) : $0.slice(1, $0.length - 1);
-  });
-  // Inline literal values back into the formatted value
-  return mask.replace(/@@@/g, function() {
-    return literals.shift();
-  });
-};
-
-/**
- * Parse a date string into an object, changes - into /
- * @method parse
- * @param {string} dateStr Date string
- * @param {string} format Date parse format
- * @returns {Date|boolean}
- */
-fecha.parse = function (dateStr, format, i18nSettings) {
-  var i18n = i18nSettings || fecha.i18n;
-
-  if (typeof format !== 'string') {
-    throw new Error('Invalid format in fecha.parse');
-  }
-
-  format = fecha.masks[format] || format;
-
-  // Avoid regular expression denial of service, fail early for really long strings
-  // https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS
-  if (dateStr.length > 1000) {
-    return null;
-  }
-
-  var dateInfo = {};
-  var parseInfo = [];
-  var literals = [];
-  format = format.replace(literal, function($0, $1) {
-    literals.push($1);
-    return '@@@';
-  });
-  var newFormat = regexEscape(format).replace(token, function ($0) {
-    if (parseFlags[$0]) {
-      var info = parseFlags[$0];
-      parseInfo.push(info[1]);
-      return '(' + info[0] + ')';
-    }
-
-    return $0;
-  });
-  newFormat = newFormat.replace(/@@@/g, function() {
-    return literals.shift();
-  });
-  var matches = dateStr.match(new RegExp(newFormat, 'i'));
-  if (!matches) {
-    return null;
-  }
-
-  for (var i = 1; i < matches.length; i++) {
-    parseInfo[i - 1](dateInfo, matches[i], i18n);
-  }
-
-  var today = new Date();
-  if (dateInfo.isPm === true && dateInfo.hour != null && +dateInfo.hour !== 12) {
-    dateInfo.hour = +dateInfo.hour + 12;
-  } else if (dateInfo.isPm === false && +dateInfo.hour === 12) {
-    dateInfo.hour = 0;
-  }
-
-  var date;
-  if (dateInfo.timezoneOffset != null) {
-    dateInfo.minute = +(dateInfo.minute || 0) - +dateInfo.timezoneOffset;
-    date = new Date(Date.UTC(dateInfo.year || today.getFullYear(), dateInfo.month || 0, dateInfo.day || 1,
-      dateInfo.hour || 0, dateInfo.minute || 0, dateInfo.second || 0, dateInfo.millisecond || 0));
-  } else {
-    date = new Date(dateInfo.year || today.getFullYear(), dateInfo.month || 0, dateInfo.day || 1,
-      dateInfo.hour || 0, dateInfo.minute || 0, dateInfo.second || 0, dateInfo.millisecond || 0);
-  }
-  return date;
-};
-
-var a=function(){try{(new Date).toLocaleDateString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleDateString(t,{year:"numeric",month:"long",day:"numeric"})}:function(t){return fecha.format(t,"mediumDate")},n=function(){try{(new Date).toLocaleString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleString(t,{year:"numeric",month:"long",day:"numeric",hour:"numeric",minute:"2-digit"})}:function(t){return fecha.format(t,"haDateTime")},r=function(){try{(new Date).toLocaleTimeString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleTimeString(t,{hour:"numeric",minute:"2-digit"})}:function(t){return fecha.format(t,"shortTime")};function d(e){return e.substr(0,e.indexOf("."))}function g(e){return d(e.entity_id)}function b(e,t,i){var o,s=g(t);if("binary_sensor"===s)t.attributes.device_class&&(o=e("state."+s+"."+t.attributes.device_class+"."+t.state)),o||(o=e("state."+s+".default."+t.state));else if(t.attributes.unit_of_measurement&&!["unknown","unavailable"].includes(t.state))o=t.state+" "+t.attributes.unit_of_measurement;else if("input_datetime"===s){var c;if(t.attributes.has_time)if(t.attributes.has_date)c=new Date(t.attributes.year,t.attributes.month-1,t.attributes.day,t.attributes.hour,t.attributes.minute),o=n(c,i);else{var u=new Date;c=new Date(u.getFullYear(),u.getMonth(),u.getDay(),t.attributes.hour,t.attributes.minute),o=r(c,i);}else c=new Date(t.attributes.year,t.attributes.month-1,t.attributes.day),o=a(c,i);}else o="zwave"===s?["initializing","dead"].includes(t.state)?e("state.zwave.query_stage."+t.state,"query_stage",t.attributes.query_stage):e("state.zwave.default."+t.state):e("state."+s+"."+t.state);return o||(o=e("state.default."+t.state)||e("component."+s+".state."+t.state)||t.state),o}var w="hass:bookmark",j={alert:"hass:alert",automation:"hass:playlist-play",calendar:"hass:calendar",camera:"hass:video",climate:"hass:thermostat",configurator:"hass:settings",conversation:"hass:text-to-speech",device_tracker:"hass:account",fan:"hass:fan",group:"hass:google-circles-communities",history_graph:"hass:chart-line",homeassistant:"hass:home-assistant",homekit:"hass:home-automation",image_processing:"hass:image-filter-frames",input_boolean:"hass:drawing",input_datetime:"hass:calendar-clock",input_number:"hass:ray-vertex",input_select:"hass:format-list-bulleted",input_text:"hass:textbox",light:"hass:lightbulb",mailbox:"hass:mailbox",notify:"hass:comment-alert",person:"hass:account",plant:"hass:flower",proximity:"hass:apple-safari",remote:"hass:remote",scene:"hass:google-pages",script:"hass:file-document",sensor:"hass:eye",simple_alarm:"hass:bell",sun:"hass:white-balance-sunny",switch:"hass:flash",timer:"hass:timer",updater:"hass:cloud-upload",vacuum:"hass:robot-vacuum",water_heater:"hass:thermometer",weblink:"hass:open-in-new"};function I(e,t){if(e in j)return j[e];switch(e){case"alarm_control_panel":switch(t){case"armed_home":return "hass:bell-plus";case"armed_night":return "hass:bell-sleep";case"disarmed":return "hass:bell-outline";case"triggered":return "hass:bell-ring";default:return "hass:bell"}case"binary_sensor":return t&&"off"===t?"hass:radiobox-blank":"hass:checkbox-marked-circle";case"cover":return "closed"===t?"hass:window-closed":"hass:window-open";case"lock":return t&&"unlocked"===t?"hass:lock-open":"hass:lock";case"media_player":return t&&"off"!==t&&"idle"!==t?"hass:cast-connected":"hass:cast";case"zwave":switch(t){case"dead":return "hass:emoticon-dead";case"sleeping":return "hass:sleep";case"initializing":return "hass:timer-sand";default:return "hass:z-wave"}default:return console.warn("Unable to find icon for domain "+e+" ("+t+")"),w}}//# sourceMappingURL=index.m.js.map
-
-function bound01(n, max) {
-    if (isOnePointZero(n)) {
-        n = '100%';
-    }
-    var processPercent = isPercentage(n);
-    n = max === 360 ? n : Math.min(max, Math.max(0, parseFloat(n)));
-    if (processPercent) {
-        n = parseInt(String(n * max), 10) / 100;
-    }
-    if (Math.abs(n - max) < 0.000001) {
-        return 1;
-    }
-    if (max === 360) {
-        n = (n < 0 ? (n % max) + max : n % max) / parseFloat(String(max));
-    }
-    else {
-        n = (n % max) / parseFloat(String(max));
-    }
-    return n;
-}
-function clamp01(val) {
-    return Math.min(1, Math.max(0, val));
-}
-function isOnePointZero(n) {
-    return typeof n === 'string' && n.includes('.') && parseFloat(n) === 1;
-}
-function isPercentage(n) {
-    return typeof n === 'string' && n.includes('%');
-}
-function boundAlpha(a) {
-    a = parseFloat(a);
-    if (isNaN(a) || a < 0 || a > 1) {
-        a = 1;
-    }
-    return a;
-}
-function convertToPercentage(n) {
-    if (n <= 1) {
-        return Number(n) * 100 + "%";
-    }
-    return n;
-}
-function pad2(c) {
-    return c.length === 1 ? '0' + c : String(c);
-}
-
-function rgbToRgb(r, g, b) {
-    return {
-        r: bound01(r, 255) * 255,
-        g: bound01(g, 255) * 255,
-        b: bound01(b, 255) * 255,
-    };
-}
-function rgbToHsl(r, g, b) {
-    r = bound01(r, 255);
-    g = bound01(g, 255);
-    b = bound01(b, 255);
-    var max = Math.max(r, g, b);
-    var min = Math.min(r, g, b);
-    var h = 0;
-    var s = 0;
-    var l = (max + min) / 2;
-    if (max === min) {
-        s = 0;
-        h = 0;
-    }
-    else {
-        var d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        switch (max) {
-            case r:
-                h = ((g - b) / d) + (g < b ? 6 : 0);
-                break;
-            case g:
-                h = ((b - r) / d) + 2;
-                break;
-            case b:
-                h = ((r - g) / d) + 4;
-                break;
-        }
-        h /= 6;
-    }
-    return { h: h, s: s, l: l };
-}
-function hue2rgb(p, q, t) {
-    if (t < 0) {
-        t += 1;
-    }
-    if (t > 1) {
-        t -= 1;
-    }
-    if (t < 1 / 6) {
-        return p + ((q - p) * (6 * t));
-    }
-    if (t < 1 / 2) {
-        return q;
-    }
-    if (t < 2 / 3) {
-        return p + ((q - p) * ((2 / 3) - t) * 6);
-    }
-    return p;
-}
-function hslToRgb(h, s, l) {
-    var r;
-    var g;
-    var b;
-    h = bound01(h, 360);
-    s = bound01(s, 100);
-    l = bound01(l, 100);
-    if (s === 0) {
-        g = l;
-        b = l;
-        r = l;
-    }
-    else {
-        var q = l < 0.5 ? (l * (1 + s)) : (l + s - (l * s));
-        var p = (2 * l) - q;
-        r = hue2rgb(p, q, h + (1 / 3));
-        g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - (1 / 3));
-    }
-    return { r: r * 255, g: g * 255, b: b * 255 };
-}
-function rgbToHsv(r, g, b) {
-    r = bound01(r, 255);
-    g = bound01(g, 255);
-    b = bound01(b, 255);
-    var max = Math.max(r, g, b);
-    var min = Math.min(r, g, b);
-    var h = 0;
-    var v = max;
-    var d = max - min;
-    var s = max === 0 ? 0 : d / max;
-    if (max === min) {
-        h = 0;
-    }
-    else {
-        switch (max) {
-            case r:
-                h = ((g - b) / d) + (g < b ? 6 : 0);
-                break;
-            case g:
-                h = ((b - r) / d) + 2;
-                break;
-            case b:
-                h = ((r - g) / d) + 4;
-                break;
-        }
-        h /= 6;
-    }
-    return { h: h, s: s, v: v };
-}
-function hsvToRgb(h, s, v) {
-    h = bound01(h, 360) * 6;
-    s = bound01(s, 100);
-    v = bound01(v, 100);
-    var i = Math.floor(h);
-    var f = h - i;
-    var p = v * (1 - s);
-    var q = v * (1 - (f * s));
-    var t = v * (1 - ((1 - f) * s));
-    var mod = i % 6;
-    var r = [v, q, p, p, t, v][mod];
-    var g = [t, v, v, q, p, p][mod];
-    var b = [p, p, t, v, v, q][mod];
-    return { r: r * 255, g: g * 255, b: b * 255 };
-}
-function rgbToHex(r, g, b, allow3Char) {
-    var hex = [
-        pad2(Math.round(r).toString(16)),
-        pad2(Math.round(g).toString(16)),
-        pad2(Math.round(b).toString(16)),
-    ];
-    if (allow3Char &&
-        hex[0].startsWith(hex[0].charAt(1)) &&
-        hex[1].startsWith(hex[1].charAt(1)) &&
-        hex[2].startsWith(hex[2].charAt(1))) {
-        return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0);
-    }
-    return hex.join('');
-}
-function rgbaToHex(r, g, b, a, allow4Char) {
-    var hex = [
-        pad2(Math.round(r).toString(16)),
-        pad2(Math.round(g).toString(16)),
-        pad2(Math.round(b).toString(16)),
-        pad2(convertDecimalToHex(a)),
-    ];
-    if (allow4Char &&
-        hex[0].startsWith(hex[0].charAt(1)) &&
-        hex[1].startsWith(hex[1].charAt(1)) &&
-        hex[2].startsWith(hex[2].charAt(1)) &&
-        hex[3].startsWith(hex[3].charAt(1))) {
-        return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0) + hex[3].charAt(0);
-    }
-    return hex.join('');
-}
-function convertDecimalToHex(d) {
-    return Math.round(parseFloat(d) * 255).toString(16);
-}
-function convertHexToDecimal(h) {
-    return parseIntFromHex(h) / 255;
-}
-function parseIntFromHex(val) {
-    return parseInt(val, 16);
-}
-
-var names = {
-    aliceblue: '#f0f8ff',
-    antiquewhite: '#faebd7',
-    aqua: '#00ffff',
-    aquamarine: '#7fffd4',
-    azure: '#f0ffff',
-    beige: '#f5f5dc',
-    bisque: '#ffe4c4',
-    black: '#000000',
-    blanchedalmond: '#ffebcd',
-    blue: '#0000ff',
-    blueviolet: '#8a2be2',
-    brown: '#a52a2a',
-    burlywood: '#deb887',
-    cadetblue: '#5f9ea0',
-    chartreuse: '#7fff00',
-    chocolate: '#d2691e',
-    coral: '#ff7f50',
-    cornflowerblue: '#6495ed',
-    cornsilk: '#fff8dc',
-    crimson: '#dc143c',
-    cyan: '#00ffff',
-    darkblue: '#00008b',
-    darkcyan: '#008b8b',
-    darkgoldenrod: '#b8860b',
-    darkgray: '#a9a9a9',
-    darkgreen: '#006400',
-    darkgrey: '#a9a9a9',
-    darkkhaki: '#bdb76b',
-    darkmagenta: '#8b008b',
-    darkolivegreen: '#556b2f',
-    darkorange: '#ff8c00',
-    darkorchid: '#9932cc',
-    darkred: '#8b0000',
-    darksalmon: '#e9967a',
-    darkseagreen: '#8fbc8f',
-    darkslateblue: '#483d8b',
-    darkslategray: '#2f4f4f',
-    darkslategrey: '#2f4f4f',
-    darkturquoise: '#00ced1',
-    darkviolet: '#9400d3',
-    deeppink: '#ff1493',
-    deepskyblue: '#00bfff',
-    dimgray: '#696969',
-    dimgrey: '#696969',
-    dodgerblue: '#1e90ff',
-    firebrick: '#b22222',
-    floralwhite: '#fffaf0',
-    forestgreen: '#228b22',
-    fuchsia: '#ff00ff',
-    gainsboro: '#dcdcdc',
-    ghostwhite: '#f8f8ff',
-    gold: '#ffd700',
-    goldenrod: '#daa520',
-    gray: '#808080',
-    green: '#008000',
-    greenyellow: '#adff2f',
-    grey: '#808080',
-    honeydew: '#f0fff0',
-    hotpink: '#ff69b4',
-    indianred: '#cd5c5c',
-    indigo: '#4b0082',
-    ivory: '#fffff0',
-    khaki: '#f0e68c',
-    lavender: '#e6e6fa',
-    lavenderblush: '#fff0f5',
-    lawngreen: '#7cfc00',
-    lemonchiffon: '#fffacd',
-    lightblue: '#add8e6',
-    lightcoral: '#f08080',
-    lightcyan: '#e0ffff',
-    lightgoldenrodyellow: '#fafad2',
-    lightgray: '#d3d3d3',
-    lightgreen: '#90ee90',
-    lightgrey: '#d3d3d3',
-    lightpink: '#ffb6c1',
-    lightsalmon: '#ffa07a',
-    lightseagreen: '#20b2aa',
-    lightskyblue: '#87cefa',
-    lightslategray: '#778899',
-    lightslategrey: '#778899',
-    lightsteelblue: '#b0c4de',
-    lightyellow: '#ffffe0',
-    lime: '#00ff00',
-    limegreen: '#32cd32',
-    linen: '#faf0e6',
-    magenta: '#ff00ff',
-    maroon: '#800000',
-    mediumaquamarine: '#66cdaa',
-    mediumblue: '#0000cd',
-    mediumorchid: '#ba55d3',
-    mediumpurple: '#9370db',
-    mediumseagreen: '#3cb371',
-    mediumslateblue: '#7b68ee',
-    mediumspringgreen: '#00fa9a',
-    mediumturquoise: '#48d1cc',
-    mediumvioletred: '#c71585',
-    midnightblue: '#191970',
-    mintcream: '#f5fffa',
-    mistyrose: '#ffe4e1',
-    moccasin: '#ffe4b5',
-    navajowhite: '#ffdead',
-    navy: '#000080',
-    oldlace: '#fdf5e6',
-    olive: '#808000',
-    olivedrab: '#6b8e23',
-    orange: '#ffa500',
-    orangered: '#ff4500',
-    orchid: '#da70d6',
-    palegoldenrod: '#eee8aa',
-    palegreen: '#98fb98',
-    paleturquoise: '#afeeee',
-    palevioletred: '#db7093',
-    papayawhip: '#ffefd5',
-    peachpuff: '#ffdab9',
-    peru: '#cd853f',
-    pink: '#ffc0cb',
-    plum: '#dda0dd',
-    powderblue: '#b0e0e6',
-    purple: '#800080',
-    rebeccapurple: '#663399',
-    red: '#ff0000',
-    rosybrown: '#bc8f8f',
-    royalblue: '#4169e1',
-    saddlebrown: '#8b4513',
-    salmon: '#fa8072',
-    sandybrown: '#f4a460',
-    seagreen: '#2e8b57',
-    seashell: '#fff5ee',
-    sienna: '#a0522d',
-    silver: '#c0c0c0',
-    skyblue: '#87ceeb',
-    slateblue: '#6a5acd',
-    slategray: '#708090',
-    slategrey: '#708090',
-    snow: '#fffafa',
-    springgreen: '#00ff7f',
-    steelblue: '#4682b4',
-    tan: '#d2b48c',
-    teal: '#008080',
-    thistle: '#d8bfd8',
-    tomato: '#ff6347',
-    turquoise: '#40e0d0',
-    violet: '#ee82ee',
-    wheat: '#f5deb3',
-    white: '#ffffff',
-    whitesmoke: '#f5f5f5',
-    yellow: '#ffff00',
-    yellowgreen: '#9acd32',
-};
-
-function inputToRGB(color) {
-    var rgb = { r: 0, g: 0, b: 0 };
-    var a = 1;
-    var s = null;
-    var v = null;
-    var l = null;
-    var ok = false;
-    var format = false;
-    if (typeof color === 'string') {
-        color = stringInputToObject(color);
-    }
-    if (typeof color === 'object') {
-        if (isValidCSSUnit(color.r) && isValidCSSUnit(color.g) && isValidCSSUnit(color.b)) {
-            rgb = rgbToRgb(color.r, color.g, color.b);
-            ok = true;
-            format = String(color.r).substr(-1) === '%' ? 'prgb' : 'rgb';
-        }
-        else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
-            s = convertToPercentage(color.s);
-            v = convertToPercentage(color.v);
-            rgb = hsvToRgb(color.h, s, v);
-            ok = true;
-            format = 'hsv';
-        }
-        else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
-            s = convertToPercentage(color.s);
-            l = convertToPercentage(color.l);
-            rgb = hslToRgb(color.h, s, l);
-            ok = true;
-            format = 'hsl';
-        }
-        if (Object.prototype.hasOwnProperty.call(color, 'a')) {
-            a = color.a;
-        }
-    }
-    a = boundAlpha(a);
-    return {
-        ok: ok,
-        format: color.format || format,
-        r: Math.min(255, Math.max(rgb.r, 0)),
-        g: Math.min(255, Math.max(rgb.g, 0)),
-        b: Math.min(255, Math.max(rgb.b, 0)),
-        a: a,
-    };
-}
-var CSS_INTEGER = '[-\\+]?\\d+%?';
-var CSS_NUMBER = '[-\\+]?\\d*\\.\\d+%?';
-var CSS_UNIT = "(?:" + CSS_NUMBER + ")|(?:" + CSS_INTEGER + ")";
-var PERMISSIVE_MATCH3 = "[\\s|\\(]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")\\s*\\)?";
-var PERMISSIVE_MATCH4 = "[\\s|\\(]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")\\s*\\)?";
-var matchers = {
-    CSS_UNIT: new RegExp(CSS_UNIT),
-    rgb: new RegExp('rgb' + PERMISSIVE_MATCH3),
-    rgba: new RegExp('rgba' + PERMISSIVE_MATCH4),
-    hsl: new RegExp('hsl' + PERMISSIVE_MATCH3),
-    hsla: new RegExp('hsla' + PERMISSIVE_MATCH4),
-    hsv: new RegExp('hsv' + PERMISSIVE_MATCH3),
-    hsva: new RegExp('hsva' + PERMISSIVE_MATCH4),
-    hex3: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
-    hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
-    hex4: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
-    hex8: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
-};
-function stringInputToObject(color) {
-    color = color.trim().toLowerCase();
-    if (color.length === 0) {
-        return false;
-    }
-    var named = false;
-    if (names[color]) {
-        color = names[color];
-        named = true;
-    }
-    else if (color === 'transparent') {
-        return { r: 0, g: 0, b: 0, a: 0, format: 'name' };
-    }
-    var match = matchers.rgb.exec(color);
-    if (match) {
-        return { r: match[1], g: match[2], b: match[3] };
-    }
-    match = matchers.rgba.exec(color);
-    if (match) {
-        return { r: match[1], g: match[2], b: match[3], a: match[4] };
-    }
-    match = matchers.hsl.exec(color);
-    if (match) {
-        return { h: match[1], s: match[2], l: match[3] };
-    }
-    match = matchers.hsla.exec(color);
-    if (match) {
-        return { h: match[1], s: match[2], l: match[3], a: match[4] };
-    }
-    match = matchers.hsv.exec(color);
-    if (match) {
-        return { h: match[1], s: match[2], v: match[3] };
-    }
-    match = matchers.hsva.exec(color);
-    if (match) {
-        return { h: match[1], s: match[2], v: match[3], a: match[4] };
-    }
-    match = matchers.hex8.exec(color);
-    if (match) {
-        return {
-            r: parseIntFromHex(match[1]),
-            g: parseIntFromHex(match[2]),
-            b: parseIntFromHex(match[3]),
-            a: convertHexToDecimal(match[4]),
-            format: named ? 'name' : 'hex8',
-        };
-    }
-    match = matchers.hex6.exec(color);
-    if (match) {
-        return {
-            r: parseIntFromHex(match[1]),
-            g: parseIntFromHex(match[2]),
-            b: parseIntFromHex(match[3]),
-            format: named ? 'name' : 'hex',
-        };
-    }
-    match = matchers.hex4.exec(color);
-    if (match) {
-        return {
-            r: parseIntFromHex(match[1] + match[1]),
-            g: parseIntFromHex(match[2] + match[2]),
-            b: parseIntFromHex(match[3] + match[3]),
-            a: convertHexToDecimal(match[4] + match[4]),
-            format: named ? 'name' : 'hex8',
-        };
-    }
-    match = matchers.hex3.exec(color);
-    if (match) {
-        return {
-            r: parseIntFromHex(match[1] + match[1]),
-            g: parseIntFromHex(match[2] + match[2]),
-            b: parseIntFromHex(match[3] + match[3]),
-            format: named ? 'name' : 'hex',
-        };
-    }
-    return false;
-}
-function isValidCSSUnit(color) {
-    return Boolean(matchers.CSS_UNIT.exec(String(color)));
-}
-
-var TinyColor = (function () {
-    function TinyColor(color, opts) {
-        if (color === void 0) { color = ''; }
-        if (opts === void 0) { opts = {}; }
-        var _a;
-        if (color instanceof TinyColor) {
-            return color;
-        }
-        this.originalInput = color;
-        var rgb = inputToRGB(color);
-        this.originalInput = color;
-        this.r = rgb.r;
-        this.g = rgb.g;
-        this.b = rgb.b;
-        this.a = rgb.a;
-        this.roundA = Math.round(100 * this.a) / 100;
-        this.format = (_a = opts.format, (_a !== null && _a !== void 0 ? _a : rgb.format));
-        this.gradientType = opts.gradientType;
-        if (this.r < 1) {
-            this.r = Math.round(this.r);
-        }
-        if (this.g < 1) {
-            this.g = Math.round(this.g);
-        }
-        if (this.b < 1) {
-            this.b = Math.round(this.b);
-        }
-        this.isValid = rgb.ok;
-    }
-    TinyColor.prototype.isDark = function () {
-        return this.getBrightness() < 128;
-    };
-    TinyColor.prototype.isLight = function () {
-        return !this.isDark();
-    };
-    TinyColor.prototype.getBrightness = function () {
-        var rgb = this.toRgb();
-        return ((rgb.r * 299) + (rgb.g * 587) + (rgb.b * 114)) / 1000;
-    };
-    TinyColor.prototype.getLuminance = function () {
-        var rgb = this.toRgb();
-        var R;
-        var G;
-        var B;
-        var RsRGB = rgb.r / 255;
-        var GsRGB = rgb.g / 255;
-        var BsRGB = rgb.b / 255;
-        if (RsRGB <= 0.03928) {
-            R = RsRGB / 12.92;
-        }
-        else {
-            R = Math.pow((RsRGB + 0.055) / 1.055, 2.4);
-        }
-        if (GsRGB <= 0.03928) {
-            G = GsRGB / 12.92;
-        }
-        else {
-            G = Math.pow((GsRGB + 0.055) / 1.055, 2.4);
-        }
-        if (BsRGB <= 0.03928) {
-            B = BsRGB / 12.92;
-        }
-        else {
-            B = Math.pow((BsRGB + 0.055) / 1.055, 2.4);
-        }
-        return (0.2126 * R) + (0.7152 * G) + (0.0722 * B);
-    };
-    TinyColor.prototype.getAlpha = function () {
-        return this.a;
-    };
-    TinyColor.prototype.setAlpha = function (alpha) {
-        this.a = boundAlpha(alpha);
-        this.roundA = Math.round(100 * this.a) / 100;
-        return this;
-    };
-    TinyColor.prototype.toHsv = function () {
-        var hsv = rgbToHsv(this.r, this.g, this.b);
-        return { h: hsv.h * 360, s: hsv.s, v: hsv.v, a: this.a };
-    };
-    TinyColor.prototype.toHsvString = function () {
-        var hsv = rgbToHsv(this.r, this.g, this.b);
-        var h = Math.round(hsv.h * 360);
-        var s = Math.round(hsv.s * 100);
-        var v = Math.round(hsv.v * 100);
-        return this.a === 1 ? "hsv(" + h + ", " + s + "%, " + v + "%)" : "hsva(" + h + ", " + s + "%, " + v + "%, " + this.roundA + ")";
-    };
-    TinyColor.prototype.toHsl = function () {
-        var hsl = rgbToHsl(this.r, this.g, this.b);
-        return { h: hsl.h * 360, s: hsl.s, l: hsl.l, a: this.a };
-    };
-    TinyColor.prototype.toHslString = function () {
-        var hsl = rgbToHsl(this.r, this.g, this.b);
-        var h = Math.round(hsl.h * 360);
-        var s = Math.round(hsl.s * 100);
-        var l = Math.round(hsl.l * 100);
-        return this.a === 1 ? "hsl(" + h + ", " + s + "%, " + l + "%)" : "hsla(" + h + ", " + s + "%, " + l + "%, " + this.roundA + ")";
-    };
-    TinyColor.prototype.toHex = function (allow3Char) {
-        if (allow3Char === void 0) { allow3Char = false; }
-        return rgbToHex(this.r, this.g, this.b, allow3Char);
-    };
-    TinyColor.prototype.toHexString = function (allow3Char) {
-        if (allow3Char === void 0) { allow3Char = false; }
-        return '#' + this.toHex(allow3Char);
-    };
-    TinyColor.prototype.toHex8 = function (allow4Char) {
-        if (allow4Char === void 0) { allow4Char = false; }
-        return rgbaToHex(this.r, this.g, this.b, this.a, allow4Char);
-    };
-    TinyColor.prototype.toHex8String = function (allow4Char) {
-        if (allow4Char === void 0) { allow4Char = false; }
-        return '#' + this.toHex8(allow4Char);
-    };
-    TinyColor.prototype.toRgb = function () {
-        return {
-            r: Math.round(this.r),
-            g: Math.round(this.g),
-            b: Math.round(this.b),
-            a: this.a,
-        };
-    };
-    TinyColor.prototype.toRgbString = function () {
-        var r = Math.round(this.r);
-        var g = Math.round(this.g);
-        var b = Math.round(this.b);
-        return this.a === 1 ? "rgb(" + r + ", " + g + ", " + b + ")" : "rgba(" + r + ", " + g + ", " + b + ", " + this.roundA + ")";
-    };
-    TinyColor.prototype.toPercentageRgb = function () {
-        var fmt = function (x) { return Math.round(bound01(x, 255) * 100) + "%"; };
-        return {
-            r: fmt(this.r),
-            g: fmt(this.g),
-            b: fmt(this.b),
-            a: this.a,
-        };
-    };
-    TinyColor.prototype.toPercentageRgbString = function () {
-        var rnd = function (x) { return Math.round(bound01(x, 255) * 100); };
-        return this.a === 1 ?
-            "rgb(" + rnd(this.r) + "%, " + rnd(this.g) + "%, " + rnd(this.b) + "%)" :
-            "rgba(" + rnd(this.r) + "%, " + rnd(this.g) + "%, " + rnd(this.b) + "%, " + this.roundA + ")";
-    };
-    TinyColor.prototype.toName = function () {
-        if (this.a === 0) {
-            return 'transparent';
-        }
-        if (this.a < 1) {
-            return false;
-        }
-        var hex = '#' + rgbToHex(this.r, this.g, this.b, false);
-        for (var _i = 0, _a = Object.keys(names); _i < _a.length; _i++) {
-            var key = _a[_i];
-            if (names[key] === hex) {
-                return key;
-            }
-        }
-        return false;
-    };
-    TinyColor.prototype.toString = function (format) {
-        var formatSet = Boolean(format);
-        format = (format !== null && format !== void 0 ? format : this.format);
-        var formattedString = false;
-        var hasAlpha = this.a < 1 && this.a >= 0;
-        var needsAlphaFormat = !formatSet && hasAlpha && (format.startsWith('hex') || format === 'name');
-        if (needsAlphaFormat) {
-            if (format === 'name' && this.a === 0) {
-                return this.toName();
-            }
-            return this.toRgbString();
-        }
-        if (format === 'rgb') {
-            formattedString = this.toRgbString();
-        }
-        if (format === 'prgb') {
-            formattedString = this.toPercentageRgbString();
-        }
-        if (format === 'hex' || format === 'hex6') {
-            formattedString = this.toHexString();
-        }
-        if (format === 'hex3') {
-            formattedString = this.toHexString(true);
-        }
-        if (format === 'hex4') {
-            formattedString = this.toHex8String(true);
-        }
-        if (format === 'hex8') {
-            formattedString = this.toHex8String();
-        }
-        if (format === 'name') {
-            formattedString = this.toName();
-        }
-        if (format === 'hsl') {
-            formattedString = this.toHslString();
-        }
-        if (format === 'hsv') {
-            formattedString = this.toHsvString();
-        }
-        return formattedString || this.toHexString();
-    };
-    TinyColor.prototype.clone = function () {
-        return new TinyColor(this.toString());
-    };
-    TinyColor.prototype.lighten = function (amount) {
-        if (amount === void 0) { amount = 10; }
-        var hsl = this.toHsl();
-        hsl.l += amount / 100;
-        hsl.l = clamp01(hsl.l);
-        return new TinyColor(hsl);
-    };
-    TinyColor.prototype.brighten = function (amount) {
-        if (amount === void 0) { amount = 10; }
-        var rgb = this.toRgb();
-        rgb.r = Math.max(0, Math.min(255, rgb.r - Math.round(255 * -(amount / 100))));
-        rgb.g = Math.max(0, Math.min(255, rgb.g - Math.round(255 * -(amount / 100))));
-        rgb.b = Math.max(0, Math.min(255, rgb.b - Math.round(255 * -(amount / 100))));
-        return new TinyColor(rgb);
-    };
-    TinyColor.prototype.darken = function (amount) {
-        if (amount === void 0) { amount = 10; }
-        var hsl = this.toHsl();
-        hsl.l -= amount / 100;
-        hsl.l = clamp01(hsl.l);
-        return new TinyColor(hsl);
-    };
-    TinyColor.prototype.tint = function (amount) {
-        if (amount === void 0) { amount = 10; }
-        return this.mix('white', amount);
-    };
-    TinyColor.prototype.shade = function (amount) {
-        if (amount === void 0) { amount = 10; }
-        return this.mix('black', amount);
-    };
-    TinyColor.prototype.desaturate = function (amount) {
-        if (amount === void 0) { amount = 10; }
-        var hsl = this.toHsl();
-        hsl.s -= amount / 100;
-        hsl.s = clamp01(hsl.s);
-        return new TinyColor(hsl);
-    };
-    TinyColor.prototype.saturate = function (amount) {
-        if (amount === void 0) { amount = 10; }
-        var hsl = this.toHsl();
-        hsl.s += amount / 100;
-        hsl.s = clamp01(hsl.s);
-        return new TinyColor(hsl);
-    };
-    TinyColor.prototype.greyscale = function () {
-        return this.desaturate(100);
-    };
-    TinyColor.prototype.spin = function (amount) {
-        var hsl = this.toHsl();
-        var hue = (hsl.h + amount) % 360;
-        hsl.h = hue < 0 ? 360 + hue : hue;
-        return new TinyColor(hsl);
-    };
-    TinyColor.prototype.mix = function (color, amount) {
-        if (amount === void 0) { amount = 50; }
-        var rgb1 = this.toRgb();
-        var rgb2 = new TinyColor(color).toRgb();
-        var p = amount / 100;
-        var rgba = {
-            r: ((rgb2.r - rgb1.r) * p) + rgb1.r,
-            g: ((rgb2.g - rgb1.g) * p) + rgb1.g,
-            b: ((rgb2.b - rgb1.b) * p) + rgb1.b,
-            a: ((rgb2.a - rgb1.a) * p) + rgb1.a,
-        };
-        return new TinyColor(rgba);
-    };
-    TinyColor.prototype.analogous = function (results, slices) {
-        if (results === void 0) { results = 6; }
-        if (slices === void 0) { slices = 30; }
-        var hsl = this.toHsl();
-        var part = 360 / slices;
-        var ret = [this];
-        for (hsl.h = (hsl.h - ((part * results) >> 1) + 720) % 360; --results;) {
-            hsl.h = (hsl.h + part) % 360;
-            ret.push(new TinyColor(hsl));
-        }
-        return ret;
-    };
-    TinyColor.prototype.complement = function () {
-        var hsl = this.toHsl();
-        hsl.h = (hsl.h + 180) % 360;
-        return new TinyColor(hsl);
-    };
-    TinyColor.prototype.monochromatic = function (results) {
-        if (results === void 0) { results = 6; }
-        var hsv = this.toHsv();
-        var h = hsv.h;
-        var s = hsv.s;
-        var v = hsv.v;
-        var res = [];
-        var modification = 1 / results;
-        while (results--) {
-            res.push(new TinyColor({ h: h, s: s, v: v }));
-            v = (v + modification) % 1;
-        }
-        return res;
-    };
-    TinyColor.prototype.splitcomplement = function () {
-        var hsl = this.toHsl();
-        var h = hsl.h;
-        return [
-            this,
-            new TinyColor({ h: (h + 72) % 360, s: hsl.s, l: hsl.l }),
-            new TinyColor({ h: (h + 216) % 360, s: hsl.s, l: hsl.l }),
-        ];
-    };
-    TinyColor.prototype.triad = function () {
-        return this.polyad(3);
-    };
-    TinyColor.prototype.tetrad = function () {
-        return this.polyad(4);
-    };
-    TinyColor.prototype.polyad = function (n) {
-        var hsl = this.toHsl();
-        var h = hsl.h;
-        var result = [this];
-        var increment = 360 / n;
-        for (var i = 1; i < n; i++) {
-            result.push(new TinyColor({ h: (h + (i * increment)) % 360, s: hsl.s, l: hsl.l }));
-        }
-        return result;
-    };
-    TinyColor.prototype.equals = function (color) {
-        return this.toRgbString() === new TinyColor(color).toRgbString();
-    };
-    return TinyColor;
-}());
-function tinycolor(color, opts) {
-    if (color === void 0) { color = ''; }
-    if (opts === void 0) { opts = {}; }
-    return new TinyColor(color, opts);
-}
-
-var longPress = document.createElement('long-press');
-document.body.appendChild(longPress);
-var actionHandler = document.createElement('action-handler');
-document.body.appendChild(actionHandler);
-customElements.whenDefined('card-tools').then(() => {
-    var cardTools = customElements.get('card-tools');
-    class HomeKitCard extends cardTools.LitElement {
-        static get properties() {
-            return {
-                hass: {},
-                config: {}
-            };
-        }
-        setConfig(config) {
-            if (!config.entities) {
-                throw new Error("You need to define entities");
-            }
-            if (!config.useTemperature) {
-                config.useTemperature = false;
-            }
-            if (!config.useBrightness) {
-                config.useBrightness = true;
-            }
-            if (!config.breakOnMobile) {
-                config.breakOnMobile = false;
-            }
-            this.config = config;
-        }
-        render() {
-            return cardTools.LitHtml `
+(window.litElementVersions||(window.litElementVersions=[])).push("2.2.1");var i={},o=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g,s="[^\\s]+",h=/\[([^]*?)\]/gm,u=function(){};function l(t,e){for(var n=[],a=0,r=t.length;a<r;a++)n.push(t[a].substr(0,e));return n}function c(t){return function(e,n,a){var r=a[t].indexOf(n.charAt(0).toUpperCase()+n.substr(1).toLowerCase());~r&&(e.month=r)}}function d(t,e){for(t=String(t),e=e||2;t.length<e;)t="0"+t;return t}var f=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],m=["January","February","March","April","May","June","July","August","September","October","November","December"],g=l(m,3),p=l(f,3);i.i18n={dayNamesShort:p,dayNames:f,monthNamesShort:g,monthNames:m,amPm:["am","pm"],DoFn:function(t){return t+["th","st","nd","rd"][t%10>3?0:(t-t%10!=10)*t%10]}};var b={D:function(t){return t.getDate()},DD:function(t){return d(t.getDate())},Do:function(t,e){return e.DoFn(t.getDate())},d:function(t){return t.getDay()},dd:function(t){return d(t.getDay())},ddd:function(t,e){return e.dayNamesShort[t.getDay()]},dddd:function(t,e){return e.dayNames[t.getDay()]},M:function(t){return t.getMonth()+1},MM:function(t){return d(t.getMonth()+1)},MMM:function(t,e){return e.monthNamesShort[t.getMonth()]},MMMM:function(t,e){return e.monthNames[t.getMonth()]},YY:function(t){return d(String(t.getFullYear()),4).substr(2)},YYYY:function(t){return d(t.getFullYear(),4)},h:function(t){return t.getHours()%12||12},hh:function(t){return d(t.getHours()%12||12)},H:function(t){return t.getHours()},HH:function(t){return d(t.getHours())},m:function(t){return t.getMinutes()},mm:function(t){return d(t.getMinutes())},s:function(t){return t.getSeconds()},ss:function(t){return d(t.getSeconds())},S:function(t){return Math.round(t.getMilliseconds()/100)},SS:function(t){return d(Math.round(t.getMilliseconds()/10),2)},SSS:function(t){return d(t.getMilliseconds(),3)},a:function(t,e){return t.getHours()<12?e.amPm[0]:e.amPm[1]},A:function(t,e){return t.getHours()<12?e.amPm[0].toUpperCase():e.amPm[1].toUpperCase()},ZZ:function(t){var e=t.getTimezoneOffset();return(e>0?"-":"+")+d(100*Math.floor(Math.abs(e)/60)+Math.abs(e)%60,4)}},v={D:["\\d\\d?",function(t,e){t.day=e}],Do:["\\d\\d?"+s,function(t,e){t.day=parseInt(e,10)}],M:["\\d\\d?",function(t,e){t.month=e-1}],YY:["\\d\\d?",function(t,e){var n=+(""+(new Date).getFullYear()).substr(0,2);t.year=""+(e>68?n-1:n)+e}],h:["\\d\\d?",function(t,e){t.hour=e}],m:["\\d\\d?",function(t,e){t.minute=e}],s:["\\d\\d?",function(t,e){t.second=e}],YYYY:["\\d{4}",function(t,e){t.year=e}],S:["\\d",function(t,e){t.millisecond=100*e}],SS:["\\d{2}",function(t,e){t.millisecond=10*e}],SSS:["\\d{3}",function(t,e){t.millisecond=e}],d:["\\d\\d?",u],ddd:[s,u],MMM:[s,c("monthNamesShort")],MMMM:[s,c("monthNames")],a:[s,function(t,e,n){var a=e.toLowerCase();a===n.amPm[0]?t.isPm=!1:a===n.amPm[1]&&(t.isPm=!0)}],ZZ:["[^\\s]*?[\\+\\-]\\d\\d:?\\d\\d|[^\\s]*?Z",function(t,e){var n,a=(e+"").match(/([+-]|\d\d)/gi);a&&(n=60*a[1]+parseInt(a[2],10),t.timezoneOffset="+"===a[0]?n:-n)}]};v.dd=v.d,v.dddd=v.ddd,v.DD=v.D,v.mm=v.m,v.hh=v.H=v.HH=v.h,v.MM=v.M,v.ss=v.s,v.A=v.a,i.masks={default:"ddd MMM DD YYYY HH:mm:ss",shortDate:"M/D/YY",mediumDate:"MMM D, YYYY",longDate:"MMMM D, YYYY",fullDate:"dddd, MMMM D, YYYY",shortTime:"HH:mm",mediumTime:"HH:mm:ss",longTime:"HH:mm:ss.SSS"},i.format=function(t,e,n){var a=n||i.i18n;if("number"==typeof t&&(t=new Date(t)),"[object Date]"!==Object.prototype.toString.call(t)||isNaN(t.getTime()))throw new Error("Invalid Date in fecha.format");e=i.masks[e]||e||i.masks.default;var r=[];return(e=(e=e.replace(h,(function(t,e){return r.push(e),"@@@"}))).replace(o,(function(e){return e in b?b[e](t,a):e.slice(1,e.length-1)}))).replace(/@@@/g,(function(){return r.shift()}))},i.parse=function(t,e,n){var a=n||i.i18n;if("string"!=typeof e)throw new Error("Invalid format in fecha.parse");if(e=i.masks[e]||e,t.length>1e3)return null;var r={},s=[],u=[];e=e.replace(h,(function(t,e){return u.push(e),"@@@"}));var l,c=(l=e,l.replace(/[|\\{()[^$+*?.-]/g,"\\$&")).replace(o,(function(t){if(v[t]){var e=v[t];return s.push(e[1]),"("+e[0]+")"}return t}));c=c.replace(/@@@/g,(function(){return u.shift()}));var d=t.match(new RegExp(c,"i"));if(!d)return null;for(var f=1;f<d.length;f++)s[f-1](r,d[f],a);var m,g=new Date;return!0===r.isPm&&null!=r.hour&&12!=+r.hour?r.hour=+r.hour+12:!1===r.isPm&&12==+r.hour&&(r.hour=0),null!=r.timezoneOffset?(r.minute=+(r.minute||0)-+r.timezoneOffset,m=new Date(Date.UTC(r.year||g.getFullYear(),r.month||0,r.day||1,r.hour||0,r.minute||0,r.second||0,r.millisecond||0))):m=new Date(r.year||g.getFullYear(),r.month||0,r.day||1,r.hour||0,r.minute||0,r.second||0,r.millisecond||0),m};var y=function(){try{(new Date).toLocaleDateString("i")}catch(t){return"RangeError"===t.name}return!1}()?function(t,e){return t.toLocaleDateString(e,{year:"numeric",month:"long",day:"numeric"})}:function(t){return i.format(t,"mediumDate")},w=function(){try{(new Date).toLocaleString("i")}catch(t){return"RangeError"===t.name}return!1}()?function(t,e){return t.toLocaleString(e,{year:"numeric",month:"long",day:"numeric",hour:"numeric",minute:"2-digit"})}:function(t){return i.format(t,"haDateTime")},x=function(){try{(new Date).toLocaleTimeString("i")}catch(t){return"RangeError"===t.name}return!1}()?function(t,e){return t.toLocaleTimeString(e,{hour:"numeric",minute:"2-digit"})}:function(t){return i.format(t,"shortTime")};function k(t){return t.substr(0,t.indexOf("."))}function S(t,e,n){var a,r=function(t){return k(t.entity_id)}(e);if("binary_sensor"===r)e.attributes.device_class&&(a=t("state."+r+"."+e.attributes.device_class+"."+e.state)),a||(a=t("state."+r+".default."+e.state));else if(e.attributes.unit_of_measurement&&!["unknown","unavailable"].includes(e.state))a=e.state+" "+e.attributes.unit_of_measurement;else if("input_datetime"===r){var i;if(e.attributes.has_time)if(e.attributes.has_date)i=new Date(e.attributes.year,e.attributes.month-1,e.attributes.day,e.attributes.hour,e.attributes.minute),a=w(i,n);else{var o=new Date;i=new Date(o.getFullYear(),o.getMonth(),o.getDay(),e.attributes.hour,e.attributes.minute),a=x(i,n)}else i=new Date(e.attributes.year,e.attributes.month-1,e.attributes.day),a=y(i,n)}else a="zwave"===r?["initializing","dead"].includes(e.state)?t("state.zwave.query_stage."+e.state,"query_stage",e.attributes.query_stage):t("state.zwave.default."+e.state):t("state."+r+"."+e.state);return a||(a=t("state.default."+e.state)||t("component."+r+".state."+e.state)||e.state),a}var M="hass:bookmark",_={alert:"hass:alert",automation:"hass:playlist-play",calendar:"hass:calendar",camera:"hass:video",climate:"hass:thermostat",configurator:"hass:settings",conversation:"hass:text-to-speech",device_tracker:"hass:account",fan:"hass:fan",group:"hass:google-circles-communities",history_graph:"hass:chart-line",homeassistant:"hass:home-assistant",homekit:"hass:home-automation",image_processing:"hass:image-filter-frames",input_boolean:"hass:drawing",input_datetime:"hass:calendar-clock",input_number:"hass:ray-vertex",input_select:"hass:format-list-bulleted",input_text:"hass:textbox",light:"hass:lightbulb",mailbox:"hass:mailbox",notify:"hass:comment-alert",person:"hass:account",plant:"hass:flower",proximity:"hass:apple-safari",remote:"hass:remote",scene:"hass:google-pages",script:"hass:file-document",sensor:"hass:eye",simple_alarm:"hass:bell",sun:"hass:white-balance-sunny",switch:"hass:flash",timer:"hass:timer",updater:"hass:cloud-upload",vacuum:"hass:robot-vacuum",water_heater:"hass:thermometer",weblink:"hass:open-in-new"};function H(t,e){if(t in _)return _[t];switch(t){case"alarm_control_panel":switch(e){case"armed_home":return"hass:bell-plus";case"armed_night":return"hass:bell-sleep";case"disarmed":return"hass:bell-outline";case"triggered":return"hass:bell-ring";default:return"hass:bell"}case"binary_sensor":return e&&"off"===e?"hass:radiobox-blank":"hass:checkbox-marked-circle";case"cover":return"closed"===e?"hass:window-closed":"hass:window-open";case"lock":return e&&"unlocked"===e?"hass:lock-open":"hass:lock";case"media_player":return e&&"off"!==e&&"idle"!==e?"hass:cast-connected":"hass:cast";case"zwave":switch(e){case"dead":return"hass:emoticon-dead";case"sleeping":return"hass:sleep";case"initializing":return"hass:timer-sand";default:return"hass:z-wave"}default:return console.warn("Unable to find icon for domain "+t+" ("+e+")"),M}}function D(t,e){(function(t){return"string"==typeof t&&t.includes(".")&&1===parseFloat(t)})(t)&&(t="100%");var n=function(t){return"string"==typeof t&&t.includes("%")}(t);return t=360===e?t:Math.min(e,Math.max(0,parseFloat(t))),n&&(t=parseInt(String(t*e),10)/100),Math.abs(t-e)<1e-6?1:t=360===e?(t<0?t%e+e:t%e)/parseFloat(String(e)):t%e/parseFloat(String(e))}function $(t){return Math.min(1,Math.max(0,t))}function L(t){return t=parseFloat(t),(isNaN(t)||t<0||t>1)&&(t=1),t}function A(t){return t<=1?100*Number(t)+"%":t}function C(t){return 1===t.length?"0"+t:String(t)}function F(t,e,n){t=D(t,255),e=D(e,255),n=D(n,255);var a=Math.max(t,e,n),r=Math.min(t,e,n),i=0,o=0,s=(a+r)/2;if(a===r)o=0,i=0;else{var h=a-r;switch(o=s>.5?h/(2-a-r):h/(a+r),a){case t:i=(e-n)/h+(e<n?6:0);break;case e:i=(n-t)/h+2;break;case n:i=(t-e)/h+4}i/=6}return{h:i,s:o,l:s}}function Y(t,e,n){return n<0&&(n+=1),n>1&&(n-=1),n<1/6?t+6*n*(e-t):n<.5?e:n<2/3?t+(e-t)*(2/3-n)*6:t}function E(t,e,n){t=D(t,255),e=D(e,255),n=D(n,255);var a=Math.max(t,e,n),r=Math.min(t,e,n),i=0,o=a,s=a-r,h=0===a?0:s/a;if(a===r)i=0;else{switch(a){case t:i=(e-n)/s+(e<n?6:0);break;case e:i=(n-t)/s+2;break;case n:i=(t-e)/s+4}i/=6}return{h:i,s:h,v:o}}function T(t,e,n,a){var r=[C(Math.round(t).toString(16)),C(Math.round(e).toString(16)),C(Math.round(n).toString(16))];return a&&r[0].startsWith(r[0].charAt(1))&&r[1].startsWith(r[1].charAt(1))&&r[2].startsWith(r[2].charAt(1))?r[0].charAt(0)+r[1].charAt(0)+r[2].charAt(0):r.join("")}function z(t){return Math.round(255*parseFloat(t)).toString(16)}function R(t){return O(t)/255}function O(t){return parseInt(t,16)}var N={aliceblue:"#f0f8ff",antiquewhite:"#faebd7",aqua:"#00ffff",aquamarine:"#7fffd4",azure:"#f0ffff",beige:"#f5f5dc",bisque:"#ffe4c4",black:"#000000",blanchedalmond:"#ffebcd",blue:"#0000ff",blueviolet:"#8a2be2",brown:"#a52a2a",burlywood:"#deb887",cadetblue:"#5f9ea0",chartreuse:"#7fff00",chocolate:"#d2691e",coral:"#ff7f50",cornflowerblue:"#6495ed",cornsilk:"#fff8dc",crimson:"#dc143c",cyan:"#00ffff",darkblue:"#00008b",darkcyan:"#008b8b",darkgoldenrod:"#b8860b",darkgray:"#a9a9a9",darkgreen:"#006400",darkgrey:"#a9a9a9",darkkhaki:"#bdb76b",darkmagenta:"#8b008b",darkolivegreen:"#556b2f",darkorange:"#ff8c00",darkorchid:"#9932cc",darkred:"#8b0000",darksalmon:"#e9967a",darkseagreen:"#8fbc8f",darkslateblue:"#483d8b",darkslategray:"#2f4f4f",darkslategrey:"#2f4f4f",darkturquoise:"#00ced1",darkviolet:"#9400d3",deeppink:"#ff1493",deepskyblue:"#00bfff",dimgray:"#696969",dimgrey:"#696969",dodgerblue:"#1e90ff",firebrick:"#b22222",floralwhite:"#fffaf0",forestgreen:"#228b22",fuchsia:"#ff00ff",gainsboro:"#dcdcdc",ghostwhite:"#f8f8ff",gold:"#ffd700",goldenrod:"#daa520",gray:"#808080",green:"#008000",greenyellow:"#adff2f",grey:"#808080",honeydew:"#f0fff0",hotpink:"#ff69b4",indianred:"#cd5c5c",indigo:"#4b0082",ivory:"#fffff0",khaki:"#f0e68c",lavender:"#e6e6fa",lavenderblush:"#fff0f5",lawngreen:"#7cfc00",lemonchiffon:"#fffacd",lightblue:"#add8e6",lightcoral:"#f08080",lightcyan:"#e0ffff",lightgoldenrodyellow:"#fafad2",lightgray:"#d3d3d3",lightgreen:"#90ee90",lightgrey:"#d3d3d3",lightpink:"#ffb6c1",lightsalmon:"#ffa07a",lightseagreen:"#20b2aa",lightskyblue:"#87cefa",lightslategray:"#778899",lightslategrey:"#778899",lightsteelblue:"#b0c4de",lightyellow:"#ffffe0",lime:"#00ff00",limegreen:"#32cd32",linen:"#faf0e6",magenta:"#ff00ff",maroon:"#800000",mediumaquamarine:"#66cdaa",mediumblue:"#0000cd",mediumorchid:"#ba55d3",mediumpurple:"#9370db",mediumseagreen:"#3cb371",mediumslateblue:"#7b68ee",mediumspringgreen:"#00fa9a",mediumturquoise:"#48d1cc",mediumvioletred:"#c71585",midnightblue:"#191970",mintcream:"#f5fffa",mistyrose:"#ffe4e1",moccasin:"#ffe4b5",navajowhite:"#ffdead",navy:"#000080",oldlace:"#fdf5e6",olive:"#808000",olivedrab:"#6b8e23",orange:"#ffa500",orangered:"#ff4500",orchid:"#da70d6",palegoldenrod:"#eee8aa",palegreen:"#98fb98",paleturquoise:"#afeeee",palevioletred:"#db7093",papayawhip:"#ffefd5",peachpuff:"#ffdab9",peru:"#cd853f",pink:"#ffc0cb",plum:"#dda0dd",powderblue:"#b0e0e6",purple:"#800080",rebeccapurple:"#663399",red:"#ff0000",rosybrown:"#bc8f8f",royalblue:"#4169e1",saddlebrown:"#8b4513",salmon:"#fa8072",sandybrown:"#f4a460",seagreen:"#2e8b57",seashell:"#fff5ee",sienna:"#a0522d",silver:"#c0c0c0",skyblue:"#87ceeb",slateblue:"#6a5acd",slategray:"#708090",slategrey:"#708090",snow:"#fffafa",springgreen:"#00ff7f",steelblue:"#4682b4",tan:"#d2b48c",teal:"#008080",thistle:"#d8bfd8",tomato:"#ff6347",turquoise:"#40e0d0",violet:"#ee82ee",wheat:"#f5deb3",white:"#ffffff",whitesmoke:"#f5f5f5",yellow:"#ffff00",yellowgreen:"#9acd32"};function P(t){var e={r:0,g:0,b:0},n=1,a=null,r=null,i=null,o=!1,s=!1;return"string"==typeof t&&(t=function(t){if(0===(t=t.trim().toLowerCase()).length)return!1;var e=!1;if(N[t])t=N[t],e=!0;else if("transparent"===t)return{r:0,g:0,b:0,a:0,format:"name"};var n=B.rgb.exec(t);if(n)return{r:n[1],g:n[2],b:n[3]};if(n=B.rgba.exec(t))return{r:n[1],g:n[2],b:n[3],a:n[4]};if(n=B.hsl.exec(t))return{h:n[1],s:n[2],l:n[3]};if(n=B.hsla.exec(t))return{h:n[1],s:n[2],l:n[3],a:n[4]};if(n=B.hsv.exec(t))return{h:n[1],s:n[2],v:n[3]};if(n=B.hsva.exec(t))return{h:n[1],s:n[2],v:n[3],a:n[4]};if(n=B.hex8.exec(t))return{r:O(n[1]),g:O(n[2]),b:O(n[3]),a:R(n[4]),format:e?"name":"hex8"};if(n=B.hex6.exec(t))return{r:O(n[1]),g:O(n[2]),b:O(n[3]),format:e?"name":"hex"};if(n=B.hex4.exec(t))return{r:O(n[1]+n[1]),g:O(n[2]+n[2]),b:O(n[3]+n[3]),a:R(n[4]+n[4]),format:e?"name":"hex8"};if(n=B.hex3.exec(t))return{r:O(n[1]+n[1]),g:O(n[2]+n[2]),b:O(n[3]+n[3]),format:e?"name":"hex"};return!1}(t)),"object"==typeof t&&(U(t.r)&&U(t.g)&&U(t.b)?(e=function(t,e,n){return{r:255*D(t,255),g:255*D(e,255),b:255*D(n,255)}}(t.r,t.g,t.b),o=!0,s="%"===String(t.r).substr(-1)?"prgb":"rgb"):U(t.h)&&U(t.s)&&U(t.v)?(a=A(t.s),r=A(t.v),e=function(t,e,n){t=6*D(t,360),e=D(e,100),n=D(n,100);var a=Math.floor(t),r=t-a,i=n*(1-e),o=n*(1-r*e),s=n*(1-(1-r)*e),h=a%6;return{r:255*[n,o,i,i,s,n][h],g:255*[s,n,n,o,i,i][h],b:255*[i,i,s,n,n,o][h]}}(t.h,a,r),o=!0,s="hsv"):U(t.h)&&U(t.s)&&U(t.l)&&(a=A(t.s),i=A(t.l),e=function(t,e,n){var a,r,i;if(t=D(t,360),e=D(e,100),n=D(n,100),0===e)r=n,i=n,a=n;else{var o=n<.5?n*(1+e):n+e-n*e,s=2*n-o;a=Y(s,o,t+1/3),r=Y(s,o,t),i=Y(s,o,t-1/3)}return{r:255*a,g:255*r,b:255*i}}(t.h,a,i),o=!0,s="hsl"),Object.prototype.hasOwnProperty.call(t,"a")&&(n=t.a)),n=L(n),{ok:o,format:t.format||s,r:Math.min(255,Math.max(e.r,0)),g:Math.min(255,Math.max(e.g,0)),b:Math.min(255,Math.max(e.b,0)),a:n}}var j="(?:[-\\+]?\\d*\\.\\d+%?)|(?:[-\\+]?\\d+%?)",q="[\\s|\\(]+("+j+")[,|\\s]+("+j+")[,|\\s]+("+j+")\\s*\\)?",I="[\\s|\\(]+("+j+")[,|\\s]+("+j+")[,|\\s]+("+j+")[,|\\s]+("+j+")\\s*\\)?",B={CSS_UNIT:new RegExp(j),rgb:new RegExp("rgb"+q),rgba:new RegExp("rgba"+I),hsl:new RegExp("hsl"+q),hsla:new RegExp("hsla"+I),hsv:new RegExp("hsv"+q),hsva:new RegExp("hsva"+I),hex3:/^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,hex6:/^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,hex4:/^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,hex8:/^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/};function U(t){return Boolean(B.CSS_UNIT.exec(String(t)))}var V=function(){function t(e,n){var a;if(void 0===e&&(e=""),void 0===n&&(n={}),e instanceof t)return e;this.originalInput=e;var r=P(e);this.originalInput=e,this.r=r.r,this.g=r.g,this.b=r.b,this.a=r.a,this.roundA=Math.round(100*this.a)/100,this.format=null!=(a=n.format)?a:r.format,this.gradientType=n.gradientType,this.r<1&&(this.r=Math.round(this.r)),this.g<1&&(this.g=Math.round(this.g)),this.b<1&&(this.b=Math.round(this.b)),this.isValid=r.ok}return t.prototype.isDark=function(){return this.getBrightness()<128},t.prototype.isLight=function(){return!this.isDark()},t.prototype.getBrightness=function(){var t=this.toRgb();return(299*t.r+587*t.g+114*t.b)/1e3},t.prototype.getLuminance=function(){var t=this.toRgb(),e=t.r/255,n=t.g/255,a=t.b/255;return.2126*(e<=.03928?e/12.92:Math.pow((e+.055)/1.055,2.4))+.7152*(n<=.03928?n/12.92:Math.pow((n+.055)/1.055,2.4))+.0722*(a<=.03928?a/12.92:Math.pow((a+.055)/1.055,2.4))},t.prototype.getAlpha=function(){return this.a},t.prototype.setAlpha=function(t){return this.a=L(t),this.roundA=Math.round(100*this.a)/100,this},t.prototype.toHsv=function(){var t=E(this.r,this.g,this.b);return{h:360*t.h,s:t.s,v:t.v,a:this.a}},t.prototype.toHsvString=function(){var t=E(this.r,this.g,this.b),e=Math.round(360*t.h),n=Math.round(100*t.s),a=Math.round(100*t.v);return 1===this.a?"hsv("+e+", "+n+"%, "+a+"%)":"hsva("+e+", "+n+"%, "+a+"%, "+this.roundA+")"},t.prototype.toHsl=function(){var t=F(this.r,this.g,this.b);return{h:360*t.h,s:t.s,l:t.l,a:this.a}},t.prototype.toHslString=function(){var t=F(this.r,this.g,this.b),e=Math.round(360*t.h),n=Math.round(100*t.s),a=Math.round(100*t.l);return 1===this.a?"hsl("+e+", "+n+"%, "+a+"%)":"hsla("+e+", "+n+"%, "+a+"%, "+this.roundA+")"},t.prototype.toHex=function(t){return void 0===t&&(t=!1),T(this.r,this.g,this.b,t)},t.prototype.toHexString=function(t){return void 0===t&&(t=!1),"#"+this.toHex(t)},t.prototype.toHex8=function(t){return void 0===t&&(t=!1),function(t,e,n,a,r){var i=[C(Math.round(t).toString(16)),C(Math.round(e).toString(16)),C(Math.round(n).toString(16)),C(z(a))];return r&&i[0].startsWith(i[0].charAt(1))&&i[1].startsWith(i[1].charAt(1))&&i[2].startsWith(i[2].charAt(1))&&i[3].startsWith(i[3].charAt(1))?i[0].charAt(0)+i[1].charAt(0)+i[2].charAt(0)+i[3].charAt(0):i.join("")}(this.r,this.g,this.b,this.a,t)},t.prototype.toHex8String=function(t){return void 0===t&&(t=!1),"#"+this.toHex8(t)},t.prototype.toRgb=function(){return{r:Math.round(this.r),g:Math.round(this.g),b:Math.round(this.b),a:this.a}},t.prototype.toRgbString=function(){var t=Math.round(this.r),e=Math.round(this.g),n=Math.round(this.b);return 1===this.a?"rgb("+t+", "+e+", "+n+")":"rgba("+t+", "+e+", "+n+", "+this.roundA+")"},t.prototype.toPercentageRgb=function(){var t=function(t){return Math.round(100*D(t,255))+"%"};return{r:t(this.r),g:t(this.g),b:t(this.b),a:this.a}},t.prototype.toPercentageRgbString=function(){var t=function(t){return Math.round(100*D(t,255))};return 1===this.a?"rgb("+t(this.r)+"%, "+t(this.g)+"%, "+t(this.b)+"%)":"rgba("+t(this.r)+"%, "+t(this.g)+"%, "+t(this.b)+"%, "+this.roundA+")"},t.prototype.toName=function(){if(0===this.a)return"transparent";if(this.a<1)return!1;for(var t="#"+T(this.r,this.g,this.b,!1),e=0,n=Object.keys(N);e<n.length;e++){var a=n[e];if(N[a]===t)return a}return!1},t.prototype.toString=function(t){var e=Boolean(t);t=null!=t?t:this.format;var n=!1,a=this.a<1&&this.a>=0;return e||!a||!t.startsWith("hex")&&"name"!==t?("rgb"===t&&(n=this.toRgbString()),"prgb"===t&&(n=this.toPercentageRgbString()),"hex"!==t&&"hex6"!==t||(n=this.toHexString()),"hex3"===t&&(n=this.toHexString(!0)),"hex4"===t&&(n=this.toHex8String(!0)),"hex8"===t&&(n=this.toHex8String()),"name"===t&&(n=this.toName()),"hsl"===t&&(n=this.toHslString()),"hsv"===t&&(n=this.toHsvString()),n||this.toHexString()):"name"===t&&0===this.a?this.toName():this.toRgbString()},t.prototype.clone=function(){return new t(this.toString())},t.prototype.lighten=function(e){void 0===e&&(e=10);var n=this.toHsl();return n.l+=e/100,n.l=$(n.l),new t(n)},t.prototype.brighten=function(e){void 0===e&&(e=10);var n=this.toRgb();return n.r=Math.max(0,Math.min(255,n.r-Math.round(-e/100*255))),n.g=Math.max(0,Math.min(255,n.g-Math.round(-e/100*255))),n.b=Math.max(0,Math.min(255,n.b-Math.round(-e/100*255))),new t(n)},t.prototype.darken=function(e){void 0===e&&(e=10);var n=this.toHsl();return n.l-=e/100,n.l=$(n.l),new t(n)},t.prototype.tint=function(t){return void 0===t&&(t=10),this.mix("white",t)},t.prototype.shade=function(t){return void 0===t&&(t=10),this.mix("black",t)},t.prototype.desaturate=function(e){void 0===e&&(e=10);var n=this.toHsl();return n.s-=e/100,n.s=$(n.s),new t(n)},t.prototype.saturate=function(e){void 0===e&&(e=10);var n=this.toHsl();return n.s+=e/100,n.s=$(n.s),new t(n)},t.prototype.greyscale=function(){return this.desaturate(100)},t.prototype.spin=function(e){var n=this.toHsl(),a=(n.h+e)%360;return n.h=a<0?360+a:a,new t(n)},t.prototype.mix=function(e,n){void 0===n&&(n=50);var a=this.toRgb(),r=new t(e).toRgb(),i=n/100;return new t({r:(r.r-a.r)*i+a.r,g:(r.g-a.g)*i+a.g,b:(r.b-a.b)*i+a.b,a:(r.a-a.a)*i+a.a})},t.prototype.analogous=function(e,n){void 0===e&&(e=6),void 0===n&&(n=30);var a=this.toHsl(),r=360/n,i=[this];for(a.h=(a.h-(r*e>>1)+720)%360;--e;)a.h=(a.h+r)%360,i.push(new t(a));return i},t.prototype.complement=function(){var e=this.toHsl();return e.h=(e.h+180)%360,new t(e)},t.prototype.monochromatic=function(e){void 0===e&&(e=6);for(var n=this.toHsv(),a=n.h,r=n.s,i=n.v,o=[],s=1/e;e--;)o.push(new t({h:a,s:r,v:i})),i=(i+s)%1;return o},t.prototype.splitcomplement=function(){var e=this.toHsl(),n=e.h;return[this,new t({h:(n+72)%360,s:e.s,l:e.l}),new t({h:(n+216)%360,s:e.s,l:e.l})]},t.prototype.triad=function(){return this.polyad(3)},t.prototype.tetrad=function(){return this.polyad(4)},t.prototype.polyad=function(e){for(var n=this.toHsl(),a=n.h,r=[this],i=360/e,o=1;o<e;o++)r.push(new t({h:(a+o*i)%360,s:n.s,l:n.l}));return r},t.prototype.equals=function(e){return this.toRgbString()===new t(e).toRgbString()},t}();function W(t,e){return void 0===t&&(t=""),void 0===e&&(e={}),new V(t,e)}var Z=document.createElement("long-press");document.body.appendChild(Z);var J=document.createElement("action-handler");document.body.appendChild(J),customElements.whenDefined("card-tools").then(()=>{var t=customElements.get("card-tools");class e extends t.LitElement{static get properties(){return{hass:{},config:{}}}setConfig(t){if(!t.entities)throw new Error("You need to define entities");t.useTemperature||(t.useTemperature=!1),t.useBrightness||(t.useBrightness=!0),t.breakOnMobile||(t.breakOnMobile=!1),this.config=t}render(){return t.LitHtml`
       <div class="container" >
-        ${this.config.home ? cardTools.LitHtml `
+        ${this.config.home?t.LitHtml`
             <div class="header">
-                ${this.config.title ? cardTools.LitHtml `<h1>${this.config.title}</h1>` : cardTools.LitHtml ``}
+                ${this.config.title?t.LitHtml`<h1>${this.config.title}</h1>`:t.LitHtml``}
             </div>
-        ` : cardTools.LitHtml ``}
-        ${this.config.entities.map(row => {
-                var entityCount = 0;
-                return cardTools.LitHtml `
-                <div class="card-title" >${row.title}</div><br>
+        `:t.LitHtml``}
+        ${this.config.entities.map(e=>{var n=0;return t.LitHtml`
+                <div class="card-title">${e.title}</div>
                     <div class="homekit-card">
-                        ${row.entities.map(ent => {
-                    const stateObj = this.hass.states[ent.entity];
-                    var type = ent.entity.split('.')[0];
-                    var color = '#f7d959';
-                    if (entityCount == 3) {
-                        entityCount = 0;
-                    }
-                    if (entityCount == 4) {
-                        entityCount = 2;
-                    }
-                    if (ent.color) {
-                        color = ent.color;
-                    }
-                    else {
-                        color = this._getColorForLightEntity(stateObj, this.config.useTemperature, this.config.useBrightness);
-                    }
-                    if (type == "light") {
-                        entityCount++;
-                        console.log('render light: ' + entityCount);
-                        return stateObj ? cardTools.LitHtml `
+                        ${e.entities.map(a=>{if(a.card)return n++,t.LitHtml`
+                              <homekit-card-item>
+                                <homekit-button class="button on${a.noPadding?" no-padding":""}">
+                                    <div class="button-inner">
+                                      <card-maker nohass data-card="${a.card}" data-options="${JSON.stringify(a.cardOptions)}" data-style="${a.cardStyle?a.cardStyle:""}">
+                                      </card-maker>
+                                    </div>
+                                </homekit-button>
+                              </<homekit-card-item>
+                              ${3==n&&this.config.breakOnMobile?t.LitHtml`<div class="break"></div>`:t.LitHtml``}
+                            `;{const o=this.hass.states[a.entity];var r="#f7d959";3==n&&(n=0),4==n&&(n=2),r=a.color?a.color:this._getColorForLightEntity(o,this.config.useTemperature,this.config.useBrightness);var i=a.entity.split(".")[0];return"light"==i?(n++,o?t.LitHtml`
+                                  <homekit-card-item>
+                                    <homekit-button class="${"on"===o.state?"button on":"button"}" @action=${t=>this._handleClick(t,o,a,i,e)}>
+                                        <div class="button-inner">
+                                          <span class="icon" style="${"on"===o.state?"color:"+r+";":""}">
+                                            <ha-icon icon="${a.icon||o.attributes.icon||H(k(o.entity_id),o.state)}" class=" ${a.spin&&"on"===o.state?"spin":""}"/>
+                                          </span>
+                                          <span class="${"on"===o.state?"name on":"name"}">${a.name||o.attributes.friendly_name}</span>
+                                          <span class="${"on"===o.state?"state on":"state"}">${S(this.hass.localize,o,this.hass.language)}${o.attributes.brightness?t.LitHtml` <span class=" ${"on"===o.state?"value on":"value"}"><span>${Math.round(o.attributes.brightness/2.55)}%</span></span>`:t.LitHtml``}</span>
+                                        </div>
+                                    </homekit-button>
+                                  </homekit-card-item>
+                                  ${3==n&&this.config.breakOnMobile?t.LitHtml`<div class="break"></div>`:t.LitHtml``}
+                                  `:this._notFound(a)):"sensor"==i||"binary_sensor"==i?(n++,o?t.LitHtml`
                                 <homekit-card-item>
-                                  <homekit-button class="${stateObj.state === "on" ? 'button on' : 'button'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                  <homekit-button class="${"unavailable"!==o.state?"button on":"button"}" @action=${t=>this._handleClick(t,o,a,i,e)}>
                                       <div class="button-inner">
-                                        <span class="icon" style="${stateObj.state === "on" ? 'color:' + color + ';' : ''}">
-                                          <ha-icon icon="${ent.icon || stateObj.attributes.icon || I(d(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin' : ""}"/>
+                                        <span class="${"unavailable"!==o.state?"icon on":"icon"}">
+                                          <ha-icon icon="${a.icon||o.attributes.icon||H(k(o.entity_id),o.state)}" />
                                         </span>
-                                        <span class="${stateObj.state === "on" ? 'name on' : 'name'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                        <span class="${stateObj.state === "on" ? 'state on' : 'state'}">${b(this.hass.localize, stateObj, this.hass.language)}${stateObj.attributes.brightness ? cardTools.LitHtml ` <span class=" ${stateObj.state === "on" ? 'value on' : 'value'}"><span>${Math.round(stateObj.attributes.brightness / 2.55)}%</span></span>` : cardTools.LitHtml ``}</span>
+                                        <span class="${"unavailable"!==o.state?"name on":"name"}">${a.name||o.attributes.friendly_name}</span>
+                                        <span class="${"unavailable"!==o.state?"state on":"state"}">${S(this.hass.localize,o,this.hass.language)}</span>
                                       </div>
                                   </homekit-button>
-                                </homekit-card-item>
-                                ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml `<div class="break"></div>` : cardTools.LitHtml ``}
-                                `
-                            : this._notFound(ent);
-                    }
-                    else if (type == "sensor" || type == "binary_sensor") {
-                        entityCount++;
-                        console.log('render sensor: ' + entityCount);
-                        return stateObj ? cardTools.LitHtml `
-                              <homekit-card-item>
-                                <homekit-button class="${stateObj.state !== "unavailable" ? 'button on' : 'button'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
-                                    <div class="button-inner">
-                                      <span class="${stateObj.state !== "unavailable" ? 'icon on' : 'icon'}">
-                                        <ha-icon icon="${ent.icon || stateObj.attributes.icon || I(d(stateObj.entity_id), stateObj.state)}" />
-                                      </span>
-                                      <span class="${stateObj.state !== "unavailable" ? 'name on' : 'name'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                      <span class="${stateObj.state !== "unavailable" ? 'state on' : 'state'}">${b(this.hass.localize, stateObj, this.hass.language)}</span>
-                                    </div>
-                                </homekit-button>
-                              </<homekit-card-item>
-                              ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml `<div class="break"></div>` : cardTools.LitHtml ``}
-                            `
-                            : this._notFound(ent);
-                    }
-                    else if (type == "weather") {
-                        entityCount = entityCount + 2;
-                        console.log('render weather: ' + entityCount);
-                        return stateObj ? cardTools.LitHtml `
-                              ${entityCount == 4 && this.config.breakOnMobile ? cardTools.LitHtml `<div class="break"></div>` : cardTools.LitHtml ``}
-                              <homekit-card-item>
-                                <homekit-button class="button size-2 on" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
-                                    <div class="button-inner">
-                                      <span class="icon on">
-                                        <ha-icon icon="${ent.icon || stateObj.attributes.icon || "mdi:weather-" + stateObj.state}" />
-                                      </span>
-                                      <span class="name on">${ent.name || stateObj.attributes.friendly_name}</span>
-                                      <span class="state on">${b(this.hass.localize, stateObj, this.hass.language)}
-                                        ${stateObj.attributes.forecast[0] && stateObj.attributes.forecast[0].precipitation ? cardTools.LitHtml `
-                                            <span class="value on">${stateObj.attributes.forecast[0].precipitation} ${this._getUnit("precipitation")}</span>
-                                        ` : cardTools.LitHtml ``}
-                                      </span>
-                                    </div>
-                                </homekit-button>
-                              </<homekit-card-item>
-                              ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml `<div class="break"></div>` : cardTools.LitHtml ``}
-                            `
-                            : this._notFound(ent);
-                    }
-                    else {
-                        entityCount++;
-                        console.log('render other: ' + entityCount);
-                        return stateObj ? cardTools.LitHtml `
-                              <homekit-card-item>
-                                <homekit-button class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'button' : 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
-                                    <div class="button-inner">
-                                      <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'icon' : 'icon on'}">
-                                        <ha-icon icon="${ent.icon || stateObj.attributes.icon}" />
-                                      </span>
-                                      <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'name' : 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                      <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'state' : 'state on'}">${b(this.hass.localize, stateObj, this.hass.language)}</span>
-                                    </div>
-                                </homekit-button>
-                              </<homekit-card-item>
-                              ${entityCount == 3 && this.config.breakOnMobile ? cardTools.LitHtml `<div class="break"></div>` : cardTools.LitHtml ``}
-                            `
-                            : this._notFound(ent);
-                    }
-                })}
+                                </<homekit-card-item>
+                                ${3==n&&this.config.breakOnMobile?t.LitHtml`<div class="break"></div>`:t.LitHtml``}
+                              `:this._notFound(a)):"weather"==i?(n+=2,o?t.LitHtml`
+                                ${4==n&&this.config.breakOnMobile?t.LitHtml`<div class="break"></div>`:t.LitHtml``}
+                                <homekit-card-item>
+                                  <homekit-button class="button size-2 on" @action=${t=>this._handleClick(t,o,a,i,e)}>
+                                      <div class="button-inner">
+                                        <span class="icon on">
+                                          <ha-icon icon="${a.icon||o.attributes.icon||"mdi:weather-"+o.state}" />
+                                        </span>
+                                        <span class="name on">${a.name||o.attributes.friendly_name}</span>
+                                        <span class="state on">${S(this.hass.localize,o,this.hass.language)}
+                                          ${o.attributes.forecast[0]&&o.attributes.forecast[0].precipitation?t.LitHtml`
+                                              <span class="value on">${o.attributes.forecast[0].precipitation} ${this._getUnit("precipitation")}</span>
+                                          `:t.LitHtml``}
+                                        </span>
+                                      </div>
+                                  </homekit-button>
+                                </<homekit-card-item>
+                                ${3==n&&this.config.breakOnMobile?t.LitHtml`<div class="break"></div>`:t.LitHtml``}
+                              `:this._notFound(a)):(n++,o?t.LitHtml`
+                                <homekit-card-item>
+                                  <homekit-button class="${"off"===o.state||"unavailable"===o.state?"button":"button on"}" @action=${t=>this._handleClick(t,o,a,i,e)}>
+                                      <div class="button-inner">
+                                        <span class="${"off"===o.state||"unavailable"===o.state?"icon":"icon on"}">
+                                          <ha-icon icon="${a.icon||o.attributes.icon}" />
+                                        </span>
+                                        <span class="${"off"===o.state||"unavailable"===o.state?"name":"name on"}">${a.name||o.attributes.friendly_name}</span>
+                                        <span class="${"off"===o.state||"unavailable"===o.state?"state":"state on"}">${S(this.hass.localize,o,this.hass.language)}</span>
+                                      </div>
+                                  </homekit-button>
+                                </<homekit-card-item>
+                                ${3==n&&this.config.breakOnMobile?t.LitHtml`<div class="break"></div>`:t.LitHtml``}
+                              `:this._notFound(a))}})}
                     </div>
                 </div>
-            `;
-            })}
+            `})}
         
-        `;
-        }
-        firstUpdated() {
-            var myNodelist = this.shadowRoot.querySelectorAll('homekit-button');
-            for (var i = 0; i < myNodelist.length; i++) {
-                cardTools.longpress(myNodelist[i], { hasHold: true, hasDoubleClick: true });
-            }
-        }
-        _handleClick(ev, state, entity, type, row) {
-            if (type == "light") {
-                if (ev.detail.action == "tap" || ev.detail.action == "double_tap") {
-                    this._toggle(state, entity.service);
-                }
-                else if (ev.detail.action == "hold") {
-                    if ((row && row.popup) || entity.popup) {
-                        if (row.popup) {
-                            var popUpCard = Object.assign({}, row.popup, { entity: state.entity_id });
-                            if (entity.popupExtend) {
-                                var popUpCard = Object.assign({}, popUpCard, entity.popupExtend);
-                            }
-                        }
-                        else {
-                            var popUpCard = Object.assign({}, entity.popup, { entity: state.entity_id });
-                        }
-                        var popUpStyle = {
-                            "position": "fixed",
-                            "z-index": 999,
-                            "top": 0,
-                            "left": 0,
-                            "height": "100%",
-                            "width": "100%",
-                            "display": "block",
-                            "align-items": "center",
-                            "justify-content": "center",
-                            "background": "rgba(0, 0, 0, 0.8)",
-                            "flex-direction": "column",
-                            "margin": 0,
-                            "--iron-icon-fill-color": "#FFF"
-                        };
-                        cardTools.popUp('test', popUpCard, false, popUpStyle);
-                    }
-                    else {
-                        this._hold(state);
-                    }
-                }
-            }
-            else if (type == "sensor" || type == "binary_sensor") {
-                if (ev.detail.action == "hold") {
-                    this._hold(state);
-                }
-            }
-            else {
-                if (ev.detail.action == "hold") {
-                    this._hold(state);
-                }
-            }
-        }
-        getCardSize() {
-            return this.config.entities.length + 1;
-        }
-        _toggle(state, service) {
-            this.hass.callService("homeassistant", service || "toggle", {
-                entity_id: state.entity_id
-            });
-        }
-        _hold(stateObj) {
-            cardTools.moreInfo(stateObj.entity_id);
-        }
-        _getUnit(measure) {
-            const lengthUnit = this.hass.config.unit_system.length;
-            switch (measure) {
-                case "air_pressure":
-                    return lengthUnit === "km" ? "hPa" : "inHg";
-                case "length":
-                    return lengthUnit;
-                case "precipitation":
-                    return lengthUnit === "km" ? "mm" : "in";
-                default:
-                    return this.hass.config.unit_system[measure] || "";
-            }
-        }
-        _notFound(ent) {
-            return cardTools.LitHtml `
+        `}firstUpdated(){for(var e=this.shadowRoot.querySelectorAll("homekit-button"),n=0;n<e.length;n++)t.longpress(e[n],{hasHold:!0,hasDoubleClick:!0});this.shadowRoot.querySelectorAll("card-maker").forEach(t=>{var e={type:t.dataset.card};e=Object.assign({},e,JSON.parse(t.dataset.options)),t.config=e;let n="";if(t.dataset.style?n=t.dataset.style:"custom:mini-graph-card"==t.dataset.card&&(n=":host {height:100%;} ha-card { background: transparent; color: #000; padding:0!important; box-shadow:none; } .header {padding:0;} .header icon {color:#f7d959;} .states {padding:0;} .states .state .state__value {font-size:14px;}"),""!=n){let e=0,a=setInterval((function(){let r=t.children[0];if(r){window.clearInterval(a);var i=document.createElement("style");i.innerHTML=n,r.shadowRoot.appendChild(i)}else 10==++e&&window.clearInterval(a)}),100)}})}_handleClick(e,n,a,r,i){if("light"==r){if("tap"==e.detail.action||"double_tap"==e.detail.action)this._toggle(n,a.service);else if("hold"==e.detail.action)if(i&&i.popup||a.popup){if(i.popup){var o=Object.assign({},i.popup,{entity:n.entity_id});if(a.popupExtend)o=Object.assign({},o,a.popupExtend)}else o=Object.assign({},a.popup,{entity:n.entity_id});t.popUp("test",o,!1,{position:"fixed","z-index":999,top:0,left:0,height:"100%",width:"100%",display:"block","align-items":"center","justify-content":"center",background:"rgba(0, 0, 0, 0.8)","flex-direction":"column",margin:0,"--iron-icon-fill-color":"#FFF"})}else this._hold(n)}else"hold"==e.detail.action&&this._hold(n)}getCardSize(){return this.config.entities.length+1}_toggle(t,e){this.hass.callService("homeassistant",e||"toggle",{entity_id:t.entity_id})}_hold(e){t.moreInfo(e.entity_id)}_getUnit(t){const e=this.hass.config.unit_system.length;switch(t){case"air_pressure":return"km"===e?"hPa":"inHg";case"length":return e;case"precipitation":return"km"===e?"mm":"in";default:return this.hass.config.unit_system[t]||""}}_notFound(e){return t.LitHtml`
         <homekit-card-item>
           <homekit-button class="not-found">
             <div class="button-inner">
-              <span class="name">${ent.entity}</span>
+              <span class="name">${e.entity}</span>
               <span class="state">Not found</span>
             </div>
           </homekit-button>
         </homekit-card-item>
-      `;
-        }
-        _getColorForLightEntity(stateObj, useTemperature, useBrightness) {
-            var color = this.config.default_color ? this.config.default_color : undefined;
-            if (stateObj) {
-                if (stateObj.attributes.rgb_color) {
-                    color = `rgb(${stateObj.attributes.rgb_color.join(',')})`;
-                    if (stateObj.attributes.brightness) {
-                        color = this._applyBrightnessToColor(color, (stateObj.attributes.brightness + 245) / 5);
-                    }
-                }
-                else if (useTemperature && stateObj.attributes.color_temp && stateObj.attributes.min_mireds && stateObj.attributes.max_mireds) {
-                    color = this._getLightColorBasedOnTemperature(stateObj.attributes.color_temp, stateObj.attributes.min_mireds, stateObj.attributes.max_mireds);
-                    if (stateObj.attributes.brightness) {
-                        color = this._applyBrightnessToColor(color, (stateObj.attributes.brightness + 245) / 5);
-                    }
-                }
-                else if (useBrightness && stateObj.attributes.brightness) {
-                    color = this._applyBrightnessToColor(this._getDefaultColorForState(), (stateObj.attributes.brightness + 245) / 5);
-                }
-                else {
-                    color = this._getDefaultColorForState();
-                }
-            }
-            return color;
-        }
-        _applyBrightnessToColor(color, brightness) {
-            const colorObj = new TinyColor(this._getColorFromVariable(color));
-            if (colorObj.isValid) {
-                const validColor = colorObj.mix('black', 100 - brightness).toString();
-                if (validColor)
-                    return validColor;
-            }
-            return color;
-        }
-        _getLightColorBasedOnTemperature(current, min, max) {
-            const high = new TinyColor('rgb(255, 160, 0)'); // orange-ish
-            const low = new TinyColor('rgb(166, 209, 255)'); // blue-ish
-            const middle = new TinyColor('white');
-            const mixAmount = (current - min) / (max - min) * 100;
-            if (mixAmount < 50) {
-                return tinycolor(low).mix(middle, mixAmount * 2).toRgbString();
-            }
-            else {
-                return tinycolor(middle).mix(high, (mixAmount - 50) * 2).toRgbString();
-            }
-        }
-        _getDefaultColorForState() {
-            return this.config.color_on ? this.config.color_on : '#f7d959';
-        }
-        _getColorFromVariable(color) {
-            console.log(color);
-            if (typeof color !== "undefined" && color.substring(0, 3) === 'var') {
-                return window.getComputedStyle(document.documentElement).getPropertyValue(color.substring(4).slice(0, -1)).trim();
-            }
-            return color;
-        }
-        static get styles() {
-            return css `
+      `}_getColorForLightEntity(t,e,n){var a=this.config.default_color?this.config.default_color:void 0;return t&&(t.attributes.rgb_color?(a=`rgb(${t.attributes.rgb_color.join(",")})`,t.attributes.brightness&&(a=this._applyBrightnessToColor(a,(t.attributes.brightness+245)/5))):e&&t.attributes.color_temp&&t.attributes.min_mireds&&t.attributes.max_mireds?(a=this._getLightColorBasedOnTemperature(t.attributes.color_temp,t.attributes.min_mireds,t.attributes.max_mireds),t.attributes.brightness&&(a=this._applyBrightnessToColor(a,(t.attributes.brightness+245)/5))):a=n&&t.attributes.brightness?this._applyBrightnessToColor(this._getDefaultColorForState(),(t.attributes.brightness+245)/5):this._getDefaultColorForState()),a}_applyBrightnessToColor(t,e){const n=new V(this._getColorFromVariable(t));if(n.isValid){const t=n.mix("black",100-e).toString();if(t)return t}return t}_getLightColorBasedOnTemperature(t,e,n){const a=new V("rgb(255, 160, 0)"),r=new V("rgb(166, 209, 255)"),i=new V("white"),o=(t-e)/(n-e)*100;return o<50?W(r).mix(i,2*o).toRgbString():W(i).mix(a,2*(o-50)).toRgbString()}_getDefaultColorForState(){return this.config.color_on?this.config.color_on:"#f7d959"}_getColorFromVariable(t){return void 0!==t&&"var"===t.substring(0,3)?window.getComputedStyle(document.documentElement).getPropertyValue(t.substring(4).slice(0,-1)).trim():t}static get styles(){return r`
         :host {
 
         }
         .card-title {
             margin-bottom:-10px;
-            margin-left: 4px;
+            padding-left: 4px;
             font-size: 18px;
             padding-top:18px;
+            padding-bottom:10px;
         }
         .homekit-card {
-          overflow-x: scroll;
+          overflow-x: auto;
+          overflow-y: hidden;
+          white-space: nowrap;
         }
 
         .container {
@@ -1710,6 +235,11 @@ customElements.whenDefined('card-tools').then(() => {
         }
         .button.size-2 {
           width: 230px;
+        }
+        .button.no-padding {
+          padding: 0;
+          width: 120px;
+          height: 120px;
         }
         
         :host:last-child .button {
@@ -1830,17 +360,33 @@ customElements.whenDefined('card-tools').then(() => {
           .break {
             display:none;
           }
+        }   
+        @media only screen and (max-width: 768px) {
+          .button {
+            width:90px;
+            height:90px;
+          }
+          .button.size-2 {
+            width:210px;
+          }
+          .button.no-padding {
+            width: 110px;
+            height: 110px;
+          }
+          .container {
+            padding-left:0;
+          }
+          .header, .card-title, .homekit-card {
+            width: 358px;
+            text-align: left;
+            margin: 0 auto;
+          }
+          .card-title {
+            padding-bottom:0;
+          }
         }
 
-      `;
+        card-maker {
+          height:100%;
         }
-    }
-    customElements.define("homekit-card", HomeKitCard);
-});
-setTimeout(() => {
-    if (customElements.get('card-tools'))
-        return;
-    customElements.define('my-plugin', class extends HTMLElement {
-        setConfig() { throw new Error("Can't find card-tools. See https://github.com/thomasloven/lovelace-card-tools"); }
-    });
-}, 2000);
+      `}}customElements.define("homekit-card",e)}),setTimeout(()=>{customElements.get("card-tools")||customElements.define("my-plugin",class extends HTMLElement{setConfig(){throw new Error("Can't find card-tools. See https://github.com/thomasloven/lovelace-card-tools")}})},2e3);

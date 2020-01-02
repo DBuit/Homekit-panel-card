@@ -51,6 +51,56 @@ Define multiple rows of tiles under entities
     - entity: light.light
 ```
 
+Render a other lovelace card (custom or default) inside the tile to get more functionality.
+You can show an iframe or use the mini graph card
+
+
+```
+Instead of setting the entity you set the card with the lovelace card you wanna render.
+Second you set the cardOptions, this is the configuration you would normally use to configure the card (so this will probably contain the entity_id atleast)
+Third you can define styles which will overwrite the normal styles of the card so it fits better in the homekit style.
+
+These other cards have build in overwritten styles so you can juse use them:
+- mini-graph-card
+
+
+Example configuration of 2 card:
+
+- title: other cards
+  entities:
+    - card: custom:mini-graph-card
+      cardOptions:
+        entities:
+          - sensor.blink_restafval
+      cardStyle: |
+        :host {
+          height: 100%;
+        }
+        ha-card {
+          background: transparent;
+          color: #000;
+          padding: 0!important;
+          box-shadow: none;
+        }
+        .header {
+          padding: 0;
+        }
+        .header .icon {
+            color: #f7d959;
+        }
+        .states {
+          padding: 0;
+        }
+        .states .state .state__value {
+          font-size:14px;
+        }
+    - card: iframe
+      noPadding: true
+      cardOptions:
+        aspect_ratio: 100%
+        url: https://gadgets.buienradar.nl/gadget/zoommap/?lat=51.28583&lng=5.74861&overname=2&zoom=11&naam=Nederweert&size=3b&voor=1
+```
+
 Set custom pop-up card for an entire row
 ```
 - title: Sensors
@@ -164,6 +214,37 @@ If you don't want to use the same pop-up card for every entity in a row you can 
                 name: "Battery"
               - entity: binary_sensor.sensor2
                 name: "Frontdoor"
+              - card: custom:mini-graph-card
+                cardOptions:
+                  entities:
+                    - sensor.blink_restafval
+                cardStyle: |
+                  :host {
+                    height: 100%;
+                  }
+                  ha-card {
+                    background: transparent;
+                    color: #000;
+                    padding: 0!important;
+                    box-shadow: none;
+                  }
+                  .header {
+                    padding: 0;
+                  }
+                  .header .icon {
+                      color: #f7d959;
+                  }
+                  .states {
+                    padding: 0;
+                  }
+                  .states .state .state__value {
+                    font-size:14px;
+                  }
+              - card: iframe
+                noPadding: true
+                cardOptions:
+                  aspect_ratio: 100%
+                  url: https://gadgets.buienradar.nl/gadget/zoommap/?lat=51.28583&lng=5.74861&overname=2&zoom=11&naam=Nederweert&size=3b&voor=1
 ```
 # Screenshots
 
