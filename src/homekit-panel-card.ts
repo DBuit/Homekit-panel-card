@@ -50,10 +50,9 @@ customElements.whenDefined('card-tools').then(() => {
         ${this.config.entities.map(row => {
             var entityCount = 0;
             return cardTools.LitHtml`
-                <div class="card-title" >${row.title}</div><br>
+                <div class="card-title">${row.title}</div>
                     <div class="homekit-card">
                         ${row.entities.map(ent => {
-                          
                           if(!ent.card) {
                             const stateObj = this.hass.states[ent.entity];
                             var color = '#f7d959';
@@ -357,12 +356,15 @@ customElements.whenDefined('card-tools').then(() => {
         }
         .card-title {
             margin-bottom:-10px;
-            margin-left: 4px;
+            padding-left: 4px;
             font-size: 18px;
             padding-top:18px;
+            padding-bottom:10px;
         }
         .homekit-card {
-          overflow-x: scroll;
+          overflow-x: auto;
+          overflow-y: hidden;
+          white-space: nowrap;
         }
 
         .container {
@@ -529,6 +531,30 @@ customElements.whenDefined('card-tools').then(() => {
             display:none;
           }
         }   
+        @media only screen and (max-width: 768px) {
+          .button {
+            width:90px;
+            height:90px;
+          }
+          .button.size-2 {
+            width:210px;
+          }
+          .button.no-padding {
+            width: 110px;
+            height: 110px;
+          }
+          .container {
+            padding-left:0;
+          }
+          .header, .card-title, .homekit-card {
+            width: 358px;
+            text-align: left;
+            margin: 0 auto;
+          }
+          .card-title {
+            padding-bottom:0;
+          }
+        }
 
         card-maker {
           height:100%;
