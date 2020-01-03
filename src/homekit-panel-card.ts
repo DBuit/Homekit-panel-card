@@ -54,6 +54,10 @@ customElements.whenDefined('card-tools').then(() => {
                     <div class="homekit-card">
                         ${row.entities.map(ent => {
                           if(!ent.card) {
+                            var offStates = ['off', 'unavailable'];
+                            if(ent.offStates) {
+                              offStates = ent.offStates;
+                            }
                             const stateObj = this.hass.states[ent.entity];
                             var color = '#f7d959';
                             if(entityCount == 3) {
@@ -73,13 +77,13 @@ customElements.whenDefined('card-tools').then(() => {
                               entityCount++;
                               return stateObj ? cardTools.LitHtml`
                                   <homekit-card-item>
-                                    <homekit-button class="${stateObj.state === "on" ? 'button on': 'button'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                    <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                         <div class="button-inner">
-                                          <span class="icon" style="${stateObj.state === "on" ? 'color:'+color+';' : ''}">
+                                          <span class="icon" style="${!offStates.includes(stateObj.state) ? 'color:'+color+';' : ''}">
                                             <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin': ""}"/>
                                           </span>
-                                          <span class="${stateObj.state === "on" ? 'name on': 'name'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                          <span class="${stateObj.state === "on" ? 'state on': 'state'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}${stateObj.attributes.brightness ? cardTools.LitHtml` <span class=" ${stateObj.state === "on" ? 'value on': 'value'}"><span>${Math.round(stateObj.attributes.brightness/2.55)}%</span></span>` : cardTools.LitHtml``}</span>
+                                          <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
+                                          <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}${stateObj.attributes.brightness ? cardTools.LitHtml` <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}"><span>${Math.round(stateObj.attributes.brightness/2.55)}%</span></span>` : cardTools.LitHtml``}</span>
                                         </div>
                                     </homekit-button>
                                   </homekit-card-item>
@@ -90,13 +94,13 @@ customElements.whenDefined('card-tools').then(() => {
                               entityCount++;
                               return stateObj ? cardTools.LitHtml`
                                 <homekit-card-item>
-                                  <homekit-button class="${stateObj.state !== "unavailable" ? 'button on': 'button'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                  <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                       <div class="button-inner">
-                                        <span class="${stateObj.state !== "unavailable" ? 'icon on': 'icon'}">
+                                        <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}">
                                           <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                         </span>
-                                        <span class="${stateObj.state !== "unavailable" ? 'name on': 'name'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                        <span class="${stateObj.state !== "unavailable" ? 'state on': 'state'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
+                                        <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
+                                        <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
                                       </div>
                                   </homekit-button>
                                 </<homekit-card-item>
@@ -129,13 +133,13 @@ customElements.whenDefined('card-tools').then(() => {
                               entityCount++;
                               return stateObj ? cardTools.LitHtml`
                                 <homekit-card-item>
-                                  <homekit-button class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                  <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                       <div class="button-inner">
-                                        <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'icon': 'icon on'}">
+                                        <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}">
                                           <ha-icon icon="${ent.icon || stateObj.attributes.icon}" />
                                         </span>
-                                        <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                        <span class="${stateObj.state === "off" || stateObj.state === "unavailable" ? 'state': 'state on'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
+                                        <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
+                                        <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
                                       </div>
                                   </homekit-button>
                                 </<homekit-card-item>
