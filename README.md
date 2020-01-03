@@ -57,6 +57,23 @@ You can now render other lovelace cards like mini-graph-card inside a tile [See 
     - entity: light.light
 ```
 
+### Extra entity config
+
+You can configure some configuration for an specific entity. These are all optional.
+offStates are default "off" and "unavailable".
+
+```
+- title: Sensors
+  entities:
+    - entity: media_player.sonos
+      icon: mdi:speaker-wireless
+      name: "Sonos mediaplayer"
+      offStates:
+        - "off"
+        - "unavailable"
+        - "paused"
+```
+
 ### Render other lovelace cards
 Render a other lovelace card (custom or default) inside the tile to get more functionality.
 You can show an iframe or use the mini graph card
