@@ -463,7 +463,7 @@ customElements.whenDefined('card-tools').then(() => {
           margin-left: 5px;
           font-size: 11px;
           color: rgba(255, 0, 0, 1);
-          text-transform: capitalize;
+          text-transform: lowercase;
         }
         
         homekit-button .state.on {
@@ -553,6 +553,15 @@ customElements.whenDefined('card-tools').then(() => {
           }
           .card-title {
             padding-bottom:0;
+          }
+          homekit-button .name {
+            font-size:13px;
+          }
+          homekit-button .state {
+            font-size:13px;
+          }
+          homekit-button .value.on {
+            font-size:10px;
           }
         }
 
