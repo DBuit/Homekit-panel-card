@@ -15,6 +15,8 @@
   "author": "Ian Richardson <iantrich@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@ctrl/tinycolor": "^2.6.0",
+    "card-tools": "github:thomasloven/lovelace-card-tools",
     "custom-card-helpers": "^1.3.9",
     "home-assistant-js-websocket": "^4.4.0",
     "lit-element": "^2.2.1",
