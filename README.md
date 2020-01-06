@@ -30,6 +30,16 @@ You can now render other lovelace cards like mini-graph-card inside a tile [See 
 
 # Config options
 
+### Installation instructions
+
+Add the homekit-panel-card.js file in the dist folder to your installation and add the following to your ui-lovelace.yaml.
+ 
+```yaml
+resources:
+  url: /local/homekit-panel-card.js
+  type: module
+```
+
 ### Add the card
 ```
 - type: "custom:homekit-card"
