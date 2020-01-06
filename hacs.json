@@ -1,5 +1,5 @@
 {
-    "name": "Boilerplate Card",
+    "name": "Homekit panel card",
     "render_readme": true,
-    "filename": "boilerplate-card.js"
+    "filename": "homekit-panel-card.js"
 }
