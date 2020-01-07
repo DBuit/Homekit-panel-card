@@ -16,7 +16,6 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 
 # TO DO
 
-- Add HACS support
 - Combine entities
 - Multiple columns (we now got rows with a title)
 - Add more options for home like notifications, which entities are on, calendar events
@@ -25,6 +24,8 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 **Implemented**
 
 - Show graph on tile
+- Add HACS support
+- Add custom tap actions
 
 You can now render other lovelace cards like mini-graph-card inside a tile [See how to use this](#render-other-lovelace-cards)
 
@@ -134,6 +135,35 @@ Example configuration of 2 card:
         aspect_ratio: 100%
         url: https://gadgets.buienradar.nl/gadget/zoommap/?lat=51.28583&lng=5.74861&overname=2&zoom=11&naam=Nederweert&size=3b&voor=1
 ```
+
+### Custom tile (can be used to make navigation buttons for example)
+
+You can set the type to custom to display a tile with a name and icon.
+Then you can define a tap_action to give it a function when it is tapped or clicked.
+
+```
+- title: Navigation
+  entities:
+    - custom: lampen
+      name: lampen
+      icon: lightbulb-group
+      tap_action:
+        action: navigate
+        navigation_path: /lovelace/lampen
+```
+
+The tap_action support these configuration options:
+
+| Name | Type | Default | Supported options | Description |
+| ----------------- | ------ | -------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `action` | string | `toggle` | `more-info`, `toggle`, `call-service`, `none`, `navigate`, `url` | Action to perform |
+| `entity` | string | none | Any entity id | **Only valid for `action: more-info`** to call `more-info` pop-up for this entity |
+| `navigation_path` | string | none | Eg: `/lovelace/0/` | Path to navigate to (e.g. `/lovelace/0/`) when action defined as navigate |
+| `url_path` | string | none | Eg: `https://www.google.fr` | URL to open on click when action is `url`. The URL will open in a new tab |
+| `service` | string | none | Any service | Service to call (e.g. `media_player.media_play_pause`) when `action` defined as `call-service` |
+| `service_data` | object | none | Any service data | Service data to include (e.g. `entity_id: media_player.bedroom`)|
+
+
 
 ### Set custom pop-up card for an entire row
 ```
