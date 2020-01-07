@@ -1,7 +1,11 @@
 import {
   computeStateDisplay,
   computeDomain,
-  domainIcon
+  domainIcon,
+  fireEvent,
+  navigate,
+  toggleEntity,
+  forwardHaptic
 } from 'custom-card-helpers';
 import tinycolor, { TinyColor, isReadable } from '@ctrl/tinycolor';
 import { noChange } from 'lit-html';
@@ -58,7 +62,7 @@ class HomeKitCard extends LitElement {
               <div class="card-title">${row.title}</div>
                   <div class="homekit-card">
                       ${row.entities.map(ent => {
-                        if(!ent.card) {
+                        if(!ent.card && !ent.custom) {
                           var offStates = ['off', 'unavailable'];
                           if(ent.offStates) {
                             offStates = ent.offStates;
@@ -173,7 +177,7 @@ class HomeKitCard extends LitElement {
                             `
                             : this._notFound(ent);
                           }
-                        } else {
+                        } else if(ent.card && !ent.custom) {
                           entityCount++;
                           return html`
                             <homekit-card-item>
@@ -183,6 +187,21 @@ class HomeKitCard extends LitElement {
                                     </card-maker>
                                   </div>
                               </homekit-button>
+                            </<homekit-card-item>
+                            ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                          `
+                        } else if(ent.custom) {
+                          entityCount++;
+                          return html`
+                            <homekit-card-item>
+                                <homekit-button class="button on" @action=${(ev) => this._handleClick(ev, null, ent, 'custom', row)}>
+                                    <div class="button-inner">
+                                      <span class="icon on">
+                                        <ha-icon icon="${ent.icon}" />
+                                      </span>
+                                      <span class="name on">${ent.name}</span>
+                                    </div>
+                                </homekit-button>
                             </<homekit-card-item>
                             ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
                           `
@@ -301,10 +320,51 @@ class HomeKitCard extends LitElement {
       } else if (ev.detail.action == "hold") {
         this._hold(state);
       }
+    } else if(type == "custom") {
+      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
+        this._customAction(entity.tap_action);
+      }
     } else {
       if (ev.detail.action == "hold") {
         this._hold(state);
       } 
+    }
+  }
+
+  _customAction(actionConfig) {
+    switch (actionConfig.action) {
+      case "more-info":
+        if (actionConfig.entity || actionConfig.camera_image) {
+          fireEvent(window, "hass-more-info", {
+            entityId: actionConfig.entity ? actionConfig.entity : actionConfig.camera_image!,
+          });
+        }
+        break;
+      case "navigate":
+        if (actionConfig.navigation_path) {
+          navigate(window, actionConfig.navigation_path);
+        }
+        break;
+      case "url":
+        if (actionConfig.url_path) {
+          window.open(actionConfig.url_path);
+        }
+        break;
+      case "toggle":
+        if (actionConfig.entity) {
+          toggleEntity(this.hass, actionConfig.entity!);
+          forwardHaptic("success");
+        }
+        break;
+      case "call-service": {
+        if (!actionConfig.service) {
+          forwardHaptic("failure");
+          return;
+        }
+        const [domain, service] = actionConfig.service.split(".", 2);
+        this.hass.callService(domain, service, actionConfig.service_data);
+        forwardHaptic("success");
+      }
     }
   }
 
