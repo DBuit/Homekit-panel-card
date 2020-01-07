@@ -16,15 +16,31 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 
 # TO DO
 
-- Show graph on tile
+- Add HACS support
 - Combine entities
 - Multiple columns (we now got rows with a title)
 - Add more options for home like notifications, which entities are on, calendar events
 - Add scenes till/options
 
+**Implemented**
+
+- Show graph on tile
+
+You can now render other lovelace cards like mini-graph-card inside a tile [See how to use this](#render-other-lovelace-cards)
+
 # Config options
 
-Add the card
+### Installation instructions
+
+Add the homekit-panel-card.js file in the dist folder to your installation and add the following to your ui-lovelace.yaml.
+ 
+```yaml
+resources:
+  url: /local/homekit-panel-card.js
+  type: module
+```
+
+### Add the card
 ```
 - type: "custom:homekit-card"
   home: true // Optional in combination with the title
@@ -35,7 +51,7 @@ Add the card
   entities:
 ```
 
-Define multiple rows of tiles under entities
+### Define multiple rows of tiles under entities
 ```
 - title: Sensors
   entities:
@@ -51,6 +67,24 @@ Define multiple rows of tiles under entities
     - entity: light.light
 ```
 
+### Extra entity config
+
+You can configure some configuration for an specific entity. These are all optional.
+offStates are default "off" and "unavailable".
+
+```
+- title: Sensors
+  entities:
+    - entity: media_player.sonos
+      icon: mdi:speaker-wireless
+      name: "Sonos mediaplayer"
+      offStates:
+        - "off"
+        - "unavailable"
+        - "paused"
+```
+
+### Render other lovelace cards
 Render a other lovelace card (custom or default) inside the tile to get more functionality.
 You can show an iframe or use the mini graph card
 
@@ -101,7 +135,7 @@ Example configuration of 2 card:
         url: https://gadgets.buienradar.nl/gadget/zoommap/?lat=51.28583&lng=5.74861&overname=2&zoom=11&naam=Nederweert&size=3b&voor=1
 ```
 
-Set custom pop-up card for an entire row
+### Set custom pop-up card for an entire row
 ```
 - title: Sensors
   popup:
@@ -246,7 +280,7 @@ If you don't want to use the same pop-up card for every entity in a row you can 
                   aspect_ratio: 100%
                   url: https://gadgets.buienradar.nl/gadget/zoommap/?lat=51.28583&lng=5.74861&overname=2&zoom=11&naam=Nederweert&size=3b&voor=1
 ```
-# Screenshots
+## Screenshots
 
 ![desktop home screenshot](screenshot-home.png "Desktop home screenshot")
 ![desktop screenshot 2](screenshot.png "Desktop screenshot 2")
