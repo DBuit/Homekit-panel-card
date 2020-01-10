@@ -3,8 +3,8 @@ import {
   computeDomain,
   domainIcon,
   fireEvent,
-  navigate,
   toggleEntity,
+  navigate,
   forwardHaptic
 } from 'custom-card-helpers';
 import tinycolor, { TinyColor, isReadable } from '@ctrl/tinycolor';
@@ -92,7 +92,11 @@ class HomeKitCard extends LitElement {
                                           <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin': ""}"/>
                                         </span>
                                         <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                        <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}${stateObj.attributes.brightness ? html` <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}"><span>${Math.round(stateObj.attributes.brightness/2.55)}%</span></span>` : html``}</span>
+                                        <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">
+                                          ${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}
+                                          ${stateObj.attributes.brightness && !ent.state ? html` <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}">${Math.round(stateObj.attributes.brightness/2.55)}%</span>` : html``}
+                                          ${ent.state ? html` <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}">${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}</span>` : html``}
+                                        </span>
                                       </div>
                                   </homekit-button>
                                 </homekit-card-item>
@@ -129,7 +133,10 @@ class HomeKitCard extends LitElement {
                                         <ha-icon icon="${ent.icon || stateObj.attributes.icon}" />
                                       </span>
                                       <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                      <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
+                                      <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">
+                                        ${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}
+                                        ${ent.state ? html` <span class="value on">${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}</span>` : html``}
+                                      </span>
                                     </div>
                                 </homekit-button>
                               </<homekit-card-item>
@@ -159,6 +166,36 @@ class HomeKitCard extends LitElement {
                               ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
                             `
                             : this._notFound(ent);
+                          } else if(type == "climate") {
+                            entityCount++;
+                            var modes = {
+                              auto: "hass:calendar-repeat",
+                              heat_cool: "hass:autorenew",
+                              heat: "hass:fire",
+                              cool: "hass:snowflake",
+                              off: "hass:power",
+                              fan_only: "hass:fan",
+                              dry: "hass:water-percent",
+                            };
+                            var mode = stateObj.state in modes ? stateObj.state : "unknown-mode";
+                            return stateObj ? html`
+                              <homekit-card-item>
+                                <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                    <div class="button-inner">
+                                      <span class="${offStates.includes(stateObj.state) ? 'icon climate '+mode: 'icon climate on '+mode}">
+                                        ${ent.state ? Math.round(this.hass.states[ent.state]!.state) : Math.round(stateObj.attributes.current_temperature)}&#176;
+                                      </span>
+                                      <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
+                                      <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">
+                                        ${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}
+                                        ${stateObj.attributes.temperature ? html` <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}">${stateObj.attributes.temperature}&#176;</span>` : html``}
+                                      </span>
+                                    </div>
+                                </homekit-button>
+                              </<homekit-card-item>
+                              ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                            `
+                            : this._notFound(ent);
                           } else {
                             entityCount++;
                             return stateObj ? html`
@@ -169,7 +206,10 @@ class HomeKitCard extends LitElement {
                                         <ha-icon icon="${ent.icon || stateObj.attributes.icon}" />
                                       </span>
                                       <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
-                                      <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</span>
+                                      <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">
+                                        ${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}
+                                        ${ent.state ? html` <span class="value on">${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}</span>` : html``}
+                                      </span>
                                     </div>
                                 </homekit-button>
                               </<homekit-card-item>
@@ -193,17 +233,18 @@ class HomeKitCard extends LitElement {
                         } else if(ent.custom) {
                           entityCount++;
                           return html`
-                            <homekit-card-item>
-                                <homekit-button class="button on" @action=${(ev) => this._handleClick(ev, null, ent, 'custom', row)}>
-                                    <div class="button-inner">
-                                      <span class="icon on">
-                                        <ha-icon icon="${ent.icon}" />
-                                      </span>
-                                      <span class="name on">${ent.name}</span>
-                                    </div>
-                                </homekit-button>
-                            </<homekit-card-item>
-                            ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                          <homekit-card-item>
+                            <homekit-button class="button on" @action=${(ev) => this._handleClick(ev, null, ent, "custom", row)}>
+                                <div class="button-inner">
+                                  <span class="icon on">
+                                    <ha-icon icon="${ent.icon}" />
+                                  </span>
+                                  <span class="name on">${ent.name}</span>
+                                  ${ent.state ? html`<span class="state">${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}</span>`:html``}
+                                </div>
+                            </homekit-button>
+                          </<homekit-card-item>
+                          ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
                           `
                         }
                       })}
@@ -232,7 +273,7 @@ class HomeKitCard extends LitElement {
         if(customCard.dataset.style) {
           style = customCard.dataset.style;
         } else if(customCard.dataset.card == 'custom:mini-graph-card') {
-          style = ":host {height:100%;} ha-card { background: transparent; color: #000; padding:0!important; box-shadow:none; } .header {padding:0;} .header icon {color:#f7d959;} .states {padding:0;} .states .state .state__value {font-size:14px;}";
+          style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .header .icon { color: #f7d959; }";
         }
 
         if(style != "") {
@@ -311,6 +352,9 @@ class HomeKitCard extends LitElement {
           
       }
     } else if(type == "sensor" || type == "binary_sensor") {
+      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
+        this._customAction(entity.tap_action)
+      }
       if (ev.detail.action == "hold") {
         this._hold(state);
       }
@@ -322,47 +366,50 @@ class HomeKitCard extends LitElement {
       }
     } else if(type == "custom") {
       if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
-        this._customAction(entity.tap_action);
+        this._customAction(entity.tap_action)
       }
     } else {
+      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
+        this._customAction(entity.tap_action)
+      }
       if (ev.detail.action == "hold") {
         this._hold(state);
       } 
     }
   }
 
-  _customAction(actionConfig) {
-    switch (actionConfig.action) {
+  _customAction(tapAction) {
+    switch (tapAction.action) {
       case "more-info":
-        if (actionConfig.entity || actionConfig.camera_image) {
+        if (tapAction.entity || tapAction.camera_image) {
           fireEvent(window, "hass-more-info", {
-            entityId: actionConfig.entity ? actionConfig.entity : actionConfig.camera_image!,
+            entityId: tapAction.entity ? tapAction.entity : tapAction.camera_image!,
           });
         }
         break;
       case "navigate":
-        if (actionConfig.navigation_path) {
-          navigate(window, actionConfig.navigation_path);
+        if (tapAction.navigation_path) {
+          navigate(window, tapAction.navigation_path);
         }
         break;
       case "url":
-        if (actionConfig.url_path) {
-          window.open(actionConfig.url_path);
+        if (tapAction.url_path) {
+          window.open(tapAction.url_path);
         }
         break;
       case "toggle":
-        if (actionConfig.entity) {
-          toggleEntity(this.hass, actionConfig.entity!);
+        if (tapAction.entity) {
+          toggleEntity(this.hass, tapAction.entity!);
           forwardHaptic("success");
         }
         break;
       case "call-service": {
-        if (!actionConfig.service) {
+        if (!tapAction.service) {
           forwardHaptic("failure");
           return;
         }
-        const [domain, service] = actionConfig.service.split(".", 2);
-        this.hass.callService(domain, service, actionConfig.service_data);
+        const [domain, service] = tapAction.service.split(".", 2);
+        this.hass.callService(domain, service, tapAction.service_data);
         forwardHaptic("success");
       }
     }
@@ -467,7 +514,16 @@ class HomeKitCard extends LitElement {
   static get styles() {
     return css`
       :host {
-
+        --auto-color: green;
+        --eco-color: springgreen;
+        --cool-color: #2b9af9;
+        --heat-color: #ff8100;
+        --manual-color: #44739e;
+        --off-color: #8a8a8a;
+        --fan_only-color: #8a8a8a;
+        --dry-color: #efbd07;
+        --idle-color: #8a8a8a;
+        --unknown-color: #bac;
       }
       .card-title {
           margin-bottom:-10px;
@@ -604,6 +660,7 @@ class HomeKitCard extends LitElement {
         font-size: 30px;
         padding-top:5px;
       }
+
       homekit-button .icon ha-icon {
         width:30px;
         height:30px;
@@ -611,6 +668,44 @@ class HomeKitCard extends LitElement {
                 
       homekit-button .icon.on {
         color: #f7d959;
+      }
+
+      homekit-button .icon.climate {
+        color:#FFF;
+        height: 35px;
+        width: 35px;
+        border-radius: 20px;
+        background-color: rgba(0,255,0, 1);
+      }
+      homekit-button .icon.climate.temp.heat_cool {
+        background-color: var(--auto-color);
+      }
+      homekit-button .icon.climate.temp.cool {
+        background-color: var(--cool-color);
+      }
+      homekit-button .icon.climate.temp.heat {
+        background-color: var(--heat-color);
+      }
+      homekit-button .icon.climate.temp.manual {
+        background-color: var(--manual-color);
+      }
+      homekit-button .icon.climate.temp.off {
+        background-color: var(--off-color);
+      }
+      homekit-button .icon.climate.temp.fan_only {
+        background-color: var(--fan_only-color);
+      }
+      homekit-button .icon.climate.temp.eco {
+        background-color: var(--eco-color);
+      }
+      homekit-button .icon.climate.temp.dry {
+        background-color: var(--dry-color);
+      }
+      homekit-button .icon.climate.temp.idle {
+        background-color: var(--idle-color);
+      }
+      homekit-button .icon.climate.temp.unknown-mode {
+        background-color: var(--unknown-color);
       }
       
       homekit-button .circle {

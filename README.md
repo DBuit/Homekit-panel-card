@@ -71,7 +71,11 @@ resources:
 ### Extra entity config
 
 You can configure some configuration for an specific entity. These are all optional.
-offStates are default "off" and "unavailable".
+- icon (for alle types except climate this shows the temperature)
+- name
+- offStates, default "off" and "unavailable".
+- state, besides the state of the entity a second state value can be shown next to it. (For climates the state is used in the temperature circle instead of the current temperature value of the climate entity. this is shown instead of an icon)
+- tap_action, can be used to customize the action on tap/click (lights and switches have already a tap action) other entities only have longpress/hold action to open pop-up this configuration can add an tap action how to configure see [here](#tap_action-options)
 
 ```
 - title: Sensors
@@ -83,6 +87,10 @@ offStates are default "off" and "unavailable".
         - "off"
         - "unavailable"
         - "paused"
+      state: sensor.temp  
+      tap_action:
+        action: toggle
+        entity: group.outdoor_lights
 ```
 
 ### Render other lovelace cards
@@ -98,6 +106,8 @@ Third you can define styles which will overwrite the normal styles of the card s
 These other cards have build in overwritten styles so you can juse use them:
 - mini-graph-card
 
+The tile has a default space around if you want your custom card to fill up the whole tile?
+Add `noPadding: true` to the configuration
 
 Example configuration of 2 card:
 
@@ -138,7 +148,7 @@ Example configuration of 2 card:
 
 ### Custom tile (can be used to make navigation buttons for example)
 
-You can set the type to custom to display a tile with a name and icon.
+You can set the type to custom to display a tile with a name, icon and state (entity of which the state is displayed).
 Then you can define a tap_action to give it a function when it is tapped or clicked.
 
 ```
@@ -147,12 +157,13 @@ Then you can define a tap_action to give it a function when it is tapped or clic
     - custom: lampen
       name: lampen
       icon: lightbulb-group
+      state: sensor.current_lights_on
       tap_action:
         action: navigate
         navigation_path: /lovelace/lampen
 ```
 
-The tap_action support these configuration options:
+#### Tap_action options
 
 | Name | Type | Default | Supported options | Description |
 | ----------------- | ------ | -------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
