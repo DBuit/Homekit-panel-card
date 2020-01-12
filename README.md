@@ -63,7 +63,6 @@ resources:
       name: "Optional name"
     - entity: light.light
 - title: Lights
-  rowTitleColor: "F00"
   entities:
     - entity: light.light2
       name: "Optional name light"
