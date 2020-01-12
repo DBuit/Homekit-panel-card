@@ -49,6 +49,7 @@ class HomeKitCard extends LitElement {
   }
 
   render() {
+    var rowTitleColor = this.config.titleColor ? this.config.titleColor : false;
     return html`
     <div class="container" >
       ${this.config.home ? html `
@@ -59,7 +60,7 @@ class HomeKitCard extends LitElement {
       ${this.config.entities.map(row => {
           var entityCount = 0;
           return html`
-              <div class="card-title">${row.title}</div>
+              <div class="card-title" style="${rowTitleColor ? 'color:'+rowTitleColor : ''}">${row.title}</div>
                   <div class="homekit-card">
                       ${row.entities.map(ent => {
                         if(!ent.card && !ent.custom) {

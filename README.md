@@ -16,7 +16,6 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 
 # TO DO
 
-- Combine entities
 - Multiple columns (we now got rows with a title)
 - Add more options for home like notifications, which entities are on, calendar events
 - Add scenes till/options
@@ -26,6 +25,7 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 - Show graph on tile
 - Add HACS support
 - Add custom tap actions
+- Combine entities
 
 You can now render other lovelace cards like mini-graph-card inside a tile [See how to use this](#render-other-lovelace-cards)
 
@@ -49,6 +49,7 @@ resources:
   useBrightness: false // use brightness of a light for icon color on tile, default true
   useTemperature: false // use temperature of a light for icon color on tile, default: false
   breakOnMobile: true // On mobile show max 3 tiles on a row, default false -> horizontal scrollable row of tiles
+  titleColor: "#FFF" // Overwrite the color of the title if you don't use this the theme color is used
   entities:
 ```
 
@@ -62,6 +63,7 @@ resources:
       name: "Optional name"
     - entity: light.light
 - title: Lights
+  rowTitleColor: "F00"
   entities:
     - entity: light.light2
       name: "Optional name light"
