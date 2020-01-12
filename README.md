@@ -16,8 +16,6 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 
 # TO DO
 
-- Add HACS support
-- Combine entities
 - Multiple columns (we now got rows with a title)
 - Add more options for home like notifications, which entities are on, calendar events
 - Add scenes till/options
@@ -25,6 +23,9 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 **Implemented**
 
 - Show graph on tile
+- Add HACS support
+- Add custom tap actions
+- Combine entities
 
 You can now render other lovelace cards like mini-graph-card inside a tile [See how to use this](#render-other-lovelace-cards)
 
@@ -48,6 +49,7 @@ resources:
   useBrightness: false // use brightness of a light for icon color on tile, default true
   useTemperature: false // use temperature of a light for icon color on tile, default: false
   breakOnMobile: true // On mobile show max 3 tiles on a row, default false -> horizontal scrollable row of tiles
+  titleColor: "#FFF" // Overwrite the color of the title if you don't use this the theme color is used
   entities:
 ```
 
@@ -70,7 +72,11 @@ resources:
 ### Extra entity config
 
 You can configure some configuration for an specific entity. These are all optional.
-offStates are default "off" and "unavailable".
+- icon (for alle types except climate this shows the temperature)
+- name
+- offStates, default "off" and "unavailable".
+- state, besides the state of the entity a second state value can be shown next to it. (For climates the state is used in the temperature circle instead of the current temperature value of the climate entity. this is shown instead of an icon)
+- tap_action, can be used to customize the action on tap/click (lights and switches have already a tap action) other entities only have longpress/hold action to open pop-up this configuration can add an tap action how to configure see [here](#tap_action-options)
 
 ```
 - title: Sensors
@@ -82,6 +88,10 @@ offStates are default "off" and "unavailable".
         - "off"
         - "unavailable"
         - "paused"
+      state: sensor.temp  
+      tap_action:
+        action: toggle
+        entity: group.outdoor_lights
 ```
 
 ### Render other lovelace cards
@@ -97,6 +107,8 @@ Third you can define styles which will overwrite the normal styles of the card s
 These other cards have build in overwritten styles so you can juse use them:
 - mini-graph-card
 
+The tile has a default space around if you want your custom card to fill up the whole tile?
+Add `noPadding: true` to the configuration
 
 Example configuration of 2 card:
 
@@ -134,6 +146,36 @@ Example configuration of 2 card:
         aspect_ratio: 100%
         url: https://gadgets.buienradar.nl/gadget/zoommap/?lat=51.28583&lng=5.74861&overname=2&zoom=11&naam=Nederweert&size=3b&voor=1
 ```
+
+### Custom tile (can be used to make navigation buttons for example)
+
+You can set the type to custom to display a tile with a name, icon and state (entity of which the state is displayed).
+Then you can define a tap_action to give it a function when it is tapped or clicked.
+
+```
+- title: Navigation
+  entities:
+    - custom: lampen
+      name: lampen
+      icon: lightbulb-group
+      state: sensor.current_lights_on
+      tap_action:
+        action: navigate
+        navigation_path: /lovelace/lampen
+```
+
+#### Tap_action options
+
+| Name | Type | Default | Supported options | Description |
+| ----------------- | ------ | -------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `action` | string | `toggle` | `more-info`, `toggle`, `call-service`, `none`, `navigate`, `url` | Action to perform |
+| `entity` | string | none | Any entity id | **Only valid for `action: more-info` and `action: toggle`** to call `more-info` pop-up for this entity or `toggle` this entity |
+| `navigation_path` | string | none | Eg: `/lovelace/0/` | Path to navigate to (e.g. `/lovelace/0/`) when action defined as navigate |
+| `url_path` | string | none | Eg: `https://www.google.fr` | URL to open on click when action is `url`. The URL will open in a new tab |
+| `service` | string | none | Any service | Service to call (e.g. `media_player.media_play_pause`) when `action` defined as `call-service` |
+| `service_data` | object | none | Any service data | Service data to include (e.g. `entity_id: media_player.bedroom`)|
+
+
 
 ### Set custom pop-up card for an entire row
 ```
