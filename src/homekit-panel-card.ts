@@ -177,7 +177,16 @@ class HomeKitCard extends LitElement {
                               fan_only: "hass:fan",
                               dry: "hass:water-percent",
                             };
-                            var mode = stateObj.state in modes ? stateObj.state : "unknown-mode";
+                            var mode:any = '';
+                            if(stateObj.state == 'off') {
+                              mode = 'off';
+                            } else if(stateObj.attributes.hvac_action == 'heating') {
+                              mode = 'heat';
+                            } else if(stateObj.attributes.hvac_action == 'idle') {
+                              mode = 'idle';
+                            } else {
+                              mode = stateObj.state in modes ? stateObj.state : "unknown-mode";
+                            }
                             return stateObj ? html`
                               <homekit-card-item>
                                 <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
@@ -514,15 +523,15 @@ class HomeKitCard extends LitElement {
   static get styles() {
     return css`
       :host {
-        --auto-color: green;
+        --auto-color: #EE7600;
         --eco-color: springgreen;
         --cool-color: #2b9af9;
-        --heat-color: #ff8100;
+        --heat-color: #EE7600;
         --manual-color: #44739e;
-        --off-color: #8a8a8a;
+        --off-color: lightgrey;
         --fan_only-color: #8a8a8a;
         --dry-color: #efbd07;
-        --idle-color: #8a8a8a;
+        --idle-color: #00CC66;
         --unknown-color: #bac;
       }
       .card-title {
