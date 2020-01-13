@@ -50,6 +50,7 @@ resources:
   useTemperature: false // use temperature of a light for icon color on tile, default: false
   breakOnMobile: true // On mobile show max 3 tiles on a row, default false -> horizontal scrollable row of tiles
   titleColor: "#FFF" // Overwrite the color of the title if you don't use this the theme color is used
+  horizontalScroll: true // Tiles will automatically go to a second row if it doesn't find on the screen if you set this to true the row will be horizontal scrollable and the tiles will stay in 1 row.
   entities:
 ```
 

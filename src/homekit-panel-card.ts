@@ -50,18 +50,19 @@ class HomeKitCard extends LitElement {
 
   render() {
     var rowTitleColor = this.config.titleColor ? this.config.titleColor : false;
+    var horizontalScroll = "horizontalScroll" in this.config ? this.config.fullscreen : false;
     return html`
     <div class="container" >
       ${this.config.home ? html `
           <div class="header">
-              ${this.config.title ? html `<h1>${this.config.title}</h1>`: html ``}
+              ${this.config.title ? html `<h1 style="${rowTitleColor ? 'color:'+rowTitleColor : ''}">${this.config.title}</h1>`: html ``}
           </div>
       `: html ``}
       ${this.config.entities.map(row => {
           var entityCount = 0;
           return html`
               <div class="card-title" style="${rowTitleColor ? 'color:'+rowTitleColor : ''}">${row.title}</div>
-                  <div class="homekit-card">
+                  <div class="homekit-card${horizontalScroll === true ? ' scroll': ''}">
                       ${row.entities.map(ent => {
                         if(!ent.card && !ent.custom) {
                           var offStates = ['off', 'unavailable'];
@@ -229,9 +230,10 @@ class HomeKitCard extends LitElement {
                           }
                         } else if(ent.card && !ent.custom) {
                           entityCount++;
-                          return html`
+                          if(ent.tap_action) {
+                            return html`
                             <homekit-card-item>
-                              <homekit-button class="button on${ent.noPadding ? ' no-padding': ''}">
+                              <homekit-button class="button on${ent.noPadding ? ' no-padding': ''}" @action=${(ev) => this._handleClick(ev, null, ent, "card", row)}>
                                   <div class="button-inner">
                                     <card-maker nohass data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
                                     </card-maker>
@@ -240,6 +242,19 @@ class HomeKitCard extends LitElement {
                             </<homekit-card-item>
                             ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
                           `
+                          } else {
+                            return html`
+                              <homekit-card-item>
+                                <homekit-button class="button on${ent.noPadding ? ' no-padding': ''}">
+                                    <div class="button-inner">
+                                      <card-maker nohass data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
+                                      </card-maker>
+                                    </div>
+                                </homekit-button>
+                              </<homekit-card-item>
+                              ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                            `
+                          }
                         } else if(ent.custom) {
                           entityCount++;
                           return html`
@@ -350,6 +365,10 @@ class HomeKitCard extends LitElement {
       if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
         this._customAction(entity.tap_action)
       }
+    } else if(type == "card") { 
+      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
+        this._customAction(entity.tap_action)
+      }
     } else {
       if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
         this._customAction(entity.tap_action)
@@ -364,9 +383,7 @@ class HomeKitCard extends LitElement {
     switch (tapAction.action) {
       case "more-info":
         if (tapAction.entity || tapAction.camera_image) {
-          fireEvent(window, "hass-more-info", {
-            entityId: tapAction.entity ? tapAction.entity : tapAction.camera_image!,
-          });
+          moreInfo(tapAction.entity ? tapAction.entity : tapAction.camera_image!);
         }
         break;
       case "navigate":
@@ -542,6 +559,10 @@ class HomeKitCard extends LitElement {
           padding-bottom:10px;
       }
       .homekit-card {
+        overflow:hidden;
+        white-space: initial;
+      }
+      .homekit-card.scroll {
         overflow-x: auto;
         overflow-y: hidden;
         white-space: nowrap;
@@ -631,6 +652,7 @@ class HomeKitCard extends LitElement {
         color: rgba(0, 0, 0, 0.4);
         text-transform: capitalize;
         float: left;
+        white-space: nowrap;
       }
 
       homekit-button .state .previous {
