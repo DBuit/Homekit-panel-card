@@ -77,6 +77,7 @@ You can configure some configuration for an specific entity. These are all optio
 - offStates, default "off" and "unavailable".
 - state, besides the state of the entity a second state value can be shown next to it. (For climates the state is used in the temperature circle instead of the current temperature value of the climate entity. this is shown instead of an icon)
 - tap_action, can be used to customize the action on tap/click (lights and switches have already a tap action) other entities only have longpress/hold action to open pop-up this configuration can add an tap action how to configure see [here](#tap_action-options)
+- offIcon, if you set an offIcon than this icon will be showed when the entity state is equal to an state in the offStates (default off or unavailable).
 
 ```
 - title: Sensors
