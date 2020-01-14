@@ -335,3 +335,5 @@ If you don't want to use the same pop-up card for every entity in a row you can 
 ![desktop home screenshot](screenshot-home.png "Desktop home screenshot")
 ![desktop screenshot 2](screenshot.png "Desktop screenshot 2")
 ![mobile screenshot 2](screenshot-mobile.png "Mobile screenshot 2")
+
+

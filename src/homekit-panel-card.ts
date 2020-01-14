@@ -49,7 +49,6 @@ class HomeKitCard extends LitElement {
       config.breakOnMobile = false;
     }
     this.config = config;
-    this._renderRules();
   }
 
   render() {
