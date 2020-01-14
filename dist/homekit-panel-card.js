@@ -1527,11 +1527,48 @@ function popUp(title, card, large=false, style=null, fullscreen=false) {
   return moreInfoEl;
 }
 
+function _deviceID() {
+  const ID_STORAGE_KEY = 'lovelace-player-device-id';
+  if(window['fully'] && typeof fully.getDeviceId === "function")
+    return fully.getDeviceId();
+  if(!localStorage[ID_STORAGE_KEY])
+  {
+    const s4 = () => {
+      return Math.floor((1+Math.random())*100000).toString(16).substring(1);
+    };
+    localStorage[ID_STORAGE_KEY] = `${s4()}${s4()}-${s4()}${s4()}`;
+  }
+  return localStorage[ID_STORAGE_KEY];
+}
+let deviceID = _deviceID();
+
+async function parseTemplate(hass, str, specialData = {}) {
+  if (!hass) hass = hass();
+  if (typeof(specialData === "string")) specialData = {};
+    specialData = Object.assign({
+      user: hass.user.name,
+      browser: deviceID,
+      hash: location.hash.substr(1) || ' ',
+    },
+    specialData);
+
+    for (var k in specialData) {
+      var re = new RegExp(`\\{${k}\\}`, "g");
+      str = str.replace(re, specialData[k]);
+    }
+
+    return hass.callApi("POST", "template", {template: str});
+}
+
 var longPress = document.createElement('long-press');
 document.body.appendChild(longPress);
 var actionHandler = document.createElement('action-handler');
 document.body.appendChild(actionHandler);
 class HomeKitCard extends LitElement {
+    constructor() {
+        super(...arguments);
+        this.renderedRules = [];
+    }
     static get properties() {
         return {
             hass: {},
@@ -1552,6 +1589,7 @@ class HomeKitCard extends LitElement {
             config.breakOnMobile = false;
         }
         this.config = config;
+        this._renderRules();
     }
     render() {
         var rowTitleColor = this.config.titleColor ? this.config.titleColor : false;
@@ -1561,6 +1599,11 @@ class HomeKitCard extends LitElement {
       ${this.config.home ? html `
           <div class="header">
               ${this.config.title ? html `<h1 style="${rowTitleColor ? 'color:' + rowTitleColor : ''}">${this.config.title}</h1>` : html ``}
+              <ul>
+                ${this.renderedRules.map(rule => {
+            return html `<li>${rule}</li>`;
+        })}
+              </ul>
           </div>
       ` : html ``}
       ${this.config.entities.map(row => {
@@ -1830,6 +1873,19 @@ class HomeKitCard extends LitElement {
             }
         });
     }
+    updated() {
+        this._renderRules();
+    }
+    _renderRules() {
+        if (this.config.home === true && this.config.rules) {
+            parseTemplate(this.hass, this.config.rules).then((c) => {
+                var result = c.match(/<li>(.*?)<\/li>/g).map(function (val) {
+                    return val.replace(/<\/?li>/g, '');
+                });
+                this.renderedRules = result;
+            });
+        }
+    }
     _calculateTime(lastUpdated) {
         const currentDate = new Date();
         const lastDate = new Date(lastUpdated);
@@ -1963,7 +2019,7 @@ class HomeKitCard extends LitElement {
                 "margin": 0,
                 "--iron-icon-fill-color": "#FFF"
             };
-            popUp('test', popUpCard, false, popUpStyle);
+            popUp('', popUpCard, false, popUpStyle);
         }
         else {
             moreInfo(stateObj.entity_id);
@@ -2098,6 +2154,19 @@ class HomeKitCard extends LitElement {
           margin-left: 4px;
           font-size: 32px;
           font-weight: 300;
+      }
+
+      .header ul {
+        margin:0 0 0 4px;
+        padding: 0 16px 0 0;
+        list-style:none;
+      }
+      
+      .header ul li {
+        display:block;
+        color:#FFF;
+        font-size:20px;
+        font-weight:300;
       }
       
       .button {

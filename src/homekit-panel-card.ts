@@ -14,6 +14,8 @@ import { cardTools } from "card-tools/src/main";
 import { bindActionHandler } from "card-tools/src/action";
 import { popUp } from "card-tools/src/popup";
 import { moreInfo } from "card-tools/src/more-info";
+import {subscribeRenderTemplate} from "card-tools/src/templates";
+import {parseTemplate} from "card-tools/src/templates.js";
 
 var longPress = document.createElement('long-press');
 document.body.appendChild(longPress);
@@ -25,6 +27,7 @@ class HomeKitCard extends LitElement {
   config: any;
   hass: any;
   shadowRoot: any;
+  renderedRules: any = [];
 
   static get properties() {
     return {
@@ -46,6 +49,7 @@ class HomeKitCard extends LitElement {
       config.breakOnMobile = false;
     }
     this.config = config;
+    this._renderRules();
   }
 
   render() {
@@ -56,6 +60,11 @@ class HomeKitCard extends LitElement {
       ${this.config.home ? html `
           <div class="header">
               ${this.config.title ? html `<h1 style="${rowTitleColor ? 'color:'+rowTitleColor : ''}">${this.config.title}</h1>`: html ``}
+              <ul>
+                ${this.renderedRules.map(rule => {
+                  return html`<li>${rule}</li>`;
+                })}
+              </ul>
           </div>
       `: html ``}
       ${this.config.entities.map(row => {
@@ -320,6 +329,21 @@ class HomeKitCard extends LitElement {
     });
   }
 
+  updated() {
+    this._renderRules();
+  }
+
+  _renderRules() {
+    if(this.config.home === true && this.config.rules) {
+      parseTemplate(this.hass, this.config.rules).then((c) => {
+        var result = c.match(/<li>(.*?)<\/li>/g).map(function(val){
+          return val.replace(/<\/?li>/g,'');
+        });
+        this.renderedRules = result;
+      });
+    }
+  }
+
   _calculateTime(lastUpdated){
     const currentDate = new Date();
     const lastDate = new Date(lastUpdated);
@@ -449,7 +473,7 @@ class HomeKitCard extends LitElement {
           "margin": 0,
           "--iron-icon-fill-color": "#FFF"
       }
-      popUp('test', popUpCard, false, popUpStyle);
+      popUp('', popUpCard, false, popUpStyle);
     } else {
       moreInfo(stateObj.entity_id)
     }
@@ -587,6 +611,19 @@ class HomeKitCard extends LitElement {
           margin-left: 4px;
           font-size: 32px;
           font-weight: 300;
+      }
+
+      .header ul {
+        margin:0 0 0 4px;
+        padding: 0 16px 0 0;
+        list-style:none;
+      }
+      
+      .header ul li {
+        display:block;
+        color:#FFF;
+        font-size:20px;
+        font-weight:300;
       }
       
       .button {
