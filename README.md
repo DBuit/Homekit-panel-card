@@ -17,8 +17,6 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 # TO DO
 
 - Multiple columns (we now got rows with a title)
-- Add more options for home like notifications, which entities are on, calendar events
-- Add scenes till/options
 
 **Implemented**
 
@@ -26,6 +24,7 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 - Add HACS support
 - Add custom tap actions
 - Combine entities
+- Add more options for home like notifications, which entities are on for example
 
 You can now render other lovelace cards like mini-graph-card inside a tile [See how to use this](#render-other-lovelace-cards)
 
@@ -51,6 +50,13 @@ resources:
   breakOnMobile: true // On mobile show max 3 tiles on a row, default false -> horizontal scrollable row of tiles
   titleColor: "#FFF" // Overwrite the color of the title if you don't use this the theme color is used
   horizontalScroll: true // Tiles will automatically go to a second row if it doesn't find on the screen if you set this to true the row will be horizontal scrollable and the tiles will stay in 1 row.
+  rules: | // Rules can be templates and will be displayed if home == true and can be used to show stuff like how many lights are on or i use it to show if i have to put my trashcan outside today.
+    {% if "Vandaag" in states('sensor.blink_gft') %} <li>Vandaag groenebak aan de straat</li> {% endif %}
+    {% if "Vandaag" in states('sensor.blink_papier') %} <li>Vandaag oudpapier aan de straat</li> {% endif %}
+    {% if "Vandaag" in states('sensor.blink_pmd') %} <li>Vandaag plastic aan de straat</li> {% endif %}
+    {% if "Vandaag" in states('sensor.blink_restafval') %} <li>Vandaag grijzebak aan de straat</li> {% endif %}
+    {% if states('sensor.current_lights_on') | float > 0 %} <li>{{states('sensor.current_lights_on')}} lampen aan</li> {% endif %}
+    {% if states('sensor.current_media_players_on') | float > 0 %} <li>{{states('sensor.current_media_players_on')}} speakers aan</li> {% endif %}
   entities:
 ```
 
@@ -329,5 +335,3 @@ If you don't want to use the same pop-up card for every entity in a row you can 
 ![desktop home screenshot](screenshot-home.png "Desktop home screenshot")
 ![desktop screenshot 2](screenshot.png "Desktop screenshot 2")
 ![mobile screenshot 2](screenshot-mobile.png "Mobile screenshot 2")
-
-
