@@ -14,6 +14,8 @@ import { cardTools } from "card-tools/src/main";
 import { bindActionHandler } from "card-tools/src/action";
 import { popUp } from "card-tools/src/popup";
 import { moreInfo } from "card-tools/src/more-info";
+import {subscribeRenderTemplate} from "card-tools/src/templates";
+import {parseTemplate} from "card-tools/src/templates.js";
 
 var longPress = document.createElement('long-press');
 document.body.appendChild(longPress);
@@ -25,6 +27,7 @@ class HomeKitCard extends LitElement {
   config: any;
   hass: any;
   shadowRoot: any;
+  renderedRules: any = [];
 
   static get properties() {
     return {
@@ -50,18 +53,24 @@ class HomeKitCard extends LitElement {
 
   render() {
     var rowTitleColor = this.config.titleColor ? this.config.titleColor : false;
+    var horizontalScroll = "horizontalScroll" in this.config ? this.config.fullscreen : false;
     return html`
     <div class="container" >
       ${this.config.home ? html `
           <div class="header">
-              ${this.config.title ? html `<h1>${this.config.title}</h1>`: html ``}
+              ${this.config.title ? html `<h1 style="${rowTitleColor ? 'color:'+rowTitleColor : ''}">${this.config.title}</h1>`: html ``}
+              <ul>
+                ${this.renderedRules.map(rule => {
+                  return html`<li>${rule}</li>`;
+                })}
+              </ul>
           </div>
       `: html ``}
       ${this.config.entities.map(row => {
           var entityCount = 0;
           return html`
               <div class="card-title" style="${rowTitleColor ? 'color:'+rowTitleColor : ''}">${row.title}</div>
-                  <div class="homekit-card">
+                  <div class="homekit-card${horizontalScroll === true ? ' scroll': ''}">
                       ${row.entities.map(ent => {
                         if(!ent.card && !ent.custom) {
                           var offStates = ['off', 'unavailable'];
@@ -90,7 +99,7 @@ class HomeKitCard extends LitElement {
                                   <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                       <div class="button-inner">
                                         <span class="icon" style="${!offStates.includes(stateObj.state) ? 'color:'+color+';' : ''}">
-                                          <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin': ""}"/>
+                                          <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin': ""}"/>
                                         </span>
                                         <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                         <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">
@@ -111,7 +120,7 @@ class HomeKitCard extends LitElement {
                                 <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                     <div class="button-inner">
                                       <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}">
-                                        <ha-icon icon="${ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
+                                        <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                       </span>
                                       <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                       <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">
@@ -131,7 +140,7 @@ class HomeKitCard extends LitElement {
                                 <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                     <div class="button-inner">
                                       <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}">
-                                        <ha-icon icon="${ent.icon || stateObj.attributes.icon}" />
+                                        <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                       </span>
                                       <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                       <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">
@@ -213,7 +222,7 @@ class HomeKitCard extends LitElement {
                                 <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                     <div class="button-inner">
                                       <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}">
-                                        <ha-icon icon="${ent.icon || stateObj.attributes.icon}" />
+                                        <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                       </span>
                                       <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                       <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">
@@ -229,9 +238,10 @@ class HomeKitCard extends LitElement {
                           }
                         } else if(ent.card && !ent.custom) {
                           entityCount++;
-                          return html`
+                          if(ent.tap_action) {
+                            return html`
                             <homekit-card-item>
-                              <homekit-button class="button on${ent.noPadding ? ' no-padding': ''}">
+                              <homekit-button class="button on${ent.noPadding ? ' no-padding': ''}" @action=${(ev) => this._handleClick(ev, null, ent, "card", row)}>
                                   <div class="button-inner">
                                     <card-maker nohass data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
                                     </card-maker>
@@ -240,6 +250,19 @@ class HomeKitCard extends LitElement {
                             </<homekit-card-item>
                             ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
                           `
+                          } else {
+                            return html`
+                              <homekit-card-item>
+                                <homekit-button class="button on${ent.noPadding ? ' no-padding': ''}">
+                                    <div class="button-inner">
+                                      <card-maker nohass data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
+                                      </card-maker>
+                                    </div>
+                                </homekit-button>
+                              </<homekit-card-item>
+                              ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                            `
+                          }
                         } else if(ent.custom) {
                           entityCount++;
                           return html`
@@ -305,6 +328,21 @@ class HomeKitCard extends LitElement {
     });
   }
 
+  updated() {
+    this._renderRules();
+  }
+
+  _renderRules() {
+    if(this.config.home === true && this.config.rules) {
+      parseTemplate(this.hass, this.config.rules).then((c) => {
+        var result = c.match(/<li>(.*?)<\/li>/g).map(function(val){
+          return val.replace(/<\/?li>/g,'');
+        });
+        this.renderedRules = result;
+      });
+    }
+  }
+
   _calculateTime(lastUpdated){
     const currentDate = new Date();
     const lastDate = new Date(lastUpdated);
@@ -331,50 +369,26 @@ class HomeKitCard extends LitElement {
       if (ev.detail.action == "tap" || ev.detail.action == "double_tap") {
         this._toggle(state, entity.service);
       } else if (ev.detail.action == "hold") {
-          if((row && row.popup) || entity.popup) {
-              if(row.popup) {
-                  var popUpCard = Object.assign({}, row.popup, { entity: state.entity_id });
-                  if(entity.popupExtend) {
-                      var popUpCard = Object.assign({}, popUpCard, entity.popupExtend);
-                  }
-              } else {
-                  var popUpCard = Object.assign({}, entity.popup, { entity: state.entity_id });
-              }
-              var popUpStyle = {
-                  "position": "fixed",
-                  "z-index": 999,
-                  "top": 0,
-                  "left": 0,
-                  "height": "100%",
-                  "width": "100%",
-                  "display": "block",
-                  "align-items": "center",
-                  "justify-content": "center",
-                  "background": "rgba(0, 0, 0, 0.8)",
-                  "flex-direction": "column",
-                  "margin": 0,
-                  "--iron-icon-fill-color": "#FFF"
-              }
-              popUp('test', popUpCard, false, popUpStyle);
-          } else {
-              this._hold(state);
-          }
-          
+          this._hold(state, entity, row);
       }
     } else if(type == "sensor" || type == "binary_sensor") {
       if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
         this._customAction(entity.tap_action)
       }
       if (ev.detail.action == "hold") {
-        this._hold(state);
+        this._hold(state, entity, row);
       }
     } else if(type == "switch" || type == "input_boolean") {
       if (ev.detail.action == "tap" || ev.detail.action == "double_tap") {
         this._toggle(state, entity.service);
       } else if (ev.detail.action == "hold") {
-        this._hold(state);
+        this._hold(state, entity, row);
       }
     } else if(type == "custom") {
+      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
+        this._customAction(entity.tap_action)
+      }
+    } else if(type == "card") { 
       if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
         this._customAction(entity.tap_action)
       }
@@ -383,7 +397,7 @@ class HomeKitCard extends LitElement {
         this._customAction(entity.tap_action)
       }
       if (ev.detail.action == "hold") {
-        this._hold(state);
+        this._hold(state, entity, row);
       } 
     }
   }
@@ -392,9 +406,7 @@ class HomeKitCard extends LitElement {
     switch (tapAction.action) {
       case "more-info":
         if (tapAction.entity || tapAction.camera_image) {
-          fireEvent(window, "hass-more-info", {
-            entityId: tapAction.entity ? tapAction.entity : tapAction.camera_image!,
-          });
+          moreInfo(tapAction.entity ? tapAction.entity : tapAction.camera_image!);
         }
         break;
       case "navigate":
@@ -435,8 +447,35 @@ class HomeKitCard extends LitElement {
     });
   }
 
-  _hold(stateObj) {
-    moreInfo(stateObj.entity_id)
+  _hold(stateObj, entity, row) {
+    if((row && row.popup) || entity.popup) {
+      if(row.popup) {
+          var popUpCard = Object.assign({}, row.popup, { entity: stateObj.entity_id });
+          if(entity.popupExtend) {
+              var popUpCard = Object.assign({}, popUpCard, entity.popupExtend);
+          }
+      } else {
+          var popUpCard = Object.assign({}, entity.popup, { entity: stateObj.entity_id });
+      }
+      var popUpStyle = {
+          "position": "fixed",
+          "z-index": 999,
+          "top": 0,
+          "left": 0,
+          "height": "100%",
+          "width": "100%",
+          "display": "block",
+          "align-items": "center",
+          "justify-content": "center",
+          "background": "rgba(0, 0, 0, 0.8)",
+          "flex-direction": "column",
+          "margin": 0,
+          "--iron-icon-fill-color": "#FFF"
+      }
+      popUp('', popUpCard, false, popUpStyle);
+    } else {
+      moreInfo(stateObj.entity_id)
+    }
   }
   
   _getUnit(measure) {
@@ -543,6 +582,10 @@ class HomeKitCard extends LitElement {
           padding-bottom:10px;
       }
       .homekit-card {
+        overflow:hidden;
+        white-space: initial;
+      }
+      .homekit-card.scroll {
         overflow-x: auto;
         overflow-y: hidden;
         white-space: nowrap;
@@ -567,6 +610,19 @@ class HomeKitCard extends LitElement {
           margin-left: 4px;
           font-size: 32px;
           font-weight: 300;
+      }
+
+      .header ul {
+        margin:0 0 0 4px;
+        padding: 0 16px 0 0;
+        list-style:none;
+      }
+      
+      .header ul li {
+        display:block;
+        color:#FFF;
+        font-size:20px;
+        font-weight:300;
       }
       
       .button {
@@ -632,6 +688,7 @@ class HomeKitCard extends LitElement {
         color: rgba(0, 0, 0, 0.4);
         text-transform: capitalize;
         float: left;
+        white-space: nowrap;
       }
 
       homekit-button .state .previous {
@@ -682,10 +739,15 @@ class HomeKitCard extends LitElement {
 
       homekit-button .icon.climate {
         color:#FFF;
-        height: 35px;
-        width: 35px;
-        border-radius: 20px;
         background-color: rgba(0,255,0, 1);
+        font-size: 16px;
+        font-weight: 400;
+        text-align: center;
+        line-height: 45px;
+        padding: 0;
+        border-radius: 100%;
+        height: 45px;
+        width: 45px;
       }
       homekit-button .icon.climate.temp.heat_cool {
         background-color: var(--auto-color);

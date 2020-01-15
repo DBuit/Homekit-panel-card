@@ -1,3 +1,5 @@
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
+
 # homekit-card
 Homekit style Home Assistant card
 
@@ -14,11 +16,11 @@ For lights i have developed a separate card that also has the style of homekit, 
 
 Do you have ideas for a custom pop-up create an issue then I can see if I can help with this :)
 
+<a href="https://www.buymeacoffee.com/ZrUK14i" target="_blank"><img height="41px" width="167px" src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee"></a>
+
 # TO DO
 
 - Multiple columns (we now got rows with a title)
-- Add more options for home like notifications, which entities are on, calendar events
-- Add scenes till/options
 
 **Implemented**
 
@@ -26,6 +28,7 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 - Add HACS support
 - Add custom tap actions
 - Combine entities
+- Add more options for home like notifications, which entities are on for example
 
 You can now render other lovelace cards like mini-graph-card inside a tile [See how to use this](#render-other-lovelace-cards)
 
@@ -50,6 +53,14 @@ resources:
   useTemperature: false // use temperature of a light for icon color on tile, default: false
   breakOnMobile: true // On mobile show max 3 tiles on a row, default false -> horizontal scrollable row of tiles
   titleColor: "#FFF" // Overwrite the color of the title if you don't use this the theme color is used
+  horizontalScroll: true // Tiles will automatically go to a second row if it doesn't find on the screen if you set this to true the row will be horizontal scrollable and the tiles will stay in 1 row.
+  rules: | // Rules can be templates and will be displayed if home == true and can be used to show stuff like how many lights are on or i use it to show if i have to put my trashcan outside today.
+    {% if "Vandaag" in states('sensor.blink_gft') %} <li>Vandaag groenebak aan de straat</li> {% endif %}
+    {% if "Vandaag" in states('sensor.blink_papier') %} <li>Vandaag oudpapier aan de straat</li> {% endif %}
+    {% if "Vandaag" in states('sensor.blink_pmd') %} <li>Vandaag plastic aan de straat</li> {% endif %}
+    {% if "Vandaag" in states('sensor.blink_restafval') %} <li>Vandaag grijzebak aan de straat</li> {% endif %}
+    {% if states('sensor.current_lights_on') | float > 0 %} <li>{{states('sensor.current_lights_on')}} lampen aan</li> {% endif %}
+    {% if states('sensor.current_media_players_on') | float > 0 %} <li>{{states('sensor.current_media_players_on')}} speakers aan</li> {% endif %}
   entities:
 ```
 
@@ -77,6 +88,7 @@ You can configure some configuration for an specific entity. These are all optio
 - offStates, default "off" and "unavailable".
 - state, besides the state of the entity a second state value can be shown next to it. (For climates the state is used in the temperature circle instead of the current temperature value of the climate entity. this is shown instead of an icon)
 - tap_action, can be used to customize the action on tap/click (lights and switches have already a tap action) other entities only have longpress/hold action to open pop-up this configuration can add an tap action how to configure see [here](#tap_action-options)
+- offIcon, if you set an offIcon than this icon will be showed when the entity state is equal to an state in the offStates (default off or unavailable).
 
 ```
 - title: Sensors
