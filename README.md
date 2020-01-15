@@ -16,7 +16,7 @@ For lights i have developed a separate card that also has the style of homekit, 
 
 Do you have ideas for a custom pop-up create an issue then I can see if I can help with this :)
 
-<a href="https://www.buymeacoffee.com/ZrUK14i" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
+<a href="https://www.buymeacoffee.com/ZrUK14i" target="_blank"><img height="41px" width="167px" src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee"></a>
 
 # TO DO
 
