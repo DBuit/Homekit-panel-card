@@ -1,3 +1,5 @@
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
+
 # homekit-card
 Homekit style Home Assistant card
 
@@ -13,6 +15,8 @@ You can have the pop-up open another lovelace card so that you can show other in
 For lights i have developed a separate card that also has the style of homekit, which you can use well in combination with this card. You can find this card here: https://github.com/DBuit/hass-custom-light-popup-card
 
 Do you have ideas for a custom pop-up create an issue then I can see if I can help with this :)
+
+<a href="https://www.buymeacoffee.com/ZrUK14i" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
 
 # TO DO
 
