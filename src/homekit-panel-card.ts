@@ -191,13 +191,14 @@ class HomeKitCard extends LitElement {
   }
   _renderCircleState(ent, stateObj, type) {
     return html`
-      <svg class="circle-state" viewbox="0 0 100 100">
-        <path id="progress" stroke-width="3" stroke="#000" fill="none"
+      <svg class="circle-state" viewbox="0 0 100 100" style="${stateObj.attributes.brightness && !ent.state ? '--percentage:'+(stateObj.attributes.brightness/2.55)
+: ''}">
+        <path id="progress" stroke-width="6" stroke="#aaabad" fill="none"
               d="M50 10
                 a 40 40 0 0 1 0 80
                 a 40 40 0 0 1 0 -80">
         </path>
-        <text id="count" x="50" y="50" fill="#000" text-anchor="middle" dy="7" font-size="20">${this._renderStateValue(ent, stateObj, type)}</text>
+        <text id="count" x="50" y="50" fill="#7d7e80" text-anchor="middle" dy="7" font-size="20">${this._renderStateValue(ent, stateObj, type)}</text>
       </svg>
     `;
   }
@@ -857,7 +858,7 @@ class HomeKitCard extends LitElement {
       }
       
       .button .button-inner .circle-state {
-        stroke-dasharray: 100, 251.2;
+        stroke-dasharray: calc((251.2 / 100) * var(--percentage)), 251.2;
         position:absolute;
         margin:0;
         top:10px;
