@@ -31,6 +31,7 @@ class HomeKitCard extends LitElement {
   rowTitleColor: any;
   horizontalScroll: any;
   enableColumns: any;
+  statePositionTop: any;
 
   static get properties() {
     return {
@@ -58,6 +59,7 @@ class HomeKitCard extends LitElement {
     this.rowTitleColor = this.config.titleColor ? this.config.titleColor : false;
     this.horizontalScroll = "horizontalScroll" in this.config ? this.config.fullscreen : false;
     this.enableColumns = "enableColumns" in this.config ? this.config.enableColumns : false;
+    this.statePositionTop = "statePositionTop" in this.config ? this.config.statePositionTop : false;
   }
 
   render() {
@@ -142,6 +144,88 @@ class HomeKitCard extends LitElement {
     `;
   }
 
+  _renderState(ent, stateObj, offStates, type) {
+    if(type == 'light' && (stateObj.attributes.brightness || ent.state)) {
+      if(this.statePositionTop) {
+        return this._renderCircleState(ent, stateObj, type);
+      } else {
+        return html`
+          <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}">${this._renderStateValue(ent, stateObj, type)}</span>
+        `;
+      }
+    } else if((type == "sensor" || type == "binary_sensor") && stateObj.last_changed) {
+      if(this.statePositionTop) {
+        return this._renderCircleState(ent, stateObj, type);
+      } else {
+        return html`
+          <span class="previous">${this._renderStateValue(ent, stateObj, type)}</span>
+        `;
+      }
+    } else if((type == "switch" || type =="input_boolean") && ent.state) {
+      if(this.statePositionTop) {
+        return this._renderCircleState(ent, stateObj, type);
+      } else {
+        return html`
+          <span class="value on">${this._renderStateValue(ent, stateObj, type)}</span>
+        `;
+      }
+    } else if(type == "climate" && stateObj.attributes.temperature) {
+      if(this.statePositionTop) {
+        return this._renderCircleState(ent, stateObj, type);
+      } else {
+        return html`
+          <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}">${this._renderStateValue(ent, stateObj, type)}</span>
+        `;
+      }
+    } else {
+      if(ent.state) {
+        if(this.statePositionTop) {
+          return this._renderCircleState(ent, stateObj, type);
+        } else {
+          return html`
+            <span class="value on">${this._renderStateValue(ent, stateObj, type)}</span>
+          `;
+        }
+      }
+    }
+  }
+  _renderCircleState(ent, stateObj, type) {
+    return html`
+      <svg class="circle-state" viewbox="0 0 100 100">
+        <path id="progress" stroke-width="3" stroke="#000" fill="none"
+              d="M50 10
+                a 40 40 0 0 1 0 80
+                a 40 40 0 0 1 0 -80">
+        </path>
+        <text id="count" x="50" y="50" fill="#000" text-anchor="middle" dy="7" font-size="20">${this._renderStateValue(ent, stateObj, type)}</text>
+      </svg>
+    `;
+  }
+  _renderStateValue(ent, stateObj, type) {
+    if(type == 'light') {
+      return html`
+        ${stateObj.attributes.brightness && !ent.state ? html`${Math.round(stateObj.attributes.brightness/2.55)}%` : html``}
+        ${ent.state ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+      `;
+    } else if(type == "sensor" || type == "binary_sensor") {
+      return html`
+        ${stateObj.last_changed ? html`${ this._calculateTime(stateObj.last_changed) }`:html``}
+      `;
+    } else if(type == "switch" || type =="input_boolean") {
+      return html`
+        ${ent.state ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+      `;
+    } else if(type == "climate") {
+      return html`
+        ${stateObj.attributes.temperature ? html`${stateObj.attributes.temperature}&#176;` : html``}
+      `;
+    } else {
+      return html`
+      ${ent.state ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+      `;
+    }
+  }
+
   _renderEntities(entities) {
     return html`
       ${entities.map(row => {
@@ -175,16 +259,16 @@ class HomeKitCard extends LitElement {
                           return stateObj ? html`
                               <homekit-card-item>
                                 <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
-                                    <div class="button-inner">
+                                    <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
                                       <span class="icon" style="${!offStates.includes(stateObj.state) ? 'color:'+color+';' : ''}">
                                         <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin': ""}"/>
                                       </span>
                                       <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                       <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">
                                         ${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}
-                                        ${stateObj.attributes.brightness && !ent.state ? html` <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}">${Math.round(stateObj.attributes.brightness/2.55)}%</span>` : html``}
-                                        ${ent.state ? html` <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}">${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}</span>` : html``}
+                                        ${!this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                       </span>
+                                      ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                     </div>
                                 </homekit-button>
                               </homekit-card-item>
@@ -196,15 +280,16 @@ class HomeKitCard extends LitElement {
                           return stateObj ? html`
                             <homekit-card-item>
                               <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
-                                  <div class="button-inner">
+                                  <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}">
                                       <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                     </span>
                                     <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                     <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">
                                       ${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}
-                                      ${stateObj.last_changed ? html`<span class="previous">${ this._calculateTime(stateObj.last_changed) }</span>`:html``}
+                                      ${!this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                     </span>
+                                    ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                   </div>
                               </homekit-button>
                             </<homekit-card-item>
@@ -223,8 +308,9 @@ class HomeKitCard extends LitElement {
                                     <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                     <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">
                                       ${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}
-                                      ${ent.state ? html` <span class="value on">${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}</span>` : html``}
+                                      ${!this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                     </span>
+                                    ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                   </div>
                               </homekit-button>
                             </<homekit-card-item>
@@ -285,8 +371,9 @@ class HomeKitCard extends LitElement {
                                     <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                     <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">
                                       ${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}
-                                      ${stateObj.attributes.temperature ? html` <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}">${stateObj.attributes.temperature}&#176;</span>` : html``}
+                                      ${!this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                     </span>
+                                    ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                   </div>
                               </homekit-button>
                             </<homekit-card-item>
@@ -305,8 +392,9 @@ class HomeKitCard extends LitElement {
                                     <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                     <span class="${offStates.includes(stateObj.state) ? 'state': 'state on'}">
                                       ${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}
-                                      ${ent.state ? html` <span class="value on">${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}</span>` : html``}
+                                      ${!this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                     </span>
+                                    ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                   </div>
                               </homekit-button>
                             </<homekit-card-item>
@@ -388,13 +476,13 @@ class HomeKitCard extends LitElement {
     const diffSecs = Math.round((((diffMs % 86400000) % 3600000) % 60000) / 1000);
 
     if (diffDays > 0) {
-      return diffDays + ' days ago';
+      return this.statePositionTop ? diffDays + 'd' : diffDays + ' days ago';
     } else if (diffHrs > 0) {
-      return diffHrs + ' hours ago';
+      return this.statePositionTop ? diffHrs + 'h' :diffHrs + ' hours ago';
     } else if (diffMins > 0) {
-      return diffMins + ' minutes ago';
+      return this.statePositionTop ? diffMins + 'm' :diffMins + ' minutes ago';
     } else {
-      return diffSecs + ' seconds ago';
+      return this.statePositionTop ? diffSecs + 's' :diffSecs + ' seconds ago';
     }
   }
 
@@ -768,6 +856,16 @@ class HomeKitCard extends LitElement {
         text-transform: lowercase;
       }
       
+      .button .button-inner .circle-state {
+        stroke-dasharray: 100, 251.2;
+        position:absolute;
+        margin:0;
+        top:10px;
+        right:10px;
+        width: 40px;
+        height: 40px;
+      }
+
       homekit-button .state.on {
         color: rgba(0, 0, 0, 1);
       }
