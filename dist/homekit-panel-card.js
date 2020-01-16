@@ -1600,7 +1600,7 @@ class HomeKitCard extends LitElement {
         var _a;
         console.log((_a = this.config) === null || _a === void 0 ? void 0 : _a.rows);
         return html `
-      <div class="container" >
+      <div class="container${this.enableColumns ? ' rows' : ''}" >
         ${this.config.home ? html `
             <div class="header">
                 ${this.config.title ? html `<h1 style="${this.rowTitleColor ? 'color:' + this.rowTitleColor : ''}">${this.config.title}</h1>` : html ``}
@@ -1661,7 +1661,7 @@ class HomeKitCard extends LitElement {
           <div class="row">
             ${row.columns.map(column => {
                 return html `
-                <div class="col">
+                <div class="col${column.tileOnRow ? ' fixed' : ''}" style="${column.tileOnRow ? '--tile-on-row:' + column.tileOnRow : ''}">
                   ${this._renderEntities(column.entities)}
                 </div>
               `;
@@ -1670,8 +1670,6 @@ class HomeKitCard extends LitElement {
         `;
         })}
     `;
-    }
-    _renderColumns() {
     }
     _renderEntities(entities) {
         return html `
@@ -2157,7 +2155,8 @@ class HomeKitCard extends LitElement {
       }
 
       .row {
-        display:flex;
+        display: flex;
+        flex-wrap: wrap;
         flex-direction:row;
         padding-top:50px;
       }
@@ -2166,10 +2165,11 @@ class HomeKitCard extends LitElement {
       }
 
       .row .col {
-        padding-left:50px;
+        padding:0 25px;
       }
-      .row .col:first-child {
-        padding-left:35px;
+      .row .col.fixed {
+        min-width: calc(var(--tile-on-row) * 129px);
+        width: calc(var(--tile-on-row) * 129px);
       }
       
       .homekit-card {
@@ -2190,6 +2190,9 @@ class HomeKitCard extends LitElement {
           white-space: nowrap;
           width: 100%;
           box-sizing: border-box;
+      }
+      .container.rows {
+        padding: 5px 0;
       }
       
       .header {
@@ -2443,6 +2446,15 @@ class HomeKitCard extends LitElement {
         }
         homekit-button .value.on {
           font-size:10px;
+        }
+        .row {
+          padding:0;
+          flex-direction:column;
+        }
+        .row .col, .row .col.fixed {
+          width: auto;
+          min-width: auto;
+          padding: 0;
         }
       }
 
