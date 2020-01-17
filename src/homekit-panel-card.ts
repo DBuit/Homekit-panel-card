@@ -52,9 +52,6 @@ class HomeKitCard extends LitElement {
     if(!config.useBrightness) {
       config.useBrightness = true;
     }
-    if(!config.breakOnMobile) {
-      config.breakOnMobile = false;
-    }
     this.config = config;
     this.rowTitleColor = this.config.titleColor ? this.config.titleColor : false;
     this.horizontalScroll = "horizontalScroll" in this.config ? this.config.fullscreen : false;
@@ -63,7 +60,6 @@ class HomeKitCard extends LitElement {
   }
 
   render() {
-    console.log(this.config?.rows);
     return html`
       <div class="container${this.enableColumns ? ' rows': ''}" >
         ${this.config.home ? html `
@@ -191,13 +187,14 @@ class HomeKitCard extends LitElement {
   }
   _renderCircleState(ent, stateObj, type) {
     return html`
-      <svg class="circle-state" viewbox="0 0 100 100">
-        <path id="progress" stroke-width="3" stroke="#000" fill="none"
+      <svg class="circle-state" viewbox="0 0 100 100" style="${stateObj.attributes.brightness && !ent.state ? '--percentage:'+(stateObj.attributes.brightness/2.55)
+: ''}">
+        <path id="progress" stroke-width="3" stroke="#aaabad" fill="none"
               d="M50 10
                 a 40 40 0 0 1 0 80
                 a 40 40 0 0 1 0 -80">
         </path>
-        <text id="count" x="50" y="50" fill="#000" text-anchor="middle" dy="7" font-size="20">${this._renderStateValue(ent, stateObj, type)}</text>
+        <text id="count" x="50" y="50" fill="#7d7e80" text-anchor="middle" dy="7" font-size="20">${this._renderStateValue(ent, stateObj, type)}</text>
       </svg>
     `;
   }
@@ -260,7 +257,7 @@ class HomeKitCard extends LitElement {
                               <homekit-card-item>
                                 <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                     <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
-                                      <span class="icon" style="${!offStates.includes(stateObj.state) ? 'color:'+color+';' : ''}">
+                                      <span class="icon${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin':''}" style="${!offStates.includes(stateObj.state) ? 'color:'+color+';' : ''}">
                                         <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin': ""}"/>
                                       </span>
                                       <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
@@ -272,7 +269,7 @@ class HomeKitCard extends LitElement {
                                     </div>
                                 </homekit-button>
                               </homekit-card-item>
-                              ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                              ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                               `
                             : this._notFound(ent);
                         } else if(type == "sensor" || type == "binary_sensor"){
@@ -281,7 +278,7 @@ class HomeKitCard extends LitElement {
                             <homekit-card-item>
                               <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                   <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
-                                    <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}">
+                                    <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin':''}">
                                       <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                     </span>
                                     <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
@@ -293,7 +290,7 @@ class HomeKitCard extends LitElement {
                                   </div>
                               </homekit-button>
                             </<homekit-card-item>
-                            ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                            ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                           `
                           : this._notFound(ent);
                         } else if(type == "switch" || type =="input_boolean") {
@@ -302,7 +299,7 @@ class HomeKitCard extends LitElement {
                             <homekit-card-item>
                               <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                   <div class="button-inner">
-                                    <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}">
+                                    <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin':''}">
                                       <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                     </span>
                                     <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
@@ -314,14 +311,14 @@ class HomeKitCard extends LitElement {
                                   </div>
                               </homekit-button>
                             </<homekit-card-item>
-                            ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                            ${entityCount == 3  ? html`<div class="break"></div>`:html``}
                           `
                           : this._notFound(ent);
                         
                         } else if(type == "weather") {
                           entityCount = entityCount + 2;
                           return stateObj ? html`
-                            ${entityCount == 4 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                            ${entityCount == 4 ? html`<div class="break"></div>`:html``}
                             <homekit-card-item>
                               <homekit-button class="button size-2 on" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                   <div class="button-inner">
@@ -337,7 +334,7 @@ class HomeKitCard extends LitElement {
                                   </div>
                               </homekit-button>
                             </<homekit-card-item>
-                            ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                            ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                           `
                           : this._notFound(ent);
                         } else if(type == "climate") {
@@ -377,7 +374,7 @@ class HomeKitCard extends LitElement {
                                   </div>
                               </homekit-button>
                             </<homekit-card-item>
-                            ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                            ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                           `
                           : this._notFound(ent);
                         } else {
@@ -386,7 +383,7 @@ class HomeKitCard extends LitElement {
                             <homekit-card-item>
                               <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
                                   <div class="button-inner">
-                                    <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}">
+                                    <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin':''}">
                                       <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                     </span>
                                     <span class="${offStates.includes(stateObj.state) ? 'name': 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
@@ -398,7 +395,7 @@ class HomeKitCard extends LitElement {
                                   </div>
                               </homekit-button>
                             </<homekit-card-item>
-                            ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                            ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                           `
                           : this._notFound(ent);
                         }
@@ -414,7 +411,7 @@ class HomeKitCard extends LitElement {
                                 </div>
                             </homekit-button>
                           </<homekit-card-item>
-                          ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                          ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                         `
                         } else {
                           return html`
@@ -426,7 +423,7 @@ class HomeKitCard extends LitElement {
                                   </div>
                               </homekit-button>
                             </<homekit-card-item>
-                            ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                            ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                           `
                         }
                       } else if(ent.custom) {
@@ -435,7 +432,7 @@ class HomeKitCard extends LitElement {
                         <homekit-card-item>
                           <homekit-button class="button on" @action=${(ev) => this._handleClick(ev, null, ent, "custom", row)}>
                               <div class="button-inner">
-                                <span class="icon on">
+                                <span class="icon on${ent.spin === true ? ' spin':''}">
                                   <ha-icon icon="${ent.icon}" />
                                 </span>
                                 <span class="name on">${ent.name}</span>
@@ -443,7 +440,7 @@ class HomeKitCard extends LitElement {
                               </div>
                           </homekit-button>
                         </<homekit-card-item>
-                        ${entityCount == 3 && this.config.breakOnMobile ? html`<div class="break"></div>`:html``}
+                        ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                         `
                       }
                     })}
@@ -487,39 +484,84 @@ class HomeKitCard extends LitElement {
   }
 
   _handleClick(ev, state, entity, type, row) {
+    console.log(ev.detail.action);
     if(type == "light") {
       if (ev.detail.action == "tap" || ev.detail.action == "double_tap") {
+        if(entity.double_tap_action && ev.detail.action == "double_tap") {
+          this._customAction(entity.double_tap_action)
+        } else {
         this._toggle(state, entity.service);
+        }
       } else if (ev.detail.action == "hold") {
+        if(entity.hold_action) {
+          this._customAction(entity.hold_action)
+        } else {
           this._hold(state, entity, row);
+        }
       }
     } else if(type == "sensor" || type == "binary_sensor") {
-      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
-        this._customAction(entity.tap_action)
+      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap")) {
+        if(ev.detail.action == "double_tap" && entity.double_tap_action) {
+          this._customAction(entity.double_tap_action)
+        } else if(entity.tap_action) {
+          this._customAction(entity.tap_action)
+        }
       }
       if (ev.detail.action == "hold") {
-        this._hold(state, entity, row);
+        if(entity.hold_action) {
+          this._customAction(entity.hold_action)
+        } else {
+          this._hold(state, entity, row);
+        }
       }
     } else if(type == "switch" || type == "input_boolean") {
       if (ev.detail.action == "tap" || ev.detail.action == "double_tap") {
-        this._toggle(state, entity.service);
+        if(ev.detail.action == "double_tap" && entity.double_tap_action) {
+          this._customAction(entity.double_tap_action)
+        } else {
+          this._toggle(state, entity.service);
+        }
       } else if (ev.detail.action == "hold") {
-        this._hold(state, entity, row);
+        if(entity.hold_action) {
+          this._customAction(entity.hold_action)
+        } else {
+          this._hold(state, entity, row);
+        }
       }
     } else if(type == "custom") {
-      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
-        this._customAction(entity.tap_action)
+      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap")) {
+        if(ev.detail.action == "double_tap" && entity.double_tap_action) {
+          this._customAction(entity.double_tap_action)
+        } else if(entity.tap_action) {
+          this._customAction(entity.tap_action)
+        }
+      } else if (ev.detail.action == "hold" && entity.hold_action) {
+        console.log('custom hold', entity.hold_action);
+        this._customAction(entity.hold_action)
       }
     } else if(type == "card") { 
-      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
-        this._customAction(entity.tap_action)
+      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap")) {
+        if(ev.detail.action == "double_tap" && entity.double_tap_action) {
+          this._customAction(entity.double_tap_action)
+        } else if(entity.tap_action) {
+          this._customAction(entity.tap_action)
+        }
+      } else if (ev.detail.action == "hold" && entity.hold_action) {
+        this._customAction(entity.hold_action)
       }
     } else {
-      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap") && entity.tap_action) {
-        this._customAction(entity.tap_action)
-      }
-      if (ev.detail.action == "hold") {
-        this._hold(state, entity, row);
+      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap")) {
+        if(ev.detail.action == "double_tap" && entity.double_tap_action) {
+          this._customAction(entity.double_tap_action)
+        } else if(entity.tap_action) {
+          this._customAction(entity.tap_action)
+        }
+      } else if (ev.detail.action == "hold") {
+        if(entity.hold_action) {
+          this._customAction(entity.hold_action)
+        } else {
+          this._hold(state, entity, row);
+        }
       } 
     }
   }
@@ -744,9 +786,11 @@ class HomeKitCard extends LitElement {
       .container.rows {
         padding: 5px 0;
       }
-      
+      .container.rows .header {
+        padding: 0 25px;
+      }
       .header {
-          min-height: 250px;
+          min-height: 150px;
           margin-bottom: 30px;
       }
       .header h1 {
@@ -857,7 +901,7 @@ class HomeKitCard extends LitElement {
       }
       
       .button .button-inner .circle-state {
-        stroke-dasharray: 100, 251.2;
+        stroke-dasharray: calc((251.2 / 100) * var(--percentage)), 251.2;
         position:absolute;
         margin:0;
         top:10px;
@@ -879,7 +923,9 @@ class HomeKitCard extends LitElement {
         width: 40px;
         color: rgba(0, 0, 0, 0.3);
         font-size: 30px;
-        padding-top:5px;
+        transform-origin: 50% 50%;
+        line-height: 40px;
+        text-align: center;
       }
 
       homekit-button .icon ha-icon {
@@ -1020,6 +1066,22 @@ class HomeKitCard extends LitElement {
 
       card-maker {
         height:100%;
+      }
+
+      .spin {      
+        animation-name: spin;
+        animation-duration: 1000ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear; 
+      }
+
+      @keyframes spin {
+        from {
+            transform:rotate(0deg);
+        }
+        to {
+            transform:rotate(360deg);
+        }
       }
     `;
   }
