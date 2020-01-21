@@ -11,17 +11,11 @@ import tinycolor, { TinyColor, isReadable } from '@ctrl/tinycolor';
 import { noChange } from 'lit-html';
 import { LitElement, html, css } from "card-tools/src/lit-element";
 import { cardTools } from "card-tools/src/main";
-import { bindActionHandler } from "card-tools/src/action";
 import { popUp } from "card-tools/src/popup";
 import { moreInfo } from "card-tools/src/more-info";
-import {subscribeRenderTemplate} from "card-tools/src/templates";
-import {parseTemplate} from "card-tools/src/templates.js";
-
-var longPress = document.createElement('long-press');
-document.body.appendChild(longPress);
-
-var actionHandler = document.createElement('action-handler');
-document.body.appendChild(actionHandler); 
+import { subscribeRenderTemplate } from "card-tools/src/templates";
+import { parseTemplate } from "card-tools/src/templates.js";
+import 'hammerjs';
 
 class HomeKitCard extends LitElement {
   config: any;
@@ -32,6 +26,7 @@ class HomeKitCard extends LitElement {
   horizontalScroll: any;
   enableColumns: any;
   statePositionTop: any;
+  doubleTapped = false;
 
   static get properties() {
     return {
@@ -59,6 +54,40 @@ class HomeKitCard extends LitElement {
     this.statePositionTop = "statePositionTop" in this.config ? this.config.statePositionTop : false;
   }
 
+  addHammer(el) {
+    var hammer = new Hammer(el, {});
+    var $this = this;
+    hammer.on("tap doubletap pressup press", function (ev) {
+        ev.preventDefault();
+        var dataset: any = ev.target.dataset;
+        var ent = JSON.parse(dataset.ent);
+        var row = JSON.parse(dataset.row);
+        $this.doubleTapped = false;
+        if(ev.type == 'tap') {
+          $this.doubleTapped = false;
+          var timeoutTime = 300;
+          if(!ent.double_tap_action) {
+            timeoutTime = 0;
+          }
+          setTimeout(function(){
+            if($this.doubleTapped === false) {
+              $this._handleClick(ev.type, ent, dataset.type, row)
+            }
+          }, timeoutTime); 
+        } else {
+          if(ev.type == 'doubletap') {
+            $this.doubleTapped = true;
+          }
+          var dataset: any = ev.target.dataset;
+          if(ev.type != 'pressup') {
+            $this._handleClick(ev.type, ent, dataset.type, row)
+          } else {
+            console.log('CATCH pressup!');
+          }
+        }
+    });
+  }
+
   render() {
     return html`
       <div class="container${this.enableColumns ? ' rows': ''}" >
@@ -82,9 +111,9 @@ class HomeKitCard extends LitElement {
   firstUpdated() {
     var myNodelist = this.shadowRoot.querySelectorAll('homekit-button')
     for (var i = 0; i < myNodelist.length; i++) {
-      bindActionHandler(myNodelist[i], {hasHold: true, hasDoubleClick: true});
+      this.addHammer(myNodelist[i]);
     }
-
+    // this.addHammer(document.querySelector("homekit-button"));
     this.shadowRoot.querySelectorAll("card-maker").forEach(customCard => {
         var card = {
           type: customCard.dataset.card
@@ -254,8 +283,7 @@ class HomeKitCard extends LitElement {
                         if(type == "light"){
                           entityCount++;
                           return stateObj ? html`
-                              <homekit-card-item>
-                                <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                                <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                     <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
                                       <span class="icon${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin':''}" style="${!offStates.includes(stateObj.state) ? 'color:'+color+';' : ''}">
                                         <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin': ""}"/>
@@ -268,15 +296,13 @@ class HomeKitCard extends LitElement {
                                       ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                     </div>
                                 </homekit-button>
-                              </homekit-card-item>
                               ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                               `
                             : this._notFound(ent);
                         } else if(type == "sensor" || type == "binary_sensor"){
                           entityCount++;
                           return stateObj ? html`
-                            <homekit-card-item>
-                              <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                              <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin':''}">
                                       <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
@@ -289,15 +315,13 @@ class HomeKitCard extends LitElement {
                                     ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                   </div>
                               </homekit-button>
-                            </<homekit-card-item>
                             ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                           `
                           : this._notFound(ent);
                         } else if(type == "switch" || type =="input_boolean") {
                           entityCount++;
                           return stateObj ? html`
-                            <homekit-card-item>
-                              <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                              <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin':''}">
                                       <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
@@ -310,7 +334,6 @@ class HomeKitCard extends LitElement {
                                     ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                   </div>
                               </homekit-button>
-                            </<homekit-card-item>
                             ${entityCount == 3  ? html`<div class="break"></div>`:html``}
                           `
                           : this._notFound(ent);
@@ -319,8 +342,7 @@ class HomeKitCard extends LitElement {
                           entityCount = entityCount + 2;
                           return stateObj ? html`
                             ${entityCount == 4 ? html`<div class="break"></div>`:html``}
-                            <homekit-card-item>
-                              <homekit-button class="button size-2 on" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                              <homekit-button class="button size-2 on" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
                                     <span class="icon on">
                                       <ha-icon icon="${ent.icon || stateObj.attributes.icon || "mdi:weather-"+stateObj.state}" />
@@ -333,7 +355,6 @@ class HomeKitCard extends LitElement {
                                     </span>
                                   </div>
                               </homekit-button>
-                            </<homekit-card-item>
                             ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                           `
                           : this._notFound(ent);
@@ -359,8 +380,7 @@ class HomeKitCard extends LitElement {
                             mode = stateObj.state in modes ? stateObj.state : "unknown-mode";
                           }
                           return stateObj ? html`
-                            <homekit-card-item>
-                              <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                              <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon climate '+mode: 'icon climate on '+mode}">
                                       ${ent.state ? Math.round(this.hass.states[ent.state]!.state) : Math.round(stateObj.attributes.current_temperature)}&#176;
@@ -373,15 +393,13 @@ class HomeKitCard extends LitElement {
                                     ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                   </div>
                               </homekit-button>
-                            </<homekit-card-item>
                             ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                           `
                           : this._notFound(ent);
                         } else {
                           entityCount++;
                           return stateObj ? html`
-                            <homekit-card-item>
-                              <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" @action=${(ev) => this._handleClick(ev, stateObj, ent, type, row)}>
+                              <homekit-button class="${offStates.includes(stateObj.state) ? 'button': 'button on'}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin':''}">
                                       <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
@@ -394,7 +412,6 @@ class HomeKitCard extends LitElement {
                                     ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                   </div>
                               </homekit-button>
-                            </<homekit-card-item>
                             ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                           `
                           : this._notFound(ent);
@@ -403,34 +420,29 @@ class HomeKitCard extends LitElement {
                         entityCount++;
                         if(ent.tap_action) {
                           return html`
-                          <homekit-card-item>
-                            <homekit-button class="button on${ent.noPadding ? ' no-padding': ''}" @action=${(ev) => this._handleClick(ev, null, ent, "card", row)}>
+                            <homekit-button class="button on${ent.noPadding ? ' no-padding': ''}" data-ent="${JSON.stringify(ent)}" data-type="'card'" data-row="${JSON.stringify(row)}">
                                 <div class="button-inner">
                                   <card-maker nohass data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
                                   </card-maker>
                                 </div>
                             </homekit-button>
-                          </<homekit-card-item>
                           ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                         `
                         } else {
                           return html`
-                            <homekit-card-item>
                               <homekit-button class="button on${ent.noPadding ? ' no-padding': ''}">
                                   <div class="button-inner">
                                     <card-maker nohass data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
                                     </card-maker>
                                   </div>
                               </homekit-button>
-                            </<homekit-card-item>
                             ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                           `
                         }
                       } else if(ent.custom) {
                         entityCount++;
                         return html`
-                        <homekit-card-item>
-                          <homekit-button class="button on" @action=${(ev) => this._handleClick(ev, null, ent, "custom", row)}>
+                          <homekit-button class="button on" data-ent="${ent}" data-ent="${JSON.stringify(ent)}" data-type="'custom'" data-row="${JSON.stringify(row)}">
                               <div class="button-inner">
                                 <span class="icon on${ent.spin === true ? ' spin':''}">
                                   <ha-icon icon="${ent.icon}" />
@@ -439,7 +451,6 @@ class HomeKitCard extends LitElement {
                                 ${ent.state ? html`<span class="state">${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}</span>`:html``}
                               </div>
                           </homekit-button>
-                        </<homekit-card-item>
                         ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                         `
                       }
@@ -483,16 +494,22 @@ class HomeKitCard extends LitElement {
     }
   }
 
-  _handleClick(ev, state, entity, type, row) {
-    console.log(ev.detail.action);
+  _handleClick(action, entity, type, row) {
+    console.log(action);
+    var state = null;
+    if(entity.entity) {
+      state = this.hass.states[entity.entity];
+    }
     if(type == "light") {
-      if (ev.detail.action == "tap" || ev.detail.action == "double_tap") {
-        if(entity.double_tap_action && ev.detail.action == "double_tap") {
+      if (action == "tap" || action == "doubletap") {
+        if(entity.double_tap_action && action == "doubletap") {
           this._customAction(entity.double_tap_action)
+        } else if(entity.tap_action) {
+          this._customAction(entity.tap_action)
         } else {
-        this._toggle(state, entity.service);
+          this._toggle(state, entity.service);
         }
-      } else if (ev.detail.action == "hold") {
+      } else if (action == "press") {
         if(entity.hold_action) {
           this._customAction(entity.hold_action)
         } else {
@@ -500,14 +517,14 @@ class HomeKitCard extends LitElement {
         }
       }
     } else if(type == "sensor" || type == "binary_sensor") {
-      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap")) {
-        if(ev.detail.action == "double_tap" && entity.double_tap_action) {
+      if ((action == "tap" || action == "doubletap")) {
+        if(action == "doubletap" && entity.double_tap_action) {
           this._customAction(entity.double_tap_action)
         } else if(entity.tap_action) {
           this._customAction(entity.tap_action)
         }
       }
-      if (ev.detail.action == "hold") {
+      if (action == "press") {
         if(entity.hold_action) {
           this._customAction(entity.hold_action)
         } else {
@@ -515,13 +532,15 @@ class HomeKitCard extends LitElement {
         }
       }
     } else if(type == "switch" || type == "input_boolean") {
-      if (ev.detail.action == "tap" || ev.detail.action == "double_tap") {
-        if(ev.detail.action == "double_tap" && entity.double_tap_action) {
+      if (action == "tap" || action == "doubletap") {
+        if(action == "doubletap" && entity.double_tap_action) {
           this._customAction(entity.double_tap_action)
+        } else if(entity.tap_action) {
+          this._customAction(entity.tap_action)
         } else {
           this._toggle(state, entity.service);
         }
-      } else if (ev.detail.action == "hold") {
+      } else if (action == "press") {
         if(entity.hold_action) {
           this._customAction(entity.hold_action)
         } else {
@@ -529,34 +548,33 @@ class HomeKitCard extends LitElement {
         }
       }
     } else if(type == "custom") {
-      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap")) {
-        if(ev.detail.action == "double_tap" && entity.double_tap_action) {
+      if ((action == "tap" || action == "doubletap")) {
+        if(action == "doubletap" && entity.double_tap_action) {
           this._customAction(entity.double_tap_action)
         } else if(entity.tap_action) {
           this._customAction(entity.tap_action)
         }
-      } else if (ev.detail.action == "hold" && entity.hold_action) {
-        console.log('custom hold', entity.hold_action);
+      } else if (action == "press" && entity.hold_action) {
         this._customAction(entity.hold_action)
       }
     } else if(type == "card") { 
-      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap")) {
-        if(ev.detail.action == "double_tap" && entity.double_tap_action) {
+      if ((action == "tap" || action == "doubletap")) {
+        if(action == "doubletap" && entity.double_tap_action) {
           this._customAction(entity.double_tap_action)
         } else if(entity.tap_action) {
           this._customAction(entity.tap_action)
         }
-      } else if (ev.detail.action == "hold" && entity.hold_action) {
+      } else if (action == "press" && entity.hold_action) {
         this._customAction(entity.hold_action)
       }
     } else {
-      if ((ev.detail.action == "tap" || ev.detail.action == "double_tap")) {
-        if(ev.detail.action == "double_tap" && entity.double_tap_action) {
+      if ((action == "tap" || action == "doubletap")) {
+        if(action == "doubletap" && entity.double_tap_action) {
           this._customAction(entity.double_tap_action)
         } else if(entity.tap_action) {
           this._customAction(entity.tap_action)
         }
-      } else if (ev.detail.action == "hold") {
+      } else if (action == "press") {
         if(entity.hold_action) {
           this._customAction(entity.hold_action)
         } else {
@@ -658,14 +676,12 @@ class HomeKitCard extends LitElement {
 
   _notFound(ent) {
     return html`
-      <homekit-card-item>
         <homekit-button class="not-found">
           <div class="button-inner">
             <span class="name">${ent.entity}</span>
             <span class="state">Not found</span>
           </div>
         </homekit-button>
-      </homekit-card-item>
     `;
   }
 
@@ -849,6 +865,7 @@ class HomeKitCard extends LitElement {
         display:flex;
         flex-direction:column;
         height:100%;
+        pointer-events: none;
       }
       
       homekit-button .name {
@@ -864,6 +881,7 @@ class HomeKitCard extends LitElement {
         word-wrap:break-word;
         overflow: hidden;
         white-space: normal;
+        pointer-events: none;
       }
       
       homekit-button .name.on {
@@ -877,6 +895,7 @@ class HomeKitCard extends LitElement {
         text-transform: capitalize;
         float: left;
         white-space: nowrap;
+        pointer-events: none;
       }
 
       homekit-button .state .previous {
@@ -885,10 +904,12 @@ class HomeKitCard extends LitElement {
         font-size: 9px;
         color: rgb(134, 134, 134);
         text-transform: lowercase;
+        pointer-events: none;
       }
       
       homekit-button .value {
         visibility: hidden;
+        pointer-events: none;
       }
       
       homekit-button .value.on {
@@ -908,6 +929,7 @@ class HomeKitCard extends LitElement {
         right:10px;
         width: 40px;
         height: 40px;
+        pointer-events: none;
       }
 
       homekit-button .state.on {
@@ -926,11 +948,13 @@ class HomeKitCard extends LitElement {
         transform-origin: 50% 50%;
         line-height: 40px;
         text-align: center;
+        pointer-events: none;
       }
 
       homekit-button .icon ha-icon {
         width:30px;
         height:30px;
+        pointer-events: none;
       }
                 
       homekit-button .icon.on {
@@ -988,6 +1012,7 @@ class HomeKitCard extends LitElement {
         width: 35px;
         background-color: rgba(0, 255, 0, 1);
         border-radius: 20px;
+        pointer-events: none;
       }
       
       homekit-button .temp {
@@ -998,6 +1023,7 @@ class HomeKitCard extends LitElement {
         font-size: 14px;
         font-weight: bold;
         color: white;
+        pointer-events: none;
       }
       
       .not-found {
