@@ -128,8 +128,9 @@ class HomeKitCard extends LitElement {
     $this.longpress = false;
     if ($this.presstimer === null) {
         $this.presstimer = setTimeout(function() {
-            alert("press");
             $this.longpress = true;
+            console.log('action: press');
+            $this.doAction(e, 'press');
         }, 500);
     }
   }
@@ -152,16 +153,18 @@ class HomeKitCard extends LitElement {
         $this.doubletaptimer = setTimeout(function() {
           console.log('TIMER FIRE');
           if($this.doubletap == false) {
-            alert('tap');
             clearTimeout($this.doubletaptimer);
             $this.doubletaptimer = null;
+            console.log('action: tap');
+            $this.doAction(e, 'tap');
           }
         }, 200);
       } else {
         $this.doubletap = true;
         clearTimeout(this.doubletaptimer);
         $this.doubletaptimer = null;
-        alert('doubletap');
+        console.log('action: doubletap');
+        $this.doAction(e, 'doubletap');
       }
     }
   }
@@ -175,6 +178,13 @@ class HomeKitCard extends LitElement {
     }
 
     e.target.classList.remove("longpress");
+  }
+
+  doAction(e, type) {
+    var dataset: any = e.target.dataset;
+    var ent = JSON.parse(dataset.ent);
+    var row = JSON.parse(dataset.row);
+    this._handleClick(type, ent, dataset.type, row)
   }
 
 
