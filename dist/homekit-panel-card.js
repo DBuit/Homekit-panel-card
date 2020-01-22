@@ -1164,47 +1164,14 @@ function tinycolor(color, opts) {
     return new TinyColor(color, opts);
 }
 
-const LitElement = customElements.get('home-assistant-main')
-  ? Object.getPrototypeOf(customElements.get('home-assistant-main'))
-  : Object.getPrototypeOf(customElements.get('hui-view'));
+const LitElement = customElements.get('home-assistant-main') ? Object.getPrototypeOf(customElements.get('home-assistant-main')) : Object.getPrototypeOf(customElements.get('hui-view'));
 
 const html = LitElement.prototype.html;
 
 const css = LitElement.prototype.css;
 
 function provideHass(element) {
-  if(document.querySelector('hc-main'))
-    return document.querySelector('hc-main').provideHass(element);
-
-  if(document.querySelector('home-assistant'))
-    return document.querySelector("home-assistant").provideHass(element);
-
-  return undefined;
-}
-
-function lovelace_view() {
-  var root = document.querySelector("hc-main");
-  if(root) {
-    root = root && root.shadowRoot;
-    root = root && root.querySelector("hc-lovelace");
-    root = root && root.shadowRoot;
-    root = root && root.querySelector("hui-view");
-    return root;
-  }
-
-  root = document.querySelector("home-assistant");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("home-assistant-main");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("app-drawer-layout partial-panel-resolver");
-  root = root && root.shadowRoot || root;
-  root = root && root.querySelector("ha-panel-lovelace");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("hui-root");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("ha-app-layout #view");
-  root = root && root.firstElementChild;
-  return root;
+  return document.querySelector("home-assistant").provideHass(element);
 }
 
 function fireEvent(ev, detail, entity=null) {
@@ -1217,7 +1184,18 @@ function fireEvent(ev, detail, entity=null) {
   if(entity) {
     entity.dispatchEvent(ev);
   } else {
-    var root = lovelace_view();
+    var root = document.querySelector("home-assistant");
+    root = root && root.shadowRoot;
+    root = root && root.querySelector("home-assistant-main");
+    root = root && root.shadowRoot;
+    root = root && root.querySelector("app-drawer-layout partial-panel-resolver");
+    root = root && root.shadowRoot || root;
+    root = root && root.querySelector("ha-panel-lovelace");
+    root = root && root.shadowRoot;
+    root = root && root.querySelector("hui-root");
+    root = root && root.shadowRoot;
+    root = root && root.querySelector("ha-app-layout #view");
+    root = root && root.firstElementChild;
     if (root) root.dispatchEvent(ev);
   }
 }
@@ -1325,6 +1303,13 @@ function createEntityRow(config) {
   Object.assign(config, {type: DEFAULT_ROWS[domain] || "text"});
 
   return createLovelaceElement('entity-row', config);
+}
+
+function moreInfo(entity, large=false) {
+  fireEvent("hass-more-info", {entityId: entity}, document.querySelector("home-assistant"));
+  const el = document.querySelector("home-assistant")._moreInfoEl;
+  el.large = large;
+  return el;
 }
 
 const VERSION = 2;
@@ -1444,10 +1429,10 @@ if(!entityRowMaker || !entityRowMaker.version || entityRowMaker.version < VERSIO
 }
 
 function popUp(title, card, large=false, style=null, fullscreen=false) {
-  const root = document.querySelector("hc-main") || document.querySelector("home-assistant");
+
   // Force _moreInfoEl to be loaded
-  fireEvent("hass-more-info", {entityId: null}, root);
-  const moreInfoEl = root._moreInfoEl;
+  fireEvent("hass-more-info", {entityId: null}, document.querySelector("home-assistant"));
+  const moreInfoEl = document.querySelector("home-assistant")._moreInfoEl;
   // Close and reopen to clear any previous styling
   // Necessary for popups from popups
   moreInfoEl.close();
@@ -1524,14 +1509,6 @@ function popUp(title, card, large=false, style=null, fullscreen=false) {
   };
 
   return moreInfoEl;
-}
-
-function moreInfo(entity, large=false) {
-  const root = document.querySelector("hc-main") || document.querySelector("home-assistant");
-  fireEvent("hass-more-info", {entityId: entity}, root);
-  const el = root._moreInfoEl;
-  el.large = large;
-  return el;
 }
 
 function _deviceID() {
@@ -4226,47 +4203,6 @@ class HomeKitCard extends LitElement {
             MOUSE: 0,
             TOUCH: 1
         };
-        // addHammer(el) {
-        //   var hammer = new Hammer(el, {});
-        //   var $this = this;
-        //   hammer.on("tap doubletap pressup press", function (ev) {
-        //       ev.preventDefault();
-        //       var dataset: any = ev.target.dataset;
-        //       var ent = JSON.parse(dataset.ent);
-        //       var row = JSON.parse(dataset.row);
-        //       $this.doubleTapped = false;
-        //       if(ev.type == 'tap') {
-        //         $this.doubleTapped = false;
-        //         var timeoutTime = 300;
-        //         if(!ent.double_tap_action) {
-        //           timeoutTime = 0;
-        //         }
-        //         setTimeout(function(){
-        //           if($this.doubleTapped === false) {
-        //             $this._handleClick(ev.type, ent, dataset.type, row)
-        //           }
-        //         }, timeoutTime); 
-        //       } else {
-        //         if(ev.type == 'doubletap') {
-        //           $this.doubleTapped = true;
-        //         }
-        //         var dataset: any = ev.target.dataset;
-        //         if(ev.type != 'pressup') {
-        //           $this._handleClick(ev.type, ent, dataset.type, row)
-        //         } else {
-        //           ev.preventDefault();
-        //           ev.srcEvent.stopPropagation();
-        //           ev.srcEvent.stopImmediatePropagation();
-        //           console.log('CATCH pressup!');
-        //         }
-        //       }
-        //   });
-        // }
-        this.longpress = false;
-        this.presstimer = null;
-        this.longtarget = null;
-        this.doubletap = false;
-        this.doubletaptimer = null;
     }
     static get properties() {
         return {
@@ -4293,78 +4229,121 @@ class HomeKitCard extends LitElement {
         this.enableColumns = "enableColumns" in this.config ? this.config.enableColumns : false;
         this.statePositionTop = "statePositionTop" in this.config ? this.config.statePositionTop : false;
     }
-    addEvents(el) {
-        el.addEventListener("mousedown", this.start);
-        el.addEventListener("touchstart", this.start);
-        el.addEventListener("click", this.click);
-        el.addEventListener("mouseout", this.cancel);
-        el.addEventListener("touchend", this.cancel);
-        el.addEventListener("touchleave", this.cancel);
-        el.addEventListener("touchcancel", this.cancel);
-    }
-    start(e) {
-        console.log('start');
+    addHammer(el) {
+        var hammer = new Hammer(el, {});
         var $this = this;
-        if (e.type === "click") {
-            return;
-        }
-        e.target.classList.add("longpress");
-        $this.longpress = false;
-        if ($this.presstimer === null) {
-            $this.presstimer = setTimeout(function () {
-                $this.longpress = true;
-                console.log('action: press');
-                $this.doAction(e, 'press');
-            }, 500);
-        }
-    }
-    click(e) {
-        console.log('click');
-        var $this = this;
-        if ($this.presstimer !== null) {
-            clearTimeout(this.presstimer);
-            $this.presstimer = null;
-        }
-        e.target.classList.remove("longpress");
-        if (!$this.longpress) {
-            console.log('doubletaptimer:', $this.doubletaptimer);
-            if ($this.doubletaptimer === null) {
-                console.log('set double tap timer');
-                $this.doubletap = false;
-                $this.doubletaptimer = setTimeout(function () {
-                    console.log('TIMER FIRE');
-                    if ($this.doubletap == false) {
-                        clearTimeout($this.doubletaptimer);
-                        $this.doubletaptimer = null;
-                        console.log('action: tap');
-                        $this.doAction(e, 'tap');
+        hammer.on("tap doubletap pressup press", function (ev) {
+            ev.preventDefault();
+            var dataset = ev.target.dataset;
+            var ent = JSON.parse(dataset.ent);
+            var row = JSON.parse(dataset.row);
+            $this.doubleTapped = false;
+            if (ev.type == 'tap') {
+                $this.doubleTapped = false;
+                var timeoutTime = 300;
+                if (!ent.double_tap_action) {
+                    timeoutTime = 0;
+                }
+                setTimeout(function () {
+                    if ($this.doubleTapped === false) {
+                        $this._handleClick(ev.type, ent, dataset.type, row);
                     }
-                }, 200);
+                }, timeoutTime);
             }
             else {
-                $this.doubletap = true;
-                clearTimeout(this.doubletaptimer);
-                $this.doubletaptimer = null;
-                console.log('action: doubletap');
-                $this.doAction(e, 'doubletap');
+                if (ev.type == 'doubletap') {
+                    $this.doubleTapped = true;
+                }
+                var dataset = ev.target.dataset;
+                if (ev.type != 'pressup') {
+                    $this._handleClick(ev.type, ent, dataset.type, row);
+                }
+                else {
+                    ev.preventDefault();
+                    ev.srcEvent.stopPropagation();
+                    ev.srcEvent.stopImmediatePropagation();
+                    console.log('CATCH pressup!');
+                }
             }
-        }
+        });
     }
-    cancel(e) {
-        var $this = this;
-        console.log('cancel');
-        if ($this.presstimer !== null) {
-            clearTimeout($this.presstimer);
-            $this.presstimer = null;
-        }
-        e.target.classList.remove("longpress");
-    }
-    doAction(e, type) {
-        var dataset = e.target.dataset;
-        var ent = JSON.parse(dataset.ent);
-        var row = JSON.parse(dataset.row);
-        this._handleClick(type, ent, dataset.type, row);
-    }
+    // longpress = false;
+    // presstimer: any = null;
+    // longtarget = null;
+    // doubletap = false;
+    // doubletaptimer: any = null;
+    // addEvents(el) {
+    //   el.addEventListener("mousedown", this.start);
+    //   el.addEventListener("touchstart", this.start);
+    //   el.addEventListener("click", this.click);
+    //   el.addEventListener("mouseout", this.cancel);
+    //   el.addEventListener("touchend", this.cancel);
+    //   el.addEventListener("touchleave", this.cancel);
+    //   el.addEventListener("touchcancel", this.cancel);
+    // }
+    // start(e: any) {
+    //   console.log('start');
+    //   if (e.type === "click") {
+    //       return;
+    //   }
+    //   e.target.classList.add("longpress");
+    //   this.longpress = false;
+    //   if (this.presstimer === null) {
+    //       this.presstimer = setTimeout(function(){
+    //           this.longpress = true;
+    //           console.log('action: press');
+    //           this.doAction(e, 'press');
+    //       }.bind(this), 500);
+    //   }
+    // }
+    // click(e) {
+    //   console.log('click');
+    //   if (this.presstimer !== null) {
+    //       clearTimeout(this.presstimer);
+    //       this.presstimer = null;
+    //   }
+    //   e.target.classList.remove("longpress");
+    //   if (!this.longpress) {
+    //     console.log('doubletaptimer:', this.doubletaptimer);
+    //     if(this.doubletaptimer === null) {
+    //       console.log('set double tap timer');
+    //       this.doubletap = false;
+    //       this.doubletaptimer = setTimeout(() => {
+    //         console.log('TIMER FIRE');
+    //         if(this.doubletap == false) {
+    //           clearTimeout(this.doubletaptimer);
+    //           this.doubletaptimer = null;
+    //           console.log('action: tap');
+    //           this.doAction(e, 'tap');
+    //         }
+    //       }, 200);
+    //     } else {
+    //       this.doubletap = true;
+    //       clearTimeout(this.doubletaptimer);
+    //       this.doubletaptimer = null;
+    //       console.log('action: doubletap');
+    //       this.doAction(e, 'doubletap');
+    //     }
+    //   }
+    // }
+    // cancel(e) {
+    //   console.log('cancel');
+    //   if (this.presstimer !== null) {
+    //     clearTimeout(this.presstimer);
+    //     this.presstimer = null;
+    //   }
+    //   e.target.classList.remove("longpress");
+    // }
+    // doAction(e, type) {
+    //   var dataset: any = e.target.dataset;
+    //   var ent = JSON.parse(dataset.ent);
+    //   var row = JSON.parse(dataset.row);
+    //   console.log('type', type);
+    //   console.log('ent', ent);
+    //   console.log('row', row);
+    //   console.log('dataset.type', dataset.type);
+    //   this._handleClick(type, ent, dataset.type, row)
+    // }
     render() {
         return html `
       <div class="container${this.enableColumns ? ' rows' : ''}" >
@@ -4386,7 +4365,8 @@ class HomeKitCard extends LitElement {
     firstUpdated() {
         var myNodelist = this.shadowRoot.querySelectorAll('homekit-button');
         for (var i = 0; i < myNodelist.length; i++) {
-            this.addEvents(myNodelist[i]);
+            // this.addEvents(myNodelist[i]);
+            this.addHammer(myNodelist[i]);
         }
         // this.addHammer(document.querySelector("homekit-button"));
         this.shadowRoot.querySelectorAll("card-maker").forEach(customCard => {

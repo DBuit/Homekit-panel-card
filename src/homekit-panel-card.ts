@@ -16,6 +16,7 @@ import { moreInfo } from "card-tools/src/more-info";
 import { subscribeRenderTemplate } from "card-tools/src/templates";
 import { parseTemplate } from "card-tools/src/templates.js";
 import 'hammerjs';
+import 'prevent-ghost-click';
 
 class HomeKitCard extends LitElement {
   config: any;
@@ -64,128 +65,134 @@ class HomeKitCard extends LitElement {
     this.statePositionTop = "statePositionTop" in this.config ? this.config.statePositionTop : false;
   }
 
-  // addHammer(el) {
-  //   var hammer = new Hammer(el, {});
-  //   var $this = this;
-  //   hammer.on("tap doubletap pressup press", function (ev) {
-  //       ev.preventDefault();
-  //       var dataset: any = ev.target.dataset;
-  //       var ent = JSON.parse(dataset.ent);
-  //       var row = JSON.parse(dataset.row);
-  //       $this.doubleTapped = false;
-  //       if(ev.type == 'tap') {
-  //         $this.doubleTapped = false;
-  //         var timeoutTime = 300;
-  //         if(!ent.double_tap_action) {
-  //           timeoutTime = 0;
-  //         }
-  //         setTimeout(function(){
-  //           if($this.doubleTapped === false) {
-  //             $this._handleClick(ev.type, ent, dataset.type, row)
-  //           }
-  //         }, timeoutTime); 
-  //       } else {
-  //         if(ev.type == 'doubletap') {
-  //           $this.doubleTapped = true;
-  //         }
-  //         var dataset: any = ev.target.dataset;
-  //         if(ev.type != 'pressup') {
-  //           $this._handleClick(ev.type, ent, dataset.type, row)
-  //         } else {
-  //           ev.preventDefault();
-  //           ev.srcEvent.stopPropagation();
-  //           ev.srcEvent.stopImmediatePropagation();
-  //           console.log('CATCH pressup!');
-  //         }
-  //       }
-  //   });
+  addHammer(el) {
+    var hammer = new Hammer(el, {});
+    var $this = this;
+    hammer.on("tap doubletap pressup press", function (ev) {
+        ev.preventDefault();
+        var dataset: any = ev.target.dataset;
+        var ent = JSON.parse(dataset.ent);
+        var row = JSON.parse(dataset.row);
+        $this.doubleTapped = false;
+        if(ev.type == 'tap') {
+          $this.doubleTapped = false;
+          var timeoutTime = 300;
+          if(!ent.double_tap_action) {
+            timeoutTime = 0;
+          }
+          setTimeout(function(){
+            if($this.doubleTapped === false) {
+              $this._handleClick(ev.type, ent, dataset.type, row)
+            }
+          }, timeoutTime); 
+        } else {
+          if(ev.type == 'doubletap') {
+            $this.doubleTapped = true;
+          }
+          var dataset: any = ev.target.dataset;
+          if(ev.type != 'pressup') {
+            $this._handleClick(ev.type, ent, dataset.type, row)
+          } else {
+            ev.preventDefault();
+            ev.srcEvent.stopPropagation();
+            ev.srcEvent.stopImmediatePropagation();
+            console.log('CATCH pressup!');
+          }
+        }
+    });
+  }
+
+  // longpress = false;
+  // presstimer: any = null;
+  // longtarget = null;
+  // doubletap = false;
+  // doubletaptimer: any = null;
+  // addEvents(el) {
+  //   el.addEventListener("mousedown", this.start);
+  //   el.addEventListener("touchstart", this.start);
+  //   el.addEventListener("click", this.click);
+  //   el.addEventListener("mouseout", this.cancel);
+  //   el.addEventListener("touchend", this.cancel);
+  //   el.addEventListener("touchleave", this.cancel);
+  //   el.addEventListener("touchcancel", this.cancel);
   // }
 
-  longpress = false;
-  presstimer: any = null;
-  longtarget = null;
-  doubletap = false;
-  doubletaptimer: any = null;
-  addEvents(el) {
-    el.addEventListener("mousedown", this.start);
-    el.addEventListener("touchstart", this.start);
-    el.addEventListener("click", this.click);
-    el.addEventListener("mouseout", this.cancel);
-    el.addEventListener("touchend", this.cancel);
-    el.addEventListener("touchleave", this.cancel);
-    el.addEventListener("touchcancel", this.cancel);
-  }
+  // start(e: any) {
+  //   console.log('start');
+  //   if (e.type === "click") {
+  //       return;
+  //   }
 
-  start(e: any) {
-    console.log('start');
-    var $this = this;
-    if (e.type === "click") {
-        return;
-    }
+  //   e.target.classList.add("longpress");
 
-    e.target.classList.add("longpress");
+  //   this.longpress = false;
+  //   if (this.presstimer === null) {
+  //       this.presstimer = setTimeout(function(){
+  //           this.longpress = true;
+  //           console.log('action: press');
+            
+  //           this.doAction(e, 'press');
+  //       }.bind(this), 500);
+  //   }
+  // }
 
-    $this.longpress = false;
-    if ($this.presstimer === null) {
-        $this.presstimer = setTimeout(function() {
-            $this.longpress = true;
-            console.log('action: press');
-            $this.doAction(e, 'press');
-        }, 500);
-    }
-  }
+  // click(e) {
+  //   console.log('click');
+  //   if (this.presstimer !== null) {
+  //       clearTimeout(this.presstimer);
+  //       this.presstimer = null;
+  //   }
 
-  click(e) {
-    console.log('click');
-    var $this = this;
-    if ($this.presstimer !== null) {
-        clearTimeout(this.presstimer);
-        $this.presstimer = null;
-    }
+  //   e.target.classList.remove("longpress");
 
-    e.target.classList.remove("longpress");
+  //   if (!this.longpress) {
+  //     console.log('doubletaptimer:', this.doubletaptimer);
+  //     if(this.doubletaptimer === null) {
+  //       console.log('set double tap timer');
+  //       this.doubletap = false;
+  //       this.doubletaptimer = setTimeout(() => {
+  //         console.log('TIMER FIRE');
+  //         if(this.doubletap == false) {
+  //           clearTimeout(this.doubletaptimer);
+  //           this.doubletaptimer = null;
+  //           console.log('action: tap');
+            
+  //           this.doAction(e, 'tap');
 
-    if (!$this.longpress) {
-      console.log('doubletaptimer:', $this.doubletaptimer);
-      if($this.doubletaptimer === null) {
-        console.log('set double tap timer');
-        $this.doubletap = false;
-        $this.doubletaptimer = setTimeout(function() {
-          console.log('TIMER FIRE');
-          if($this.doubletap == false) {
-            clearTimeout($this.doubletaptimer);
-            $this.doubletaptimer = null;
-            console.log('action: tap');
-            $this.doAction(e, 'tap');
-          }
-        }, 200);
-      } else {
-        $this.doubletap = true;
-        clearTimeout(this.doubletaptimer);
-        $this.doubletaptimer = null;
-        console.log('action: doubletap');
-        $this.doAction(e, 'doubletap');
-      }
-    }
-  }
+  //         }
+  //       }, 200);
+  //     } else {
+  //       this.doubletap = true;
+  //       clearTimeout(this.doubletaptimer);
+  //       this.doubletaptimer = null;
+  //       console.log('action: doubletap');
 
-  cancel(e) {
-    var $this = this;
-    console.log('cancel');
-    if ($this.presstimer !== null) {
-      clearTimeout($this.presstimer);
-      $this.presstimer = null;
-    }
+  //       this.doAction(e, 'doubletap');
+  //     }
+  //   }
+  // }
 
-    e.target.classList.remove("longpress");
-  }
+  // cancel(e) {
+  //   console.log('cancel');
+  //   if (this.presstimer !== null) {
+  //     clearTimeout(this.presstimer);
+  //     this.presstimer = null;
+  //   }
 
-  doAction(e, type) {
-    var dataset: any = e.target.dataset;
-    var ent = JSON.parse(dataset.ent);
-    var row = JSON.parse(dataset.row);
-    this._handleClick(type, ent, dataset.type, row)
-  }
+  //   e.target.classList.remove("longpress");
+  // }
+
+  // doAction(e, type) {
+  //   var dataset: any = e.target.dataset;
+  //   var ent = JSON.parse(dataset.ent);
+  //   var row = JSON.parse(dataset.row);
+
+  //   console.log('type', type);
+  //   console.log('ent', ent);
+  //   console.log('row', row);
+  //   console.log('dataset.type', dataset.type);
+  //   this._handleClick(type, ent, dataset.type, row)
+  // }
 
 
 
@@ -212,7 +219,8 @@ class HomeKitCard extends LitElement {
   firstUpdated() {
     var myNodelist = this.shadowRoot.querySelectorAll('homekit-button')
     for (var i = 0; i < myNodelist.length; i++) {
-      this.addEvents(myNodelist[i]);
+      // this.addEvents(myNodelist[i]);
+      this.addHammer(myNodelist[i]);
     }
     // this.addHammer(document.querySelector("homekit-button"));
     this.shadowRoot.querySelectorAll("card-maker").forEach(customCard => {
