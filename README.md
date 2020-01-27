@@ -83,6 +83,9 @@ in the card we can define some global configuration below you can find these opt
 | `home` | boolean | optional | false | When true this creates extra space above your tiles where you can show a title and display rules |
 | `title` | string | optional | "" | When home is true you can give your page a title |
 | `rules` | string | optional | 400px | When home is true you can define rules in template to display stats like how many lights are on or i use it to set a message that i need to put the trash out. |
+| `rulesColor` | string | optional | "#FFF" | Default the text is white and this can be overwritten with a new color |
+| `tileHoldAnimation` | boolean | optional | false | When true the tile with grow in size when holding :) |
+| `title` | string | optional | "" | When home is true you can give your page a title |
 | `useBrightness` | boolean | optional | true | When true the lights brightness is used to color the icon |
 | `useTemperature` | boolean | optional | false | When true the temperature is used to color the icon |
 | `titleColor` | number | optional |  | Titles above a row of tiles is colored by them this can overwrite this color |
@@ -162,6 +165,8 @@ In the above example we only set the `entity:` for a tile that is enough to let 
 | `double_tap_action` | boolean | optional | See [actions](#action-options) | Set a custom action for double tap. If no double tap is defined this will default trigger the tap action |
 | `offIcon` | boolean | optional | 'mdi:icon' | if you set an offIcon than this icon will be showed when the entity state is equal to an state in the offStates (default off or unavailable). |
 | `spin` | boolean | optional | false | If true this will let the icon spin when the entity is on |
+| `wider` | boolean | optional | false | If true the tile will be the size of 2 tiles |
+| `higher` | boolean | optional | false | If true the tile will be the height of 2 tiles |
 
 
 ##### Custom popup
