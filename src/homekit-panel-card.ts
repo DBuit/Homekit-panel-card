@@ -840,6 +840,7 @@ class HomeKitCard extends LitElement {
       }
 
       .button {
+        vertical-align: top;
         cursor: pointer;
         display:inline-block;
         width: 100px;

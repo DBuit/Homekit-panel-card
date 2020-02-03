@@ -282,6 +282,7 @@ var t={},e=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^'
       }
 
       .button {
+        vertical-align: top;
         cursor: pointer;
         display:inline-block;
         width: 100px;
