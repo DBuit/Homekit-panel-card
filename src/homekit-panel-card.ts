@@ -448,7 +448,7 @@ class HomeKitCard extends LitElement {
                       } else if(ent.custom) {
                         entityCount++;
                         return html`
-                          <homekit-button class="button on${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${ent}" data-ent="${JSON.stringify(ent)}" data-type="'custom'" data-row="${JSON.stringify(row)}">
+                          <homekit-button class="button on${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${JSON.stringify(ent)}" data-type="'custom'" data-row="${JSON.stringify(row)}">
                               <div class="button-inner">
                                 <span class="icon on${ent.spin === true ? ' spin':''}">
                                   <ha-icon icon="${ent.icon}" />
@@ -830,7 +830,7 @@ class HomeKitCard extends LitElement {
       
       .header ul li {
         display:block;
-        color:#FFF;
+        color:inherit;
         font-size:20px;
         font-weight:300;
       }
