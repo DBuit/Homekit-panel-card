@@ -42,7 +42,7 @@ Go to the hacs store and use the repo url `https://github.com/DBuit/Homekit-pane
 Add the following to your ui-lovelace.yaml:
 ```yaml
 resources:
-  url: /community_plugin/homekit-panel-card/homekit-panel-card.js
+  url: /community_plugin/homekit-panel-card/homekit-panel-card/.js
   type: module
 ```
 
@@ -91,7 +91,7 @@ in the card we can define some global configuration below you can find these opt
 | `titleColor` | number | optional |  | Titles above a row of tiles is colored by them this can overwrite this color |
 | `horizontalScroll` | boolean | optional | false | Default when a tile doesnt fit on the screen it goes to a next row, when you enable this it won't break to a next row but it will be scrollable |
 | `enableColumns` | boolean | optional | false | When enabled you can make rows with a title and tiles but also define columns within these rows |
-| `statePositionTop` | boolean | optional | false | Default the brightness (for lights) and last_changed (for sensors) is shown in the title next to the current state (on/off) when this is true this state if shown next to the icon in a circle (inspired by: https://community-home-assistant-assets.s3.dualstack.us-west-2.amazonaws.com/optimized/3X/d/c/dcf67fccb5fa3772b2db6d38aeef307d01ba3bc8_2_1380x862.jpeg) |
+| `statePositionTop` | boolean | optional | false | Default the brightness (for lights) and last_changed (for sensors) is chown in the title next to the current state (on/off) when this is true this state if chown next to the icon in a circle (inspired by: https://community-home-assistant-assets.s3.dualstack.us-west-2.amazonaws.com/optimized/3X/d/c/dcf67fccb5fa3772b2db6d38aeef307d01ba3bc8_2_1380x862.jpeg) |
 
 
 
@@ -455,7 +455,7 @@ So one more thing to make this work nice when you go from big screens to smaller
 The `tileOnRow:` is **not required** but optional if you do not set this the columns will not break to new lines but the tiles will break which can give a weird look when scaling to smaller sreens but it could also work for you so just play with it!
 
 
-#### Action options
+#### Aaction options
 
 | Name | Type | Default | Supported options | Description |
 | ----------------- | ------ | -------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
