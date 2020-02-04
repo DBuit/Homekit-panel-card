@@ -17,7 +17,7 @@ var t={},e=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^'
        
         ${this.enableColumns?this._renderRows():this._renderEntities(this.config.entities)}
       </div>
-    `}firstUpdated(){for(var t=this.shadowRoot.querySelectorAll("homekit-button"),e=0;e<t.length;e++)this.addHammer(t[e]);this.shadowRoot.querySelectorAll("card-maker").forEach(t=>{var e={type:t.dataset.card};e=Object.assign({},e,JSON.parse(t.dataset.options)),t.config=e;let n="";if(t.dataset.style?n=t.dataset.style:"custom:mini-graph-card"==t.dataset.card&&(n=":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .header .icon { color: #f7d959; }"),""!=n){let e=0,i=setInterval((function(){let o=t.children[0];if(o){window.clearInterval(i);var r=document.createElement("style");r.innerHTML=n,o.shadowRoot.appendChild(r)}else 10==++e&&window.clearInterval(i)}),100)}})}updated(){this._renderRules()}_renderRows(){return B`
+    `}firstUpdated(){for(var t=this.shadowRoot.querySelectorAll("homekit-button.event"),e=0;e<t.length;e++)this.addHammer(t[e]);this.shadowRoot.querySelectorAll("card-maker").forEach(t=>{var e={type:t.dataset.card};e=Object.assign({},e,JSON.parse(t.dataset.options)),t.config=e;let n="";if(t.dataset.style?n=t.dataset.style:"custom:mini-graph-card"==t.dataset.card&&(n=":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .header .icon { color: #f7d959; }"),""!=n){let e=0,i=setInterval((function(){let o=t.children[0];if(o){window.clearInterval(i);var r=document.createElement("style");r.innerHTML=n,o.shadowRoot.appendChild(r)}else 10==++e&&window.clearInterval(i)}),100)}})}updated(){this._renderRules()}_renderRows(){return B`
       ${this.config.rows.map(t=>B`
           <div class="row">
             ${t.columns.map(t=>B`
@@ -62,7 +62,7 @@ var t={},e=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^'
             <div class="card-title" style="${this.rowTitleColor?"color:"+this.rowTitleColor:""}">${t.title}</div>
                 <div class="homekit-card${!0===this.horizontalScroll?" scroll":""}">
                     ${t.entities.map(n=>{if(!n.card&&!n.custom){var i=["off","unavailable"];n.offStates&&(i=n.offStates);const a=this.hass.states[n.entity];var o="#f7d959";3==e&&(e=0),4==e&&(e=2),o=n.color?n.color:this._getColorForLightEntity(a,this.config.useTemperature,this.config.useBrightness);var r=n.entity.split(".")[0];if("light"==r)return e++,a?B`
-                                <homekit-button class="${i.includes(a.state)?"button":"button on"}${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="${r}" data-row="${JSON.stringify(t)}">
+                                <homekit-button class="event ${i.includes(a.state)?"button":"button on"}${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="${r}" data-row="${JSON.stringify(t)}">
                                     <div class="button-inner${this.statePositionTop?" state-top":""}">
                                       <span class="icon${!0!==n.spin||i.includes(a.state)?"":" spin"}" style="${i.includes(a.state)?"":"color:"+o+";"}">
                                         <ha-icon icon="${n.offIcon?i.includes(a.state)?n.offIcon:n.icon:n.icon||a.attributes.icon||k(b(a.entity_id),a.state)}" class=" ${n.spin&&"on"===a.state?"spin":""}"/>
@@ -77,7 +77,7 @@ var t={},e=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^'
                                 </homekit-button>
                               ${3==e?B`<div class="break"></div>`:B``}
                               `:this._notFound(n);if("sensor"==r||"binary_sensor"==r)return e++,a?B`
-                              <homekit-button class="${i.includes(a.state)?"button":"button on"}${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="${r}" data-row="${JSON.stringify(t)}">
+                              <homekit-button class="event ${i.includes(a.state)?"button":"button on"}${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="${r}" data-row="${JSON.stringify(t)}">
                                   <div class="button-inner${this.statePositionTop?" state-top":""}">
                                     <span class="${i.includes(a.state)?"icon":"icon on"}${!0!==n.spin||i.includes(a.state)?"":" spin"}">
                                       <ha-icon icon="${n.offIcon?i.includes(a.state)?n.offIcon:n.icon:n.icon||a.attributes.icon||k(b(a.entity_id),a.state)}" />
@@ -92,7 +92,7 @@ var t={},e=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^'
                               </homekit-button>
                             ${3==e?B`<div class="break"></div>`:B``}
                           `:this._notFound(n);if("switch"==r||"input_boolean"==r)return e++,a?B`
-                              <homekit-button class="${i.includes(a.state)?"button":"button on"}${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="${r}" data-row="${JSON.stringify(t)}">
+                              <homekit-button class="event ${i.includes(a.state)?"button":"button on"}${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="${r}" data-row="${JSON.stringify(t)}">
                                   <div class="button-inner">
                                     <span class="${i.includes(a.state)?"icon":"icon on"}${!0!==n.spin||i.includes(a.state)?"":" spin"}">
                                       <ha-icon icon="${n.offIcon?i.includes(a.state)?n.offIcon:n.icon:n.icon||a.attributes.icon||k(b(a.entity_id),a.state)}" />
@@ -108,7 +108,7 @@ var t={},e=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^'
                             ${3==e?B`<div class="break"></div>`:B``}
                           `:this._notFound(n);if("weather"==r)return e+=2,a?B`
                             ${4==e?B`<div class="break"></div>`:B``}
-                              <homekit-button class="button size-2 on" data-ent="${JSON.stringify(n)}" data-type="${r}" data-row="${JSON.stringify(t)}">
+                              <homekit-button class="event button size-2 on" data-ent="${JSON.stringify(n)}" data-type="${r}" data-row="${JSON.stringify(t)}">
                                   <div class="button-inner">
                                     <span class="icon on">
                                       <ha-icon icon="${n.icon||a.attributes.icon||"mdi:weather-"+a.state}" />
@@ -123,7 +123,7 @@ var t={},e=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^'
                               </homekit-button>
                             ${3==e?B`<div class="break"></div>`:B``}
                           `:this._notFound(n);if("climate"==r){e++;var s="";return s="off"==a.state?"off":"heating"==a.attributes.hvac_action?"heat":"idle"==a.attributes.hvac_action?"idle":a.state in{auto:"hass:calendar-repeat",heat_cool:"hass:autorenew",heat:"hass:fire",cool:"hass:snowflake",off:"hass:power",fan_only:"hass:fan",dry:"hass:water-percent"}?a.state:"unknown-mode",a?B`
-                              <homekit-button class="${i.includes(a.state)?"button":"button on"}${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="${r}" data-row="${JSON.stringify(t)}">
+                              <homekit-button class="event ${i.includes(a.state)?"button":"button on"}${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="${r}" data-row="${JSON.stringify(t)}">
                                   <div class="button-inner">
                                     <span class="${i.includes(a.state)?"icon climate "+s:"icon climate on "+s}">
                                       ${n.state?Math.round(this.hass.states[n.state].state):Math.round(a.attributes.current_temperature)}&#176;
@@ -138,7 +138,7 @@ var t={},e=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^'
                               </homekit-button>
                             ${3==e?B`<div class="break"></div>`:B``}
                           `:this._notFound(n)}return e++,a?B`
-                              <homekit-button class="${i.includes(a.state)?"button":"button on"}${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="${r}" data-row="${JSON.stringify(t)}">
+                              <homekit-button class="event ${i.includes(a.state)?"button":"button on"}${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="${r}" data-row="${JSON.stringify(t)}">
                                   <div class="button-inner">
                                     <span class="${i.includes(a.state)?"icon":"icon on"}${!0!==n.spin||i.includes(a.state)?"":" spin"}">
                                       <ha-icon icon="${n.offIcon?i.includes(a.state)?n.offIcon:n.icon:n.icon||a.attributes.icon||k(b(a.entity_id),a.state)}" />
@@ -153,7 +153,7 @@ var t={},e=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^'
                               </homekit-button>
                             ${3==e?B`<div class="break"></div>`:B``}
                           `:this._notFound(n)}return n.card&&!n.custom?(e++,n.tap_action?B`
-                            <homekit-button class="button on${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="'card'" data-row="${JSON.stringify(t)}">
+                            <homekit-button class="button on event${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="'card'" data-row="${JSON.stringify(t)}">
                                 <div class="button-inner">
                                   <card-maker nohass data-card="${n.card}" data-options="${JSON.stringify(n.cardOptions)}" data-style="${n.cardStyle?n.cardStyle:""}">
                                   </card-maker>
@@ -169,7 +169,7 @@ var t={},e=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^'
                               </homekit-button>
                             ${3==e?B`<div class="break"></div>`:B``}
                           `):n.custom?(e++,B`
-                          <homekit-button class="button on${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="'custom'" data-row="${JSON.stringify(t)}">
+                          <homekit-button class="button on event${n.noPadding?" no-padding":""}${n.wider?" size-2":""}${n.higher?" height-2":""}${this.tileHoldAnimation?" animate":""}" data-ent="${JSON.stringify(n)}" data-type="'custom'" data-row="${JSON.stringify(t)}">
                               <div class="button-inner">
                                 <span class="icon on${!0===n.spin?" spin":""}">
                                   <ha-icon icon="${n.icon}" />
@@ -327,6 +327,8 @@ var t={},e=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^'
         display:flex;
         flex-direction:column;
         height:100%;
+      }
+      .button.event .button-inner {
         pointer-events: none;
       }
       
