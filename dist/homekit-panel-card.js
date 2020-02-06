@@ -536,6 +536,7 @@ var t={},e=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^'
         .header, .card-title, .homekit-card {
           width: 358px;
           text-align: left;
+          padding:0!important;
           margin: 0 auto;
         }
         .card-title {

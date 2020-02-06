@@ -1094,6 +1094,7 @@ class HomeKitCard extends LitElement {
         .header, .card-title, .homekit-card {
           width: 358px;
           text-align: left;
+          padding:0!important;
           margin: 0 auto;
         }
         .card-title {
