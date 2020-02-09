@@ -5337,6 +5337,7 @@ class HomeKitCard extends LitElement {
         .card-title {
           width: 358px;
           padding-left: 1rem;
+          margin: 0 auto;
         }
 
         homekit-button .name {
