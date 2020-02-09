@@ -131,7 +131,7 @@ class HomeKitCard extends LitElement {
         if(customCard.dataset.style) {
           style = customCard.dataset.style;
         } else if(customCard.dataset.card == 'custom:mini-graph-card') {
-          style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .header .icon { color: #f7d959; }";
+          style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .states { padding: 0 10px; } .states .state .state__value { font-size: 1.8rem; } .header .icon { color: rgba(111, 11, 11, 0.6); }";
         }
 
         if(style != "") {
@@ -229,7 +229,7 @@ class HomeKitCard extends LitElement {
                 a 40 40 0 0 1 0 80
                 a 40 40 0 0 1 0 -80">
         </path>
-        <text id="count" x="50" y="50" fill="#7d7e80" text-anchor="middle" dy="7" font-size="20">${this._renderStateValue(ent, stateObj, type)}</text>
+        <text id="count" x="50" y="50" fill="#7d7e80" text-anchor="middle" dy="7" font-size="25">${this._renderStateValue(ent, stateObj, type)}</text>
       </svg>
     `;
   }
@@ -762,18 +762,18 @@ class HomeKitCard extends LitElement {
         --unknown-color: #bac;
       }
       .card-title {
-          margin-bottom:-10px;
+          margin-bottom: 0;
           padding-left: 4px;
-          font-size: 18px;
-          padding-top:18px;
-          padding-bottom:10px;
+          font-size: 1.1rem;
+          padding-top: 0.5rem;
+          padding-bottom: 0.5rem;
       }
 
       .row {
         display: flex;
         flex-wrap: wrap;
         flex-direction:row;
-        padding-top:50px;
+        padding-top: 0;
       }
       .row:first-child {
         padding-top:0;
@@ -809,30 +809,28 @@ class HomeKitCard extends LitElement {
         padding: 5px 0;
       }
       .container.rows .header {
-        padding: 0 25px;
+        padding: 0 1rem;
       }
       .header {
-          min-height: 150px;
-          margin-bottom: 30px;
+          min-height: 1rem;
       }
       .header h1 {
-          margin-bottom: 30px;
-          margin-left: 4px;
-          font-size: 32px;
+          margin: 0.5rem;
+          font-size: 1.8rem;
           font-weight: 300;
       }
 
       .header ul {
-        margin:0 0 0 4px;
-        padding: 0 16px 0 0;
-        list-style:none;
+        margin: 0.7rem;
+        padding: 0;
+        list-style: none;
       }
       
       .header ul li {
-        display:block;
-        color:inherit;
-        font-size:20px;
-        font-weight:300;
+        display: block;
+        color: inherit;
+        font-size: 1.2rem;
+        font-weight: 300;
       }
 
       homekit-button {
@@ -842,17 +840,17 @@ class HomeKitCard extends LitElement {
       .button {
         vertical-align: top;
         cursor: pointer;
-        display:inline-block;
+        display: inline-block;
         width: 100px;
         height: 100px;
-        padding:10px;
-        background-color: rgba(255, 255, 255, 0.8);
+        padding: 10px;
+        background-color: rgba(50, 50, 50, 0.8);
         border-radius: 12px;
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
         margin: 3px;
         position: relative;
         overflow:hidden;
-        font-weight:300;
+        font-weight: 300;
         touch-action: auto!important;
       }
       .button.size-2 {
@@ -878,7 +876,7 @@ class HomeKitCard extends LitElement {
       }
       
       .button.on {
-        background-color: rgba(255, 255, 255, 1);
+        background-color: rgba(255, 255, 255, 0.9);
       }
       
       .button .button-inner {
@@ -894,7 +892,7 @@ class HomeKitCard extends LitElement {
         display:block;
         font-size: 14px;
         font-weight: 500;
-        color: rgba(0, 0, 0, 0.4);
+        color: rgba(255, 255, 255, 0.6);
         width: 100%;
         margin-top: auto;
         display: -webkit-box;
@@ -913,7 +911,7 @@ class HomeKitCard extends LitElement {
       homekit-button .state {
         position: relative;
         font-size: 14px;
-        color: rgba(0, 0, 0, 0.4);
+        color: rgba(255, 255, 255, 0.6);
         text-transform: capitalize;
         float: left;
         white-space: nowrap;
@@ -965,8 +963,8 @@ class HomeKitCard extends LitElement {
         display:block;
         height: 40px;
         width: 40px;
-        color: rgba(0, 0, 0, 0.3);
-        font-size: 30px;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 2rem;
         transform-origin: 50% 50%;
         line-height: 40px;
         text-align: center;
@@ -974,19 +972,19 @@ class HomeKitCard extends LitElement {
       }
 
       homekit-button .icon ha-icon {
-        width:30px;
-        height:30px;
+        width: 40px;
+        height: 40px;
         pointer-events: none;
       }
                 
       homekit-button .icon.on {
-        color: #f7d959;
+        color: rgba(111, 11, 11, 0.6);
       }
 
       homekit-button .icon.climate {
         color:#FFF;
-        background-color: rgba(0,255,0, 1);
-        font-size: 16px;
+        background-color: rgba(11, 111, 11, 0.9);
+        font-size: 1rem;
         font-weight: 400;
         text-align: center;
         line-height: 45px;
@@ -1042,7 +1040,7 @@ class HomeKitCard extends LitElement {
         top: 26px;
         left: 19px;
         font-family: Arial;
-        font-size: 14px;
+        font-size: 1rem;
         font-weight: bold;
         color: white;
         pointer-events: none;
@@ -1091,23 +1089,27 @@ class HomeKitCard extends LitElement {
         .container {
           padding-left:0;
         }
-        .header, .card-title, .homekit-card {
+
+        .header, .homekit-card {
           width: 358px;
           text-align: left;
-          padding:0!important;
+          padding: 0 !important;
           margin: 0 auto;
         }
+
         .card-title {
-          padding-bottom:0;
+          width: 358px;
+          padding-left: 1rem;
         }
+
         homekit-button .name {
-          font-size:13px;
+          font-size: 1rem;
         }
         homekit-button .state {
-          font-size:13px;
+          font-size: 1rem;
         }
         homekit-button .value.on {
-          font-size:10px;
+          font-size: 1rem;
         }
         .row {
           padding:0;
@@ -1121,7 +1123,7 @@ class HomeKitCard extends LitElement {
       }
 
       card-maker {
-        height:100%;
+        height: 100%;
       }
 
       .spin {      
