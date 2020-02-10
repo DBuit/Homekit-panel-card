@@ -472,7 +472,7 @@ class HomeKitCard extends LitElement {
     if(this.config.home === true && this.config.rules) {
       parseTemplate(this.hass, this.config.rules).then((c) => {
         if(c) {
-          var result = c.match(/<li>(.*?)<\/li>/g).map(function(val){
+          var result = c.match(/<li>(.*?)<\/li>/gs).map(function(val){
             return val.replace(/<\/?li>/g,'');
           });
           this.renderedRules = result;
@@ -823,7 +823,7 @@ class HomeKitCard extends LitElement {
       }
 
       .header ul {
-        margin:0 0 0 4px;
+        margin:0 0 30px 4px;
         padding: 0 16px 0 0;
         list-style:none;
       }
@@ -833,6 +833,7 @@ class HomeKitCard extends LitElement {
         color:inherit;
         font-size:20px;
         font-weight:300;
+        white-space: normal;
       }
 
       homekit-button {
@@ -1090,6 +1091,12 @@ class HomeKitCard extends LitElement {
         }
         .container {
           padding-left:0;
+        }
+        .header h1 {
+          margin-left: 0;
+        }
+        .header ul {
+          margin:0 0 30px 0;
         }
         .header, .card-title, .homekit-card {
           width: 358px;
