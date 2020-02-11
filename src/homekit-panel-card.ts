@@ -472,7 +472,7 @@ class HomeKitCard extends LitElement {
     if(this.config.home === true && this.config.rules) {
       parseTemplate(this.hass, this.config.rules).then((c) => {
         if(c) {
-          var result = c.match(/<li>(.*?)<\/li>/g).map(function(val){
+          var result = c.match(/<li>(.*?)<\/li>/gs).map(function(val){
             return val.replace(/<\/?li>/g,'');
           });
           this.renderedRules = result;
