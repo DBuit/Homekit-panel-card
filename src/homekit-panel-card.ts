@@ -26,6 +26,8 @@ class HomeKitCard extends LitElement {
   doubleTapped = false;
   tileHoldAnimation = false;
   rulesColor: any;
+  useTemperature = false;
+  useBrightness = false;
 
   static get properties() {
     return {
@@ -40,13 +42,17 @@ class HomeKitCard extends LitElement {
     if (!config.entities && config.rows && !config.enableColumns) {
       throw new Error("If you use rows and columns you need to set enableColumns: true");
     }
-    if(!config.useTemperature) {
-      config.useTemperature = false;
-    }
-    if(!config.useBrightness) {
-      config.useBrightness = true;
-    }
     this.config = config;
+    if(!this.config.useTemperature) {
+      this.useTemperature = false;
+    } else {
+      this.useTemperature = this.config.useTemperature;
+    }
+    if(!this.config.useBrightness) {
+      this.useBrightness = true;
+    } else {
+      this.useBrightness = this.config.useBrightness;
+    }
     this.rowTitleColor = this.config.titleColor ? this.config.titleColor : false;
     this.horizontalScroll = "horizontalScroll" in this.config ? this.config.fullscreen : false;
     this.enableColumns = "enableColumns" in this.config ? this.config.enableColumns : false;
@@ -283,7 +289,7 @@ class HomeKitCard extends LitElement {
                         if(ent.color) {
                           color = ent.color
                         } else {
-                          color = this._getColorForLightEntity(stateObj, this.config.useTemperature, this.config.useBrightness);
+                          color = this._getColorForLightEntity(stateObj, this.useTemperature, this.useBrightness);
                         }
                         var type = ent.entity.split('.')[0];
                         if(type == "light"){
