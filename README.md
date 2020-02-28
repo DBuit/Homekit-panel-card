@@ -92,8 +92,43 @@ in the card we can define some global configuration below you can find these opt
 | `horizontalScroll` | boolean | optional | false | Default when a tile doesnt fit on the screen it goes to a next row, when you enable this it won't break to a next row but it will be scrollable |
 | `enableColumns` | boolean | optional | false | When enabled you can make rows with a title and tiles but also define columns within these rows |
 | `statePositionTop` | boolean | optional | false | Default the brightness (for lights) and last_changed (for sensors) is chown in the title next to the current state (on/off) when this is true this state if chown next to the icon in a circle (inspired by: https://community-home-assistant-assets.s3.dualstack.us-west-2.amazonaws.com/optimized/3X/d/c/dcf67fccb5fa3772b2db6d38aeef307d01ba3bc8_2_1380x862.jpeg) |
+| `style` | string | optional | css | Use the style option to add extra css default there is a list of variables to easily overwrite colors, sizes of the tiles see the list of variables under the table |
 
 
+**Css variables and default values**
+
+Example config:
+
+```
+- type: "custom:homekit-card"
+  style: |
+    :host {
+      --tile-background: rgba(255, 255, 0, 1);
+      --tile-border-radius: 0px;
+      --tile-width: 100px;
+      --tile-height: 100px;
+      --tile-on-background: rgba(255, 255, 255, 1);
+      
+      --tile-name-text-color: rgba(0, 0, 0, 0.4);
+      --tile-on-name-text-color: rgba(0, 0, 0, 1);
+      
+      --tile-state-text-color: rgba(0, 0, 0, 0.4);
+      --tile-on-state-text-color: rgba(0, 0, 0, 1);
+      
+      --tile-state-changed-text-color: rgb(134, 134, 134);
+      --tile-unavailable-state-text-color: rgba(255, 0, 0, 1);
+      
+      --tile-value-text-color: rgba(255, 0, 0, 1);
+      
+      
+      --tile-icon-color: rgba(0, 0, 0, 0.3);
+      --tile-on-icon-color: #f7d959;
+      
+      
+      --tile-width-mobile: 90px;
+      --tile-height-mobile: 90px;
+    }
+```
 
 #### 2. Configure Rows and Tiles
 

@@ -101,6 +101,11 @@ class HomeKitCard extends LitElement {
 
   render() {
     return html`
+      ${this.config.style ? html`
+        <style>
+          ${this.config.style}
+        </style>
+      ` : html``}
       <div class="container${this.enableColumns ? ' rows': ''}" >
         ${this.config.home ? html `
             <div class="header">
@@ -850,11 +855,11 @@ class HomeKitCard extends LitElement {
         vertical-align: top;
         cursor: pointer;
         display:inline-block;
-        width: 100px;
-        height: 100px;
+        width: var(--tile-width, 100px);
+        height: var(--tile-height, 100px);
         padding:10px;
-        background-color: rgba(255, 255, 255, 0.8);
-        border-radius: 12px;
+        background-color: var(--tile-background, rgba(255, 255, 255, 0.8));
+        border-radius: var(--tile-border-radius, 12px);
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
         margin: 3px;
         position: relative;
@@ -863,21 +868,21 @@ class HomeKitCard extends LitElement {
         touch-action: auto!important;
       }
       .button.size-2 {
-        width: 230px;
+        width: calc(var(--tile-width, 100px) * 2.3);
       }
       .button.height-2 {
-        height:230px;
+        height:calc(var(--tile-height, 100px) * 2.3);
       }
       .button.no-padding {
         padding: 0;
-        width: 120px;
+        width: calc(var(--tile-width, 100px) * 1.2);
         height: 120px;
       }
       .button.no-padding.size-2 {
-        width: 250px;
+        width: calc(var(--tile-width, 100px) * 2.5);
       }
       .button.no-padding.height-2 {
-        height:250px;
+        height:calc(var(--tile-height, 100px) * 2.5);
       }
       
       :host:last-child .button {
@@ -885,7 +890,7 @@ class HomeKitCard extends LitElement {
       }
       
       .button.on {
-        background-color: rgba(255, 255, 255, 1);
+        background-color: var(--tile-on-background, rgba(255, 255, 255, 1));
       }
       
       .button .button-inner {
@@ -901,7 +906,7 @@ class HomeKitCard extends LitElement {
         display:block;
         font-size: 14px;
         font-weight: 500;
-        color: rgba(0, 0, 0, 0.4);
+        color: var(--tile-name-text-color, rgba(0, 0, 0, 0.4));
         width: 100%;
         margin-top: auto;
         display: -webkit-box;
@@ -914,13 +919,13 @@ class HomeKitCard extends LitElement {
       }
       
       homekit-button .name.on {
-        color: rgba(0, 0, 0, 1);
+        color: var(--tile-on-name-text-color, rgba(0, 0, 0, 1));
       }
       
       homekit-button .state {
         position: relative;
         font-size: 14px;
-        color: rgba(0, 0, 0, 0.4);
+        color: var(--tile-state-text-color, rgba(0, 0, 0, 0.4));
         text-transform: capitalize;
         float: left;
         white-space: nowrap;
@@ -931,7 +936,7 @@ class HomeKitCard extends LitElement {
         position: relative;
         margin-left: 5px;
         font-size: 9px;
-        color: rgb(134, 134, 134);
+        color: var(--tile-state-changed-text-color, rgb(134, 134, 134));
         text-transform: lowercase;
         pointer-events: none;
       }
@@ -946,7 +951,7 @@ class HomeKitCard extends LitElement {
         position: relative;
         margin-left: 5px;
         font-size: 11px;
-        color: rgba(255, 0, 0, 1);
+        color: var(--tile-value-text-color, rgba(255, 0, 0, 1));
         text-transform: lowercase;
       }
       
@@ -962,17 +967,17 @@ class HomeKitCard extends LitElement {
       }
 
       homekit-button .state.on {
-        color: rgba(0, 0, 0, 1);
+        color: var(--tile-on-state-text-color, rgba(0, 0, 0, 1));
       }
       homekit-button .state.unavailable {
-        color: rgba(255, 0, 0, 1);
+        color: var(--tile-unavailable-state-text-color, rgba(255, 0, 0, 1));
       }
       
       homekit-button .icon {
         display:block;
         height: 40px;
         width: 40px;
-        color: rgba(0, 0, 0, 0.3);
+        color: var(--tile-icon-color, rgba(0, 0, 0, 0.3));
         font-size: 30px;
         transform-origin: 50% 50%;
         line-height: 40px;
@@ -987,7 +992,7 @@ class HomeKitCard extends LitElement {
       }
                 
       homekit-button .icon.on {
-        color: #f7d959;
+        color: var(--tile-on-icon-color, #f7d959);
       }
 
       homekit-button .icon.climate {
@@ -1076,24 +1081,24 @@ class HomeKitCard extends LitElement {
       }
       @media only screen and (max-width: 768px) {
         .button {
-          width:90px;
-          height:90px;
+          width:var(--tile-width-mobile, 90px);
+          height:var(--tile-height-mobile, 90px);
         }
         .button.size-2 {
-          width:210px;
+          width: calc(var(--tile-width-mobile, 90px) * 2.33);
         }
         .button.height-2 {
-          height:210px;
+          height: calc(var(--tile-height-mobile, 90px) * 2.33);
         }
         .button.no-padding {
-          width: 110px;
-          height: 110px;
+          width: calc(var(--tile-width-mobile, 90px) * 1.22);
+          height: calc(var(--tile-height-mobile, 90px) * 1.22);
         }
         .button.no-padding.size-2 {
-          width: 230px;
+          width: calc(var(--tile-width-mobile, 90px) * 2.55555555556);
         }
         .button.no-padding.height-2 {
-          height: 230px;
+          height: calc(var(--tile-height-mobile, 90px) * 2.55555555556);
         }
         .container {
           padding-left:0;
