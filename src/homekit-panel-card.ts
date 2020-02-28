@@ -794,8 +794,8 @@ class HomeKitCard extends LitElement {
         padding:0 25px;
       }
       .row .col.fixed {
-        min-width: calc(var(--tile-on-row) * 129px);
-        width: calc(var(--tile-on-row) * 129px);
+        min-width: calc(var(--tile-on-row) * calc(var(--tile-width, 100px) + 29px));
+        width: calc(var(--tile-on-row) * calc(var(--tile-width, 100px) + 29px));
       }
       
       .homekit-card {

@@ -230,8 +230,8 @@ var t={},e=/d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^'
         padding:0 25px;
       }
       .row .col.fixed {
-        min-width: calc(var(--tile-on-row) * 129px);
-        width: calc(var(--tile-on-row) * 129px);
+        min-width: calc(var(--tile-on-row) * calc(var(--tile-width, 100px) + 29px));
+        width: calc(var(--tile-on-row) * calc(var(--tile-width, 100px) + 29px));
       }
       
       .homekit-card {
