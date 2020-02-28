@@ -103,8 +103,8 @@ Example config:
 - type: "custom:homekit-card"
   style: |
     :host {
-      --tile-background: rgba(255, 255, 0, 1);
-      --tile-border-radius: 0px;
+      --tile-background: rgba(255, 255, 255, 0.8);
+      --tile-border-radius: 12px;
       --tile-width: 100px;
       --tile-height: 100px;
       --tile-on-background: rgba(255, 255, 255, 1);
