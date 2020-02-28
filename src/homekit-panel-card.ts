@@ -13,6 +13,7 @@ import { popUp } from "card-tools/src/popup";
 import { moreInfo } from "card-tools/src/more-info";
 import { parseTemplate } from "card-tools/src/templates.js";
 import 'hammerjs';
+import XRegExp from 'xregexp';
 
 class HomeKitCard extends LitElement {
   config: any;
@@ -483,7 +484,7 @@ class HomeKitCard extends LitElement {
     if(this.config.home === true && this.config.rules) {
       parseTemplate(this.hass, this.config.rules).then((c) => {
         if(c) {
-          var result = c.match(/<li>(.*?)<\/li>/gs).map(function(val){
+          var result = c.match(/<li>([^]*?)<\/li>/g).map(function(val){
             return val.replace(/<\/?li>/g,'');
           });
           this.renderedRules = result;
