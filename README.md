@@ -42,7 +42,7 @@ Go to the hacs store and use the repo url `https://github.com/DBuit/Homekit-pane
 Add the following to your ui-lovelace.yaml:
 ```yaml
 resources:
-  url: /community_plugin/homekit-panel-card/homekit-panel-card/.js
+  url: /hacsfiles/Homekit-panel-card/homekit-panel-card.js
   type: module
 ```
 
@@ -202,6 +202,7 @@ In the above example we only set the `entity:` for a tile that is enough to let 
 | `spin` | boolean | optional | false | If true this will let the icon spin when the entity is on |
 | `wider` | boolean | optional | false | If true the tile will be the size of 2 tiles |
 | `higher` | boolean | optional | false | If true the tile will be the height of 2 tiles |
+| `halfheight` | boolean | optional | false | If true the tile will be half the height of 1 tile (Best used in combination with wider to make sure the information fits the tile) |
 
 
 ##### Custom popup
