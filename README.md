@@ -490,7 +490,7 @@ So one more thing to make this work nice when you go from big screens to smaller
 The `tileOnRow:` is **not required** but optional if you do not set this the columns will not break to new lines but the tiles will break which can give a weird look when scaling to smaller sreens but it could also work for you so just play with it!
 
 
-#### Aaction options
+#### Action options
 
 | Name | Type | Default | Supported options | Description |
 | ----------------- | ------ | -------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
@@ -500,7 +500,13 @@ The `tileOnRow:` is **not required** but optional if you do not set this the col
 | `url_path` | string | none | Eg: `https://www.google.fr` | URL to open on click when action is `url`. The URL will open in a new tab |
 | `service` | string | none | Any service | Service to call (e.g. `media_player.media_play_pause`) when `action` defined as `call-service` |
 | `service_data` | object | none | Any service data | Service data to include (e.g. `entity_id: media_player.bedroom`)|
+| `confirmation` | boolean or object | none | See [confirmation](#confirmation-options) | Present a confirmation dialog before performing the action |
 
+#### Confirmation options
+
+| Name | Type | Default | Supported options | Description |
+| ----------------- | ------ | -------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `text` | string | `Are you sure you want to ${actionConfig.action}` | e.g. `Do you want to open the garage?` | Text to present in the confirmation dialog |
 
 
 ## Example full configuration without columns

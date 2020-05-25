@@ -604,6 +604,19 @@ class HomeKitCard extends LitElement {
   }
 
   _customAction(tapAction) {
+    if (tapAction.confirmation) {
+      forwardHaptic("warning");
+
+      if (
+        !confirm(
+          tapAction.confirmation.text ||
+            `Are you sure you want to ${tapAction.action}?`
+        )
+      ) {
+        return;
+      }
+    }
+
     switch (tapAction.action) {
       case "more-info":
         if (tapAction.entity || tapAction.camera_image) {
