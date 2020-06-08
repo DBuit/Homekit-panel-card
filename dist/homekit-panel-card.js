@@ -4904,7 +4904,7 @@ class HomeKitCard extends LitElement {
         }
     }
     getCardSize() {
-        return this.config.entities.length + 1;
+        return 1;
     }
     _toggle(state, service) {
         this.hass.callService("homeassistant", service || "toggle", {
@@ -5085,7 +5085,7 @@ class HomeKitCard extends LitElement {
         padding: 0 25px;
       }
       .header {
-          min-height: 150px;
+          min-height: var(--min-header-height, 150px);
           margin-bottom: 30px;
       }
       .header h1 {
