@@ -4530,7 +4530,8 @@ class HomeKitCard extends LitElement {
                     var type = ent.entity.split('.')[0];
                     if (type == "light") {
                         entityCount++;
-                        return stateObj ? html `
+                        if (!ent.slider) {
+                            return stateObj ? html `
                                 <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ' size-2' : ''}${ent.higher ? ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                     <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
                                       <span class="icon${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}" style="${!offStates.includes(stateObj.state) ? 'color:' + color + ';' : ''}">
@@ -4546,7 +4547,28 @@ class HomeKitCard extends LitElement {
                                 </homekit-button>
                               ${entityCount == 3 ? html `<div class="break"></div>` : html ``}
                               `
-                            : this._notFound(ent);
+                                : this._notFound(ent);
+                        }
+                        else {
+                            return stateObj ? html `
+                                <homekit-button class="event slider ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ' size-2' : ''}${ent.higher ? ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
+                                    <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
+                                      <span class="icon${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}" style="${!offStates.includes(stateObj.state) ? 'color:' + color + ';' : ''}">
+                                        <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || I(d(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin' : ""}"/>
+                                      </span>
+                                      <span class="${offStates.includes(stateObj.state) ? 'name' : 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
+                                      <span class="${offStates.includes(stateObj.state) ? 'state' : 'state on'}">
+                                        ${b(this.hass.localize, stateObj, this.hass.language)}
+                                        ${!this.statePositionTop ? this._renderState(ent, stateObj, offStates, type) : ''}
+                                      </span>
+                                      ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type) : ''}
+                                    </div>
+                                    <input type="range" .value="${stateObj.attributes.brightness / 2.55}" style="--slider-width: 120px;--slider-height: 120px;" @change=${e => this._setBrightness(stateObj, e.target.value)}>
+                                </homekit-button>
+                              ${entityCount == 3 ? html `<div class="break"></div>` : html ``}
+                              `
+                                : this._notFound(ent);
+                        }
                     }
                     else if (type == "sensor" || type == "binary_sensor") {
                         entityCount++;
@@ -4718,6 +4740,12 @@ class HomeKitCard extends LitElement {
         `;
         })}
     `;
+    }
+    _setBrightness(state, value) {
+        this.hass.callService("homeassistant", "turn_on", {
+            entity_id: state.entity_id,
+            brightness: value * 2.55
+        });
     }
     _renderRules() {
         if (this.config.home === true && this.config.rules) {
@@ -5152,7 +5180,48 @@ class HomeKitCard extends LitElement {
       .button.no-padding.height-half {
         height:calc(var(--tile-height, 100px) * 0.6);
       }
-      
+
+      .button input[type="range"] {
+        pointer-events: none;
+        outline: 0;
+        border: 0;
+        border-radius: 8px;
+        width: var(--slider-width);
+        margin: 0;
+        transition: box-shadow 0.2s ease-in-out;
+        overflow: hidden;
+        height: var(--slider-height);
+        -webkit-appearance: none;
+        background-color: #ddd;
+        position: absolute;
+        top: calc(50% - (var(--slider-height) / 2));
+        right: calc(50% - (var(--slider-width) / 2));
+      }
+      .button input[type="range"]::-webkit-slider-runnable-track {
+        height: var(--slider-height);
+        -webkit-appearance: none;
+        color: #ddd;
+        margin-top: -1px;
+        transition: box-shadow 0.2s ease-in-out;
+      }
+      .button input[type="range"]::-webkit-slider-thumb {
+        pointer-events:auto;
+        width: 25px;
+        border-right:10px solid #FFF;
+        border-left:10px solid #FFF;
+        border-top:20px solid #FFF;
+        border-bottom:20px solid #FFF;
+        -webkit-appearance: none;
+        height: 80px;
+        cursor: ew-resize;
+        background: #fff;
+        box-shadow: -350px 0 0 350px #FFF, inset 0 0 0 80px #ddd;
+        border-radius: 0;
+        transition: box-shadow 0.2s ease-in-out;
+        position: relative;
+        top: calc((var(--slider-height) - 80px) / 2);
+      }
+
       :host:last-child .button {
         margin-right:13px;
       }
@@ -5168,6 +5237,19 @@ class HomeKitCard extends LitElement {
       }
       .button.event .button-inner {
         pointer-events: none;
+      }
+      .button.slider .button-inner {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 10px;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        pointer-events: none;
+        height: auto;
       }
 
       .button.height-half .button-inner {

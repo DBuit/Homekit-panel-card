@@ -127,6 +127,8 @@ Example config:
       
       --tile-width-mobile: 90px;
       --tile-height-mobile: 90px;
+
+      --min-header-height: 150px;
     }
 ```
 
@@ -203,6 +205,7 @@ In the above example we only set the `entity:` for a tile that is enough to let 
 | `wider` | boolean | optional | false | If true the tile will be the size of 2 tiles |
 | `higher` | boolean | optional | false | If true the tile will be the height of 2 tiles |
 | `halfheight` | boolean | optional | false | If true the tile will be half the height of 1 tile (Best used in combination with wider to make sure the information fits the tile) |
+| `slider` | boolean | optional | false | If true a slider element is added to the tile to control the lights brightness |
 
 
 ##### Custom popup
