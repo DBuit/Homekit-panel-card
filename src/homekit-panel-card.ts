@@ -332,7 +332,7 @@ class HomeKitCard extends LitElement {
                                       </span>
                                       ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type):''}
                                     </div>
-                                    <input type="range" .value="${stateObj.attributes.brightness/2.55}" style="--slider-width: 120px;--slider-height: 120px;" @change=${e => this._setBrightness(stateObj, e.target.value)}>
+                                    ${offStates.includes(stateObj.state) ? html`` : html`<input type="range" .value="${stateObj.attributes.brightness/2.55}" style="--slider-width: 120px;--slider-height: 120px;" @change=${e => this._setBrightness(stateObj, e.target.value)}>`}
                                 </homekit-button>
                               ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                               `
@@ -944,7 +944,7 @@ class HomeKitCard extends LitElement {
         overflow: hidden;
         height: var(--slider-height);
         -webkit-appearance: none;
-        background-color: #ddd;
+        background-color: var(--tile-background);
         position: absolute;
         top: calc(50% - (var(--slider-height) / 2));
         right: calc(50% - (var(--slider-width) / 2));
@@ -952,22 +952,22 @@ class HomeKitCard extends LitElement {
       .button input[type="range"]::-webkit-slider-runnable-track {
         height: var(--slider-height);
         -webkit-appearance: none;
-        color: #ddd;
+        color: var(--tile-background);
         margin-top: -1px;
         transition: box-shadow 0.2s ease-in-out;
       }
       .button input[type="range"]::-webkit-slider-thumb {
         pointer-events:auto;
         width: 25px;
-        border-right:10px solid #FFF;
-        border-left:10px solid #FFF;
-        border-top:20px solid #FFF;
-        border-bottom:20px solid #FFF;
+        border-right:10px solid var(--tile-on-background);
+        border-left:10px solid var(--tile-on-background);
+        border-top:20px solid var(--tile-on-background);
+        border-bottom:20px solid var(--tile-on-background);
         -webkit-appearance: none;
         height: 80px;
         cursor: ew-resize;
-        background: #fff;
-        box-shadow: -350px 0 0 350px #FFF, inset 0 0 0 80px #ddd;
+        background: var(--tile-on-background);
+        box-shadow: -350px 0 0 350px var(--tile-on-background), inset 0 0 0 80px var(--tile-background);
         border-radius: 0;
         transition: box-shadow 0.2s ease-in-out;
         position: relative;
