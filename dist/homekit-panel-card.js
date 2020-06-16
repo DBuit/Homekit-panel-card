@@ -4282,7 +4282,7 @@ class HomeKitCard extends LitElement {
         this.horizontalScroll = "horizontalScroll" in this.config ? this.config.fullscreen : false;
         this.enableColumns = "enableColumns" in this.config ? this.config.enableColumns : false;
         this.statePositionTop = "statePositionTop" in this.config ? this.config.statePositionTop : false;
-        this.tileHoldAnimation = "tileHoldAnimation" in this.config ? this.config.statePositionTop : false;
+        this.tileHoldAnimation = "tileHoldAnimation" in this.config ? this.config.tileHoldAnimation : false;
         this.rulesColor = this.config.rulesColor ? this.config.rulesColor : false;
     }
     addHammer(el) {
@@ -5341,13 +5341,13 @@ class HomeKitCard extends LitElement {
       
       homekit-button .icon {
         display:block;
-        height: 40px;
-        width: 40px;
+        height: calc(var(--tile-icon-size, 30px) + 10px);
+        width: calc(var(--tile-icon-size, 30px) + 10px);
         color: var(--tile-icon-color, rgba(0, 0, 0, 0.3));
-        font-size: 30px;
-        --mdc-icon-size: 30px;
+        font-size: var(--tile-icon-size, 30px);
+        --mdc-icon-size: var(--tile-icon-size, 30px);
         transform-origin: 50% 50%;
-        line-height: 40px;
+        line-height: calc(var(--tile-icon-size, 30px) + 10px);
         text-align: center;
         pointer-events: none;
       }

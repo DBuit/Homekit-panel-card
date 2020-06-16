@@ -129,6 +129,8 @@ Example config:
       --tile-height-mobile: 90px;
 
       --min-header-height: 150px;
+
+      --tile-icon-size: 30px;
     }
 ```
 
