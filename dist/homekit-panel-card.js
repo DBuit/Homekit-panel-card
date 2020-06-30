@@ -4266,18 +4266,8 @@ class HomeKitCard extends LitElement {
             throw new Error("If you use rows and columns you need to set enableColumns: true");
         }
         this.config = config;
-        if (!this.config.useTemperature) {
-            this.useTemperature = false;
-        }
-        else {
-            this.useTemperature = this.config.useTemperature;
-        }
-        if (!this.config.useBrightness) {
-            this.useBrightness = true;
-        }
-        else {
-            this.useBrightness = this.config.useBrightness;
-        }
+        this.useTemperature = "useTemperature" in this.config ? this.config.useTemperature : false;
+        this.useBrightness = "useBrightness" in this.config ? this.config.useBrightness : true;
         this.rowTitleColor = this.config.titleColor ? this.config.titleColor : false;
         this.horizontalScroll = "horizontalScroll" in this.config ? this.config.fullscreen : false;
         this.enableColumns = "enableColumns" in this.config ? this.config.enableColumns : false;
@@ -4366,7 +4356,7 @@ class HomeKitCard extends LitElement {
                 style = customCard.dataset.style;
             }
             else if (customCard.dataset.card == 'custom:mini-graph-card') {
-                style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .header .icon { color: #f7d959; }";
+                style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .states .state .state__uom { font-size: 13px; } .header .icon { color: #f7d959; }";
             }
             if (style != "") {
                 let itterations = 0;
@@ -4534,8 +4524,13 @@ class HomeKitCard extends LitElement {
                             return stateObj ? html `
                                 <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ' size-2' : ''}${ent.higher ? ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                     <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
-                                      <span class="icon${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}" style="${!offStates.includes(stateObj.state) ? 'color:' + color + ';' : ''}">
-                                        <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || I(d(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin' : ""}"/>
+                                      <span class="icon${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}${ent.image ? ' image' : ''}" style="${!offStates.includes(stateObj.state) ? 'color:' + color + ';' : ''}">
+
+                                        ${ent.image ? html `
+                                          <img src="${ent.offImage ? offStates.includes(stateObj.state) ? ent.offImage : ent.image : ent.image}" />
+                                        ` : html `
+                                          <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || I(d(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin' : ""}"/>
+                                        `}
                                       </span>
                                       <span class="${offStates.includes(stateObj.state) ? 'name' : 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                       <span class="${offStates.includes(stateObj.state) ? 'state' : 'state on'}">
@@ -4553,8 +4548,14 @@ class HomeKitCard extends LitElement {
                             return stateObj ? html `
                                 <homekit-button class="event slider ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ' size-2' : ''}${ent.higher ? ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                     <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
-                                      <span class="icon${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}" style="${!offStates.includes(stateObj.state) ? 'color:' + color + ';' : ''}">
-                                        <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || I(d(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin' : ""}"/>
+                                      <span class="icon${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}${ent.image ? ' image' : ''}" style="${!offStates.includes(stateObj.state) ? 'color:' + color + ';' : ''}">
+          
+                                        ${ent.image ? html `
+                                          <img src="${ent.offImage ? offStates.includes(stateObj.state) ? ent.offImage : ent.image : ent.image}" />
+                                        ` : html `
+                                          <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || I(d(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin' : ""}"/>
+                                        `}
+                                        
                                       </span>
                                       <span class="${offStates.includes(stateObj.state) ? 'name' : 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                       <span class="${offStates.includes(stateObj.state) ? 'state' : 'state on'}">
@@ -4563,7 +4564,7 @@ class HomeKitCard extends LitElement {
                                       </span>
                                       ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type) : ''}
                                     </div>
-                                    ${offStates.includes(stateObj.state) ? html `` : html `<input type="range" .value="${stateObj.attributes.brightness / 2.55}" style="--slider-width: 120px;--slider-height: 120px;" @change=${e => this._setBrightness(stateObj, e.target.value)}>`}
+                                    ${offStates.includes(stateObj.state) ? html `` : html `<input type="range" .value="${stateObj.attributes.brightness / 2.55}" @change=${e => this._setBrightness(stateObj, e.target.value)}>`}
                                 </homekit-button>
                               ${entityCount == 3 ? html `<div class="break"></div>` : html ``}
                               `
@@ -4575,8 +4576,12 @@ class HomeKitCard extends LitElement {
                         return stateObj ? html `
                               <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ' size-2' : ''}${ent.higher ? ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
-                                    <span class="${offStates.includes(stateObj.state) ? 'icon' : 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}">
-                                      <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || I(d(stateObj.entity_id), stateObj.state)}" />
+                                    <span class="${offStates.includes(stateObj.state) ? 'icon' : 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}${ent.image ? ' image' : ''}">
+                                      ${ent.image ? html `
+                                        <img src="${ent.offImage ? offStates.includes(stateObj.state) ? ent.offImage : ent.image : ent.image}" />
+                                      ` : html `
+                                        <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || I(d(stateObj.entity_id), stateObj.state)}" />
+                                      `}
                                     </span>
                                     <span class="${offStates.includes(stateObj.state) ? 'name' : 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                     <span class="${offStates.includes(stateObj.state) ? 'state' : 'state on'}">
@@ -4595,8 +4600,12 @@ class HomeKitCard extends LitElement {
                         return stateObj ? html `
                               <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ' size-2' : ''}${ent.higher ? ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
-                                    <span class="${offStates.includes(stateObj.state) ? 'icon' : 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}">
-                                      <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || I(d(stateObj.entity_id), stateObj.state)}" />
+                                    <span class="${offStates.includes(stateObj.state) ? 'icon' : 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}${ent.image ? ' image' : ''}">
+                                      ${ent.image ? html `
+                                        <img src="${ent.offImage ? offStates.includes(stateObj.state) ? ent.offImage : ent.image : ent.image}" />
+                                      ` : html `
+                                        <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || I(d(stateObj.entity_id), stateObj.state)}" />
+                                      `}
                                     </span>
                                     <span class="${offStates.includes(stateObj.state) ? 'name' : 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                     <span class="${offStates.includes(stateObj.state) ? 'state' : 'state on'}">
@@ -4678,8 +4687,12 @@ class HomeKitCard extends LitElement {
                         return stateObj ? html `
                               <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ' size-2' : ''}${ent.higher ? ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
-                                    <span class="${offStates.includes(stateObj.state) ? 'icon' : 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}">
-                                      <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || I(d(stateObj.entity_id), stateObj.state)}" />
+                                    <span class="${offStates.includes(stateObj.state) ? 'icon' : 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}${ent.image ? ' image' : ''}">
+                                      ${ent.image ? html `
+                                        <img src="${ent.offImage ? offStates.includes(stateObj.state) ? ent.offImage : ent.image : ent.image}" />
+                                      ` : html `
+                                        <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || I(d(stateObj.entity_id), stateObj.state)}" />
+                                      `}
                                     </span>
                                     <span class="${offStates.includes(stateObj.state) ? 'name' : 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                     <span class="${offStates.includes(stateObj.state) ? 'state' : 'state on'}">
@@ -4724,8 +4737,12 @@ class HomeKitCard extends LitElement {
                     return html `
                           <homekit-button class="button on event${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ' size-2' : ''}${ent.higher ? ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}" data-ent="${JSON.stringify(ent)}" data-type="'custom'" data-row="${JSON.stringify(row)}">
                               <div class="button-inner">
-                                <span class="icon on${ent.spin === true ? ' spin' : ''}">
-                                  <ha-icon icon="${ent.icon}" />
+                                <span class="icon on${ent.spin === true ? ' spin' : ''}${ent.image ? ' image' : ''}">
+                                  ${ent.image ? html `
+                                    <img src="${ent.image}" />
+                                  ` : html `
+                                    <ha-icon icon="${ent.icon}" />
+                                  `}
                                 </span>
                                 <span class="name on">${ent.name}</span>
                                 ${ent.state ? html `<span class="state">${b(this.hass.localize, this.hass.states[ent.state], this.hass.language)}</span>` : html ``}
@@ -4999,13 +5016,13 @@ class HomeKitCard extends LitElement {
         if (stateObj) {
             if (stateObj.attributes.rgb_color) {
                 color = `rgb(${stateObj.attributes.rgb_color.join(',')})`;
-                if (stateObj.attributes.brightness) {
+                if (useBrightness && stateObj.attributes.brightness) {
                     color = this._applyBrightnessToColor(color, (stateObj.attributes.brightness + 245) / 5);
                 }
             }
             else if (useTemperature && stateObj.attributes.color_temp && stateObj.attributes.min_mireds && stateObj.attributes.max_mireds) {
                 color = this._getLightColorBasedOnTemperature(stateObj.attributes.color_temp, stateObj.attributes.min_mireds, stateObj.attributes.max_mireds);
-                if (stateObj.attributes.brightness) {
+                if (useBrightness && stateObj.attributes.brightness) {
                     color = this._applyBrightnessToColor(color, (stateObj.attributes.brightness + 245) / 5);
                 }
             }
@@ -5186,19 +5203,19 @@ class HomeKitCard extends LitElement {
         outline: 0;
         border: 0;
         border-radius: 8px;
-        width: var(--slider-width);
+        width: var(--slider-width, 120px);
         margin: 0;
         transition: box-shadow 0.2s ease-in-out;
         overflow: hidden;
-        height: var(--slider-height);
+        height: var(--slider-height, 120px);
         -webkit-appearance: none;
         background-color: var(--tile-background);
         position: absolute;
-        top: calc(50% - (var(--slider-height) / 2));
-        right: calc(50% - (var(--slider-width) / 2));
+        top: calc(50% - (var(--slider-height, 120px) / 2));
+        right: calc(50% - (var(--slider-width, 120px) / 2));
       }
       .button input[type="range"]::-webkit-slider-runnable-track {
-        height: var(--slider-height);
+        height: var(--slider-height, 120px);
         -webkit-appearance: none;
         color: var(--tile-background);
         margin-top: -1px;
@@ -5219,8 +5236,36 @@ class HomeKitCard extends LitElement {
         border-radius: 0;
         transition: box-shadow 0.2s ease-in-out;
         position: relative;
-        top: calc((var(--slider-height) - 80px) / 2);
+        top: calc((var(--slider-height, 120px) - 80px) / 2);
       }
+
+      .button.size-2 input[type="range"] {
+        width: calc(var(--slider-width, 120px) * 2.3);
+        right: calc(50% - ((var(--slider-width, 120px) * 2.3) / 2));
+      }
+
+      .button.height-2 input[type="range"] {
+        height: calc(var(--slider-height, 120px) * 2.3);
+        top: calc(50% - ((var(--slider-height, 120px) * 2.3) / 2));
+      }
+      .button.height-2 input[type="range"]::-webkit-slider-runnable-track {
+        height: calc(var(--slider-height, 120px) * 2.3);
+      }
+      .button.height-2 input[type="range"]::-webkit-slider-thumb {
+        top: calc(((var(--slider-height, 120px) * 2.3) - 80px) / 2);
+      }
+
+      .button.height-half input[type="range"] {
+        height: calc(var(--slider-height, 120px) * 0.58333333333);
+        top: calc(50% - ((var(--slider-height, 120px) * 0.58333333333) / 2));
+      }
+      .button.height-half input[type="range"]::-webkit-slider-runnable-track {
+        height: calc(var(--slider-height, 120px) * 0.58333333333);
+      }
+      .button.height-half input[type="range"]::-webkit-slider-thumb {
+        top: calc(((var(--slider-height, 120px) * 0.58333333333) - 80px) / 2);
+      }
+      
 
       :host:last-child .button {
         margin-right:13px;
@@ -5350,6 +5395,11 @@ class HomeKitCard extends LitElement {
         line-height: calc(var(--tile-icon-size, 30px) + 10px);
         text-align: center;
         pointer-events: none;
+      }
+
+      homekit-button .icon.image img {
+        width:100%;
+        border-radius: var(--tile-image-radius, 100%)
       }
 
       homekit-button .icon ha-icon {

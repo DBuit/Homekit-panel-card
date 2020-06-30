@@ -131,6 +131,11 @@ Example config:
       --min-header-height: 150px;
 
       --tile-icon-size: 30px;
+
+      --tile-image-radius: 100%
+
+      --slider-width: 120px;
+      --slider-height: 120px;
     }
 ```
 
@@ -196,18 +201,22 @@ In the above example we only set the `entity:` for a tile that is enough to let 
 | -------------- | ----------- | ------------ | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `entity` | string | **required** | `light.example` | The only required one is the entity |
 | `icon` | string | optional | "" | (for alle types except climate this shows the temperature) |
+| `offIcon` | boolean | optional | 'mdi:icon' | if you set an offIcon than this icon will be showed when the entity state is equal to an state in the offStates (default offStates: off or unavailable). |
+| `image` | string | optional | "/path/to/image.png" | path to an image (for alle types except climate this shows the temperature) |
+| `offImage` | string | optional | "/path/to/image.png" | if you set an offImage than this image will be showed when the entity state is equal to an state in the offStates (default offStates: off or unavailable). |
 | `name` | string | optional | You can overwrite the name shown on the tile |
 | `offStates` | array | optional | - "paused" | Default the "off" and "unavailable" state will show the tile greyed out but you can set your own list of states that should be considered as off |
 | `state` | boolean | optional | false | The tile show extra state info like brightness for lights and last_changed for sensors on the tile you can also set an entity here and the state of this entity is shown on that place |
 | `tap_action` | number | optional | See [actions](#action-options) | can be used to customize the action on tap/click (lights and switches have already a tap action) |
 | `hold_action` | boolean | optional | See [actions](#action-options) | Set a custom action for hold, default it opens the more-info pop-up |
 | `double_tap_action` | boolean | optional | See [actions](#action-options) | Set a custom action for double tap. If no double tap is defined this will default trigger the tap action |
-| `offIcon` | boolean | optional | 'mdi:icon' | if you set an offIcon than this icon will be showed when the entity state is equal to an state in the offStates (default off or unavailable). |
+
 | `spin` | boolean | optional | false | If true this will let the icon spin when the entity is on |
 | `wider` | boolean | optional | false | If true the tile will be the size of 2 tiles |
 | `higher` | boolean | optional | false | If true the tile will be the height of 2 tiles |
 | `halfheight` | boolean | optional | false | If true the tile will be half the height of 1 tile (Best used in combination with wider to make sure the information fits the tile) |
 | `slider` | boolean | optional | false | If true a slider element is added to the tile to control the lights brightness |
+
 
 
 ##### Custom popup
