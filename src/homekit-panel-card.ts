@@ -566,91 +566,25 @@ class HomeKitCard extends LitElement {
     if(entity.entity) {
       state = this.hass.states[entity.entity];
     }
-    if(type == "light") {
-      if (action == "tap" || action == "doubletap") {
-        if(entity.double_tap_action && action == "doubletap") {
-          this._customAction(entity.double_tap_action)
-        } else if(entity.tap_action) {
-          this._customAction(entity.tap_action)
-        } else {
-          this._toggle(state, entity.service);
-        }
-      } else if (action == "pressup") {
-        if(entity.hold_action) {
-          this._customAction(entity.hold_action)
-        } else {
-          this._hold(state, entity, row);
-        }
+
+    if ((action == "tap" || action == "doubletap")) {
+      if(action == "doubletap" && entity.double_tap_action) {
+        this._customAction(entity.double_tap_action, entity, row, state);
+      } else if(entity.tap_action) {
+        this._customAction(entity.tap_action, entity, row, state);
+      } else if(type === "light" || type === "switch" || type === "input_boolean") {
+        this._toggle(state, entity.service);
       }
-    } else if(type == "sensor" || type == "binary_sensor") {
-      if ((action == "tap" || action == "doubletap")) {
-        if(action == "doubletap" && entity.double_tap_action) {
-          this._customAction(entity.double_tap_action)
-        } else if(entity.tap_action) {
-          this._customAction(entity.tap_action)
-        }
+    } else if (action == "pressup") {
+      if(entity.hold_action) {
+        this._customAction(entity.hold_action, entity, row, state);
+      } else {
+        this._hold(state, entity, row);
       }
-      if (action == "pressup") {
-        if(entity.hold_action) {
-          this._customAction(entity.hold_action)
-        } else {
-          this._hold(state, entity, row);
-        }
-      }
-    } else if(type == "switch" || type == "input_boolean") {
-      if (action == "tap" || action == "doubletap") {
-        if(action == "doubletap" && entity.double_tap_action) {
-          this._customAction(entity.double_tap_action)
-        } else if(entity.tap_action) {
-          this._customAction(entity.tap_action)
-        } else {
-          this._toggle(state, entity.service);
-        }
-      } else if (action == "pressup") {
-        if(entity.hold_action) {
-          this._customAction(entity.hold_action)
-        } else {
-          this._hold(state, entity, row);
-        }
-      }
-    } else if(type == "custom") {
-      if ((action == "tap" || action == "doubletap")) {
-        if(action == "doubletap" && entity.double_tap_action) {
-          this._customAction(entity.double_tap_action)
-        } else if(entity.tap_action) {
-          this._customAction(entity.tap_action)
-        }
-      } else if (action == "pressup" && entity.hold_action) {
-        this._customAction(entity.hold_action)
-      }
-    } else if(type == "card") { 
-      if ((action == "tap" || action == "doubletap")) {
-        if(action == "doubletap" && entity.double_tap_action) {
-          this._customAction(entity.double_tap_action)
-        } else if(entity.tap_action) {
-          this._customAction(entity.tap_action)
-        }
-      } else if (action == "pressup" && entity.hold_action) {
-        this._customAction(entity.hold_action)
-      }
-    } else {
-      if ((action == "tap" || action == "doubletap")) {
-        if(action == "doubletap" && entity.double_tap_action) {
-          this._customAction(entity.double_tap_action)
-        } else if(entity.tap_action) {
-          this._customAction(entity.tap_action)
-        }
-      } else if (action == "pressup") {
-        if(entity.hold_action) {
-          this._customAction(entity.hold_action)
-        } else {
-          this._hold(state, entity, row);
-        }
-      } 
     }
   }
 
-  _customAction(tapAction) {
+  _customAction(tapAction, entity, row, state) {
     if (tapAction.confirmation) {
       forwardHaptic("warning");
 
@@ -665,6 +599,9 @@ class HomeKitCard extends LitElement {
     }
 
     switch (tapAction.action) {
+      case "popup":
+        this._createPopup(state, (tapAction.entity || entity), row);
+        break;
       case "more-info":
         if (tapAction.entity || tapAction.camera_image) {
           moreInfo(tapAction.entity ? tapAction.entity : tapAction.camera_image!);
@@ -702,6 +639,33 @@ class HomeKitCard extends LitElement {
     return 1;
   }
 
+  _createPopup(stateObj, entity, row) {
+    if(row.popup) {
+        var popUpCard = Object.assign({}, row.popup, { entity: stateObj.entity_id });
+        if(entity.popupExtend) {
+            var popUpCard = Object.assign({}, popUpCard, entity.popupExtend);
+        }
+    } else {
+        var popUpCard = Object.assign({}, entity.popup, { entity: stateObj.entity_id });
+    }
+    var popUpStyle = {
+        "position": "fixed",
+        "z-index": 999,
+        "top": 0,
+        "left": 0,
+        "height": "100%",
+        "width": "100%",
+        "display": "block",
+        "align-items": "center",
+        "justify-content": "center",
+        "background": "rgba(0, 0, 0, 0.8)",
+        "flex-direction": "column",
+        "margin": 0,
+        "--iron-icon-fill-color": "#FFF"
+    }
+    popUp('', popUpCard, false, popUpStyle);
+  }
+
   _toggle(state, service ) {
     this.hass.callService("homeassistant", service || "toggle", {
       entity_id: state.entity_id
@@ -710,30 +674,7 @@ class HomeKitCard extends LitElement {
 
   _hold(stateObj, entity, row) {
     if((row && row.popup) || entity.popup) {
-      if(row.popup) {
-          var popUpCard = Object.assign({}, row.popup, { entity: stateObj.entity_id });
-          if(entity.popupExtend) {
-              var popUpCard = Object.assign({}, popUpCard, entity.popupExtend);
-          }
-      } else {
-          var popUpCard = Object.assign({}, entity.popup, { entity: stateObj.entity_id });
-      }
-      var popUpStyle = {
-          "position": "fixed",
-          "z-index": 999,
-          "top": 0,
-          "left": 0,
-          "height": "100%",
-          "width": "100%",
-          "display": "block",
-          "align-items": "center",
-          "justify-content": "center",
-          "background": "rgba(0, 0, 0, 0.8)",
-          "flex-direction": "column",
-          "margin": 0,
-          "--iron-icon-fill-color": "#FFF"
-      }
-      popUp('', popUpCard, false, popUpStyle);
+      this._createPopup(stateObj, entity, row);
     } else {
       moreInfo(stateObj.entity_id)
     }
