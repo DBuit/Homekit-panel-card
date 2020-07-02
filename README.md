@@ -328,7 +328,7 @@ That's all for the popups, but there are more possibilities.
 
 ##### Custom card as a tile
 So we can now place our entities and customize the tiles and set custom popups but sometimes the default tile is not enough!
-We want something special, but I am the only developer for this card - I can't make everything - so we can other lovelace cards inside a tile to be directly displayed on our screen.
+We want something special, but I am the only developer for this card - I can't make everything - so we can load other lovelace cards inside a tile to be directly displayed on our screen.
 
 A great example of this is the custom card mini-graph-card it can display a graph of sensor data and is awesome to show this directly in a tile so you can do this. How let me show you in the example below:
 
