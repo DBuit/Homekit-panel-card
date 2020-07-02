@@ -12,7 +12,7 @@ An example of this is weather entity, for this I have therefore added a separate
 
 You can also adjust the pop-up that opens when you hold down a tile.
 You can have the pop-up open another lovelace card so that you can show other info in the popup, you can also just use the standard.
-For lights i have developed a separate card that also has the style of homekit, which you can use well in combination with this card. You can find this card here: https://github.com/DBuit/hass-custom-light-popup-card
+For lights I have developed a separate card that also has the style of homekit, which you can use well in combination with this card. You can find this card here: https://github.com/DBuit/hass-custom-light-popup-card
 
 Do you have ideas for a custom pop-up create an issue then I can see if I can help with this :)
 
@@ -82,17 +82,17 @@ in the card we can define some global configuration below you can find these opt
 | -------------- | ----------- | ------------ | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `home` | boolean | optional | false | When true this creates extra space above your tiles where you can show a title and display rules |
 | `title` | string | optional | "" | When home is true you can give your page a title |
-| `rules` | string | optional | 400px | When home is true you can define rules in template to display stats like how many lights are on or i use it to set a message that i need to put the trash out. |
+| `rules` | string | optional | 400px | When home is true you can define rules in template to display stats like how many lights are on or I use it to set a message that I need to put the trash out. |
 | `rulesColor` | string | optional | "#FFF" | Default the text is white and this can be overwritten with a new color |
 | `tileHoldAnimation` | boolean | optional | false | When true the tile with grow in size when holding :) |
 | `title` | string | optional | "" | When home is true you can give your page a title |
 | `useBrightness` | boolean | optional | true | When true the lights brightness is used to color the icon |
 | `useTemperature` | boolean | optional | false | When true the temperature is used to color the icon |
 | `titleColor` | number | optional |  | Titles above a row of tiles is colored by them this can overwrite this color |
-| `horizontalScroll` | boolean | optional | false | Default when a tile doesnt fit on the screen it goes to a next row, when you enable this it won't break to a next row but it will be scrollable |
+| `horizontalScroll` | boolean | optional | false | Default when a tile doesn't fit on the screen it goes to a next row, when you enable this it won't break to a next row but it will be scrollable |
 | `enableColumns` | boolean | optional | false | When enabled you can make rows with a title and tiles but also define columns within these rows |
-| `statePositionTop` | boolean | optional | false | Default the brightness (for lights) and last_changed (for sensors) is chown in the title next to the current state (on/off) when this is true this state if chown next to the icon in a circle (inspired by: https://community-home-assistant-assets.s3.dualstack.us-west-2.amazonaws.com/optimized/3X/d/c/dcf67fccb5fa3772b2db6d38aeef307d01ba3bc8_2_1380x862.jpeg) |
-| `style` | string | optional | css | Use the style option to add extra css default there is a list of variables to easily overwrite colors, sizes of the tiles see the list of variables under the table |
+| `statePositionTop` | boolean | optional | false | Default the brightness (for lights) and last_changed (for sensors) is shown in the title next to the current state (on/off) when this is true this state if chown next to the icon in a circle (inspired by: https://community-home-assistant-assets.s3.dualstack.us-west-2.amazonaws.com/optimized/3X/d/c/dcf67fccb5fa3772b2db6d38aeef307d01ba3bc8_2_1380x862.jpeg) |
+| `style` | string | optional | css | Use the style option to add extra CSS default there is a list of variables to easily overwrite colors, sizes of the tiles see the list of variables under the table |
 
 
 **Css variables and default values**
@@ -166,8 +166,8 @@ views:
         statePositionTop: true
 ```
 
-Now we wanna create rows and tiles to display our entities.
-In my example i enabled the `enableColumns` but i will first show the configuration if `enableColumns: false`.
+Now we want to create rows and tiles to display our entities.
+In my example I enabled the `enableColumns` but I will first show the configuration if `enableColumns: false`.
 
 We start with `entities:`, every item in the entities is a row with tiles, and every row can have it's own title.
 So below `statePositionTop: true` in our example we add the following:
@@ -178,8 +178,8 @@ So below `statePositionTop: true` in our example we add the following:
             entities:
 ```
 
-As you can se we started with entities inside the entities we defined 1 item with a title rows and an empty list of more `entities`.
-These entities are the tiles we wanna display in the row. let's add these tiles!
+As you can see we started with entities inside the entities we defined 1 item with a title rows and an empty list of more `entities`.
+These entities are the tiles we want to display in the row. let's add these tiles!
 
 ```
         entities:
@@ -210,7 +210,6 @@ In the above example we only set the `entity:` for a tile that is enough to let 
 | `tap_action` | number | optional | See [actions](#action-options) | can be used to customize the action on tap/click (lights and switches have already a tap action) |
 | `hold_action` | boolean | optional | See [actions](#action-options) | Set a custom action for hold, default it opens the more-info pop-up |
 | `double_tap_action` | boolean | optional | See [actions](#action-options) | Set a custom action for double tap. If no double tap is defined this will default trigger the tap action |
-
 | `spin` | boolean | optional | false | If true this will let the icon spin when the entity is on |
 | `wider` | boolean | optional | false | If true the tile will be the size of 2 tiles |
 | `higher` | boolean | optional | false | If true the tile will be the height of 2 tiles |
@@ -222,16 +221,16 @@ In the above example we only set the `entity:` for a tile that is enough to let 
 ##### Custom popup
 
 So now we can create our rows and tiles and customize it the way you want.
-But because i developed this card to get a nice homekit style experience i have also developed some pop-up card that can be used in combination with this card.
+But because I developed this card to get a nice homekit style experience, I have also developed some pop-up cards that can be used in combination with this card.
 
-At this moment i made the following pop-ups: (You got an idea for new ones? let me know!)
+At this moment I made the following pop-ups: (You got an idea for new ones? let me know!)
 - Light pop-up (https://github.com/DBuit/light-popup-card)
 - Thermostat/Climate pop-up (https://github.com/DBuit/thermostat-popup-card)
 
-Within this card you can define custom pop-up cards that will be openend when you use the `hold` action/ long press.
+Within this card you can define custom pop-up cards that will be opened when you use the `hold` action/ long press.
 You can use my cards or any other card and this will be displayed in a pop-up. 
 
-** Follow installation on the github page of the pop-up card first **
+** Follow installation on the GitHub page of the pop-up card first **
 
 Because you don't want to set this pop-up for every tile you can also set a pop-up for an entire row
 so we got this part of the configuration:
@@ -248,13 +247,13 @@ so we got this part of the configuration:
 ```
 
 And in Row 1 we only got lights so it would be nice to have the light pop-up in place.
-We can set a `popup` in the row and within the popup we can set a `type` which is a reference to an lovelace card. see the example below:
+We can set a `popup` in the row, and within the popup we can set a `type` which is a reference to an lovelace card. see the example below:
 
 ```
         entities:
           - title: Row 1
             popup:
-              type: custom:custom-light-popup-card
+              type: custom:light-popup-card
             entities:
               - entity: light.zithoek
               - entity: light.zithoek
@@ -263,7 +262,7 @@ We can set a `popup` in the row and within the popup we can set a `type` which i
             entities: 
 ```
 
-Now when we use the hold/longpress action on our tiles in Row 1 it will not open the default more-info pop-up with it will open a pop-up which shows our custom lovelace card `custom:custom-light-popup-card`. Besides type to set the card you can just set other configuration the card need for example the light popup card could be configured like this:
+Now when we use the hold/longpress action on our tiles in Row 1 it will not open the default more-info pop-up with it will open a pop-up which shows our custom lovelace card `custom:light-popup-card`. Besides type to set the card you can just set other configuration the card need for example the light popup card could be configured like this:
 
 ```
         entities:
@@ -283,7 +282,7 @@ Now when we use the hold/longpress action on our tiles in Row 1 it will not open
             entities: 
 ```
 
-It could be in some situations that you wanna use the same popup for every entity but you wanna configur something specific for the popup for some entities. For example the light popup card can also show some actions below the brightness slider to change the color but not all my lights need these actions so i can add `popupExtend:` to the specific entity to extend the popup cards configuration (** it is not to overwrite! **) check out belows example:
+In some situations you might want to use the same popup for every entity but configure something specific for the popup for some entities. For example, the light popup card can also show some actions below the brightness slider to change the color, but not all my lights need these actions so I can add `popupExtend:` to the specific entity to extend the popup cards configuration (** it is not to overwrite! **) check out below example:
 
 ```
         entities:
@@ -325,11 +324,11 @@ It could be in some situations that you wanna use the same popup for every entit
             entities: 
 ```
 
-Thats all for the popups but we are not yet finished with the posibilities.
+That's all for the popups, but there are more possibilities.
 
 ##### Custom card as a tile
 So we can now place our entities and customize the tiles and set custom popups but sometimes the default tile is not enough!
-We want something special but i am the only developer for this card i can't make everyting so we can load als load other lovelace cards inside a tile to be directly displayed on our screen.
+We want something special, but I am the only developer for this card - I can't make everything - so we can other lovelace cards inside a tile to be directly displayed on our screen.
 
 A great example of this is the custom card mini-graph-card it can display a graph of sensor data and is awesome to show this directly in a tile so you can do this. How let me show you in the example below:
 
@@ -361,15 +360,15 @@ A great example of this is the custom card mini-graph-card it can display a grap
               entities: 
 ```
 
-In the example you see we **don't** set an entity instead we set `card:` this set the tile to a different type and will load the lovelace card define in this configuration in our example it is the mini-graph-card (of course this card must be installed on your home assistant installation). In probably all cases you wanna use this feature the card won't be displayed really nice in the tile so you can use the `cardStyle` to overwrite the css of the loaded card an change it to look awesome!
+In the example you see we **don't** set an entity; instead we set `card:` this sets the tile to a different type and will load the lovelace card defined in this configuration. In our example it is the mini-graph-card (of course this card must be installed on your home assistant installation). In probably all cases you want to use this feature the card won't be displayed really nice in the tile so you can use the `cardStyle` to overwrite the CSS of the loaded card an change it to look awesome!
 
-Because i really like the mini-graph-card i added the overwritten styles inside my card so when you also wanna use the mini-graph-card you don't need to use the `cardStyle` configuration because i already did that for you!
+Because I really like the mini-graph-card, I added the overwritten styles inside my card so when you also want to use the mini-graph-card you don't need to use the `cardStyle` configuration because I already did that for you!
 
-Of course when you got a custom card you wanna use and you think more people wanna use this share this an i can also add the overwritten styles in the card so the cardStyle is not needed!
+Of course, if you have a custom card you want to use (and you think others would also want to use), let me know and I can also add the overwritten styles in the card so cardStyle is not needed!
 
 ##### Fully custom tile
-Sometimes we just want a tile to do something but it is not based on an entity we have in our home assistant installtion.
-For example i wan't a tile to navigate to my lights page let's see how we can make custom tiles in the example below:
+Sometimes we just want a tile to do something, but it is not based on an entity we have in our home assistant installation.
+For example I want a tile to navigate to my lights page; let's see how we can make custom tiles in the example below:
 
 ```
         entities:
@@ -389,13 +388,13 @@ For example i wan't a tile to navigate to my lights page let's see how we can ma
             entities: 
 ```
 
-In the example you can see we **dont't** set and entity or a card no we use `custom:` and than we use the configuration we now from our default entity options. So we can set the name, icon and the tap_action to make it do something when we click/tap on it. This way we got a nice tile that can do what ever we want.
+In the example you can see we **don't** set an entity or a card; use `custom:` instead. So, we can set the name, icon and the tap_action to make it do something when we click/tap on it. This way we got a nice tile that can do what ever we want.
 
 ##### enableColumns
 
-In the beginning of the configuration we got an global configuration named `enableColumns` and when we set this to **true** we can not only make rows with tiles but we can configure columns within these rows.
+In the beginning of the configuration there is a global configuration named `enableColumns` and when we set this to **true** we can not only make rows with tiles but we can configure columns within these rows.
 
-So the configuration gets a bit more complex because of this so i'm just gonna give an example to show it:
+The configuration gets a bit more complex because of this. Example:
 ```
 views:
   - title: "Example"
@@ -445,7 +444,7 @@ views:
                       - entity: light.eettafel
 ```
 
-It is a large example but gives an idea how to make multiple rows with its own columns.
+It is a large example but gives an idea of how to make multiple rows with its own columns.
 Before we started with `entities:` to define our rows now we start with `rows:` and within this we define our `row:`:
 ```
 views:
@@ -473,7 +472,7 @@ views:
           - row: 2
           - row: 3
 ```
-Inside the `column` we got our `entities:` which creates an row of tiles with a tile like before and inside we got another `entities:` with our tiles:
+Inside the `column` we have our `entities:` which creates a row of tiles with a tile like before, and inside there is another `entities:` with our tiles:
 ```
 views:
   - title: "Example"
@@ -500,9 +499,9 @@ views:
           - row: 3
 ```
 That's all really easy ;)
-So one more thing to make this work nice when you go from big screens to smaller screen we need to know how much tiles you want on 1 row so when you define more tiles on one row it will automatically break to a new line. And when an column doesn't fit on the screen it also breaks to a new line. To set this you set `tileOnRow:` in side your `column:` and give this a number for example 3 which says that it will show 3 tiles on a row.
+To make this work nicely on both big screens and small screens we need to know how many tiles you want on 1 row. So, when you define more tiles on one row it will automatically break to a new line. When a column doesn't fit on the screen it also breaks to a new line. To set this you set `tileOnRow:` inside your `column:` and give this a number, for example 3, which means that it will show 3 tiles on a row.
 
-The `tileOnRow:` is **not required** but optional if you do not set this the columns will not break to new lines but the tiles will break which can give a weird look when scaling to smaller sreens but it could also work for you so just play with it!
+The `tileOnRow:` is **not required** but optional. If you do not set this, the columns will not break to new lines, but the tiles will break which can give a weird look when scaling to smaller screens. It could also work for you, so just play with it!
 
 
 #### Action options
