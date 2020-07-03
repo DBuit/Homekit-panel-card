@@ -569,15 +569,15 @@ class HomeKitCard extends LitElement {
 
     if ((action == "tap" || action == "doubletap")) {
       if(action == "doubletap" && entity.double_tap_action) {
-        this._customAction(entity.double_tap_action, entity, row, state);
+        this._customAction(entity.double_tap_action, entity, row);
       } else if(entity.tap_action) {
-        this._customAction(entity.tap_action, entity, row, state);
+        this._customAction(entity.tap_action, entity, row);
       } else if(type === "light" || type === "switch" || type === "input_boolean") {
         this._toggle(state, entity.service);
       }
     } else if (action == "pressup") {
       if(entity.hold_action) {
-        this._customAction(entity.hold_action, entity, row, state);
+        this._customAction(entity.hold_action, entity, row);
       } else {
         this._hold(state, entity, row);
       }
@@ -600,7 +600,7 @@ class HomeKitCard extends LitElement {
 
     switch (tapAction.action) {
       case "popup":
-        this._createPopup(state, (tapAction.entity || entity), row);
+        this._createPopup((tapAction.entity || entity.entity), entity, row);
         break;
       case "more-info":
         if (tapAction.entity || tapAction.camera_image) {
@@ -639,31 +639,35 @@ class HomeKitCard extends LitElement {
     return 1;
   }
 
-  _createPopup(stateObj, entity, row) {
-    if(row.popup) {
-        var popUpCard = Object.assign({}, row.popup, { entity: stateObj.entity_id });
-        if(entity.popupExtend) {
-            var popUpCard = Object.assign({}, popUpCard, entity.popupExtend);
-        }
+  _createPopup(entity_id, entity, row) {
+    if((row && row.popup) || entity.popup) {
+      if(row.popup) {
+          var popUpCard = Object.assign({}, row.popup, { entity: entity_id });
+          if(entity.popupExtend) {
+              var popUpCard = Object.assign({}, popUpCard, entity.popupExtend);
+          }
+      } else {
+          var popUpCard = Object.assign({}, entity.popup, { entity: entity_id });
+      }
+      var popUpStyle = {
+          "position": "fixed",
+          "z-index": 999,
+          "top": 0,
+          "left": 0,
+          "height": "100%",
+          "width": "100%",
+          "display": "block",
+          "align-items": "center",
+          "justify-content": "center",
+          "background": "rgba(0, 0, 0, 0.8)",
+          "flex-direction": "column",
+          "margin": 0,
+          "--iron-icon-fill-color": "#FFF"
+      }
+      popUp('', popUpCard, false, popUpStyle);
     } else {
-        var popUpCard = Object.assign({}, entity.popup, { entity: stateObj.entity_id });
+      moreInfo(entity_id)
     }
-    var popUpStyle = {
-        "position": "fixed",
-        "z-index": 999,
-        "top": 0,
-        "left": 0,
-        "height": "100%",
-        "width": "100%",
-        "display": "block",
-        "align-items": "center",
-        "justify-content": "center",
-        "background": "rgba(0, 0, 0, 0.8)",
-        "flex-direction": "column",
-        "margin": 0,
-        "--iron-icon-fill-color": "#FFF"
-    }
-    popUp('', popUpCard, false, popUpStyle);
   }
 
   _toggle(state, service ) {
@@ -673,11 +677,7 @@ class HomeKitCard extends LitElement {
   }
 
   _hold(stateObj, entity, row) {
-    if((row && row.popup) || entity.popup) {
-      this._createPopup(stateObj, entity, row);
-    } else {
-      moreInfo(stateObj.entity_id)
-    }
+    this._createPopup(stateObj.entity_id, entity, row);
   }
   
   _getUnit(measure) {
