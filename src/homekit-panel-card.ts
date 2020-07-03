@@ -584,7 +584,7 @@ class HomeKitCard extends LitElement {
     }
   }
 
-  _customAction(tapAction, entity, row, state) {
+  _customAction(tapAction, entity, row) {
     if (tapAction.confirmation) {
       forwardHaptic("warning");
 
