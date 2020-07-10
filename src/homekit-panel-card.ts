@@ -14,6 +14,7 @@ import { moreInfo } from "card-tools/src/more-info";
 import { parseTemplate } from "card-tools/src/templates.js";
 import 'hammerjs';
 import XRegExp from 'xregexp';
+import { HassEntity } from 'home-assistant-js-websocket';
 
 class HomeKitCard extends LitElement {
   config: any;
@@ -262,6 +263,32 @@ class HomeKitCard extends LitElement {
     }
   }
 
+  _evalTemplate(state: HassEntity | undefined, func: any): any {
+    /* eslint no-new-func: 0 */
+    try {
+      return new Function('states', 'entity', 'user', 'hass', 'variables', 'html', `'use strict'; ${func}`).call(
+        this,
+        this.hass!.states,
+        state,
+        this.hass!.user,
+        this.hass,
+        html,
+      );
+    } catch (e) {
+      const funcTrimmed = func.length <= 100 ? func.trim() : `${func.trim().substring(0, 98)}...`;
+      e.message = `${e.name}: ${e.message} in '${funcTrimmed}'`;
+      e.name = 'ButtonCardJSTemplateError';
+      throw e;
+    }
+  }
+
+  _getTemplate(state: HassEntity | undefined, value: any | undefined): any | undefined {
+    const trimmed = value.trim();
+    if (trimmed.substring(0, 3) === '[[[' && trimmed.slice(-3) === ']]]') {
+      return this._evalTemplate(state, trimmed.slice(3, -3));
+    }
+  }
+
   _renderEntities(entities) {
     return html`
       ${entities.map(row => {
@@ -294,7 +321,7 @@ class HomeKitCard extends LitElement {
                           entityCount++;
                           if(!ent.slider) {
                             return stateObj ? html`
-                                <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button': 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
+                                <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button': 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide':''}${ent.conditionalClass ? ' '+this._getTemplate(stateObj, ent.conditionalClass):''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                     <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
                                       <span class="icon${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin':''}${ent.image ? ' image':''}" style="${!offStates.includes(stateObj.state) ? 'color:'+color+';' : ''}">
 
@@ -317,7 +344,7 @@ class HomeKitCard extends LitElement {
                             : this._notFound(ent);
                           } else {
                             return stateObj ? html`
-                                <homekit-button class="event slider ${offStates.includes(stateObj.state) ? 'button': 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
+                                <homekit-button class="event slider ${offStates.includes(stateObj.state) ? 'button': 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide':''}${ent.conditionalClass ? ' '+this._getTemplate(stateObj, ent.conditionalClass):''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                     <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
                                       <span class="icon${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin':''}${ent.image ? ' image':''}" style="${!offStates.includes(stateObj.state) ? 'color:'+color+';' : ''}">
           
@@ -344,7 +371,7 @@ class HomeKitCard extends LitElement {
                         } else if(type == "sensor" || type == "binary_sensor"){
                           entityCount++;
                           return stateObj ? html`
-                              <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button': 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
+                              <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button': 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide':''}${ent.conditionalClass ? ' '+this._getTemplate(stateObj, ent.conditionalClass):''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin':''}${ent.image ? ' image':''}">
                                       ${ent.image ? html`
@@ -367,7 +394,7 @@ class HomeKitCard extends LitElement {
                         } else if(type == "switch" || type =="input_boolean") {
                           entityCount++;
                           return stateObj ? html`
-                              <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button': 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
+                              <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button': 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide':''}${ent.conditionalClass ? ' '+this._getTemplate(stateObj, ent.conditionalClass):''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin':''}${ent.image ? ' image':''}">
                                       ${ent.image ? html`
@@ -392,7 +419,7 @@ class HomeKitCard extends LitElement {
                           entityCount = entityCount + 2;
                           return stateObj ? html`
                             ${entityCount == 4 ? html`<div class="break"></div>`:html``}
-                              <homekit-button class="event button size-2 on" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
+                              <homekit-button class="event button size-2 on${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide':''}${ent.conditionalClass ? ' '+this._getTemplate(stateObj, ent.conditionalClass):''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
                                     <span class="icon on">
                                       <ha-icon icon="${ent.icon || stateObj.attributes.icon || "mdi:weather-"+stateObj.state}" />
@@ -430,7 +457,7 @@ class HomeKitCard extends LitElement {
                             mode = stateObj.state in modes ? stateObj.state : "unknown-mode";
                           }
                           return stateObj ? html`
-                              <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button': 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
+                              <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button': 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide':''}${ent.conditionalClass ? ' '+this._getTemplate(stateObj, ent.conditionalClass):''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon climate '+mode: 'icon climate on '+mode}">
                                       ${ent.state ? Math.round(this.hass.states[ent.state]!.state) : Math.round(stateObj.attributes.current_temperature)}&#176;
@@ -449,7 +476,7 @@ class HomeKitCard extends LitElement {
                         } else {
                           entityCount++;
                           return stateObj ? html`
-                              <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button': 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
+                              <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button': 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide':''}${ent.conditionalClass ? ' '+this._getTemplate(stateObj, ent.conditionalClass):''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon': 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin':''}${ent.image ? ' image':''}">
                                       ${ent.image ? html`
@@ -566,91 +593,25 @@ class HomeKitCard extends LitElement {
     if(entity.entity) {
       state = this.hass.states[entity.entity];
     }
-    if(type == "light") {
-      if (action == "tap" || action == "doubletap") {
-        if(entity.double_tap_action && action == "doubletap") {
-          this._customAction(entity.double_tap_action)
-        } else if(entity.tap_action) {
-          this._customAction(entity.tap_action)
-        } else {
-          this._toggle(state, entity.service);
-        }
-      } else if (action == "pressup") {
-        if(entity.hold_action) {
-          this._customAction(entity.hold_action)
-        } else {
-          this._hold(state, entity, row);
-        }
+
+    if ((action == "tap" || action == "doubletap")) {
+      if(action == "doubletap" && entity.double_tap_action) {
+        this._customAction(entity.double_tap_action, entity, row);
+      } else if(entity.tap_action) {
+        this._customAction(entity.tap_action, entity, row);
+      } else if(type === "light" || type === "switch" || type === "input_boolean") {
+        this._toggle(state, entity.service);
       }
-    } else if(type == "sensor" || type == "binary_sensor") {
-      if ((action == "tap" || action == "doubletap")) {
-        if(action == "doubletap" && entity.double_tap_action) {
-          this._customAction(entity.double_tap_action)
-        } else if(entity.tap_action) {
-          this._customAction(entity.tap_action)
-        }
+    } else if (action == "pressup") {
+      if(entity.hold_action) {
+        this._customAction(entity.hold_action, entity, row);
+      } else {
+        this._hold(state, entity, row);
       }
-      if (action == "pressup") {
-        if(entity.hold_action) {
-          this._customAction(entity.hold_action)
-        } else {
-          this._hold(state, entity, row);
-        }
-      }
-    } else if(type == "switch" || type == "input_boolean") {
-      if (action == "tap" || action == "doubletap") {
-        if(action == "doubletap" && entity.double_tap_action) {
-          this._customAction(entity.double_tap_action)
-        } else if(entity.tap_action) {
-          this._customAction(entity.tap_action)
-        } else {
-          this._toggle(state, entity.service);
-        }
-      } else if (action == "pressup") {
-        if(entity.hold_action) {
-          this._customAction(entity.hold_action)
-        } else {
-          this._hold(state, entity, row);
-        }
-      }
-    } else if(type == "custom") {
-      if ((action == "tap" || action == "doubletap")) {
-        if(action == "doubletap" && entity.double_tap_action) {
-          this._customAction(entity.double_tap_action)
-        } else if(entity.tap_action) {
-          this._customAction(entity.tap_action)
-        }
-      } else if (action == "pressup" && entity.hold_action) {
-        this._customAction(entity.hold_action)
-      }
-    } else if(type == "card") { 
-      if ((action == "tap" || action == "doubletap")) {
-        if(action == "doubletap" && entity.double_tap_action) {
-          this._customAction(entity.double_tap_action)
-        } else if(entity.tap_action) {
-          this._customAction(entity.tap_action)
-        }
-      } else if (action == "pressup" && entity.hold_action) {
-        this._customAction(entity.hold_action)
-      }
-    } else {
-      if ((action == "tap" || action == "doubletap")) {
-        if(action == "doubletap" && entity.double_tap_action) {
-          this._customAction(entity.double_tap_action)
-        } else if(entity.tap_action) {
-          this._customAction(entity.tap_action)
-        }
-      } else if (action == "pressup") {
-        if(entity.hold_action) {
-          this._customAction(entity.hold_action)
-        } else {
-          this._hold(state, entity, row);
-        }
-      } 
     }
   }
 
-  _customAction(tapAction) {
+  _customAction(tapAction, entity, row) {
     if (tapAction.confirmation) {
       forwardHaptic("warning");
 
@@ -665,6 +626,9 @@ class HomeKitCard extends LitElement {
     }
 
     switch (tapAction.action) {
+      case "popup":
+        this._createPopup((tapAction.entity || entity.entity), entity, row);
+        break;
       case "more-info":
         if (tapAction.entity || tapAction.camera_image) {
           moreInfo(tapAction.entity ? tapAction.entity : tapAction.camera_image!);
@@ -702,21 +666,15 @@ class HomeKitCard extends LitElement {
     return 1;
   }
 
-  _toggle(state, service ) {
-    this.hass.callService("homeassistant", service || "toggle", {
-      entity_id: state.entity_id
-    });
-  }
-
-  _hold(stateObj, entity, row) {
+  _createPopup(entity_id, entity, row) {
     if((row && row.popup) || entity.popup) {
       if(row.popup) {
-          var popUpCard = Object.assign({}, row.popup, { entity: stateObj.entity_id });
+          var popUpCard = Object.assign({}, row.popup, { entity: entity_id });
           if(entity.popupExtend) {
               var popUpCard = Object.assign({}, popUpCard, entity.popupExtend);
           }
       } else {
-          var popUpCard = Object.assign({}, entity.popup, { entity: stateObj.entity_id });
+          var popUpCard = Object.assign({}, entity.popup, { entity: entity_id });
       }
       var popUpStyle = {
           "position": "fixed",
@@ -735,8 +693,18 @@ class HomeKitCard extends LitElement {
       }
       popUp('', popUpCard, false, popUpStyle);
     } else {
-      moreInfo(stateObj.entity_id)
+      moreInfo(entity_id)
     }
+  }
+
+  _toggle(state, service ) {
+    this.hass.callService("homeassistant", service || "toggle", {
+      entity_id: state.entity_id
+    });
+  }
+
+  _hold(stateObj, entity, row) {
+    this._createPopup(stateObj.entity_id, entity, row);
   }
   
   _getUnit(measure) {
@@ -1064,6 +1032,10 @@ class HomeKitCard extends LitElement {
         display: block;
         line-height: 35px;
         height: 35px;
+      }
+
+      homekit-button.hide {
+        display:none;
       }
       
       homekit-button .name {
