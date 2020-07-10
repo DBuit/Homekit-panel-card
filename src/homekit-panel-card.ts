@@ -1035,6 +1035,10 @@ class HomeKitCard extends LitElement {
         line-height: 35px;
         height: 35px;
       }
+
+      homekit-button.hide {
+        display:none;
+      }
       
       homekit-button .name {
         display:block;
