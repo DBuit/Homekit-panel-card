@@ -390,6 +390,8 @@ A great example of this is the custom card mini-graph-card it can display a grap
               entities: 
 ```
 
+If you want the tile to have an on/off state you can set a `entity` and `offStates` on the tile so it reacts to this entity's state to display as on or off.
+
 In the example you see we **don't** set an entity; instead we set `card:` this sets the tile to a different type and will load the lovelace card defined in this configuration. In our example it is the mini-graph-card (of course this card must be installed on your home assistant installation). In probably all cases you want to use this feature the card won't be displayed really nice in the tile so you can use the `cardStyle` to overwrite the CSS of the loaded card an change it to look awesome!
 
 Because I really like the mini-graph-card, I added the overwritten styles inside my card so when you also want to use the mini-graph-card you don't need to use the `cardStyle` configuration because I already did that for you!

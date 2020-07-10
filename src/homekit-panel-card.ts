@@ -11,6 +11,7 @@ import tinycolor, { TinyColor } from '@ctrl/tinycolor';
 import { LitElement, html, css } from "card-tools/src/lit-element";
 import { popUp } from "card-tools/src/popup";
 import { moreInfo } from "card-tools/src/more-info";
+import { hass, provideHass } from "card-tools/src/hass";
 import { parseTemplate } from "card-tools/src/templates.js";
 import 'hammerjs';
 import XRegExp from 'xregexp';
@@ -30,6 +31,7 @@ class HomeKitCard extends LitElement {
   rulesColor: any;
   useTemperature = false;
   useBrightness = false;
+  CUSTOM_TYPE_PREFIX = "custom:";
 
   static get properties() {
     return {
@@ -125,12 +127,30 @@ class HomeKitCard extends LitElement {
       this.addHammer(myNodelist[i]);
     }
     // this.addHammer(document.querySelector("homekit-button"));
-    this.shadowRoot.querySelectorAll("card-maker").forEach(customCard => {
-        var card = {
-          type: customCard.dataset.card
-        };
-        card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
-        customCard.config = card;
+    
+    this.shadowRoot.querySelectorAll(".card-tile").forEach(customCard => {
+      var card = {
+        type: customCard.dataset.card
+      };
+      card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
+
+      console.log(card);
+
+      if(!card || typeof card !== "object" || !card.type) {
+        console.log('Bottom card config error!')
+      } else {
+        let tag = card.type;
+        if(tag.startsWith(this.CUSTOM_TYPE_PREFIX))
+          tag = tag.substr(this.CUSTOM_TYPE_PREFIX.length);
+        else
+          tag = `hui-${tag}-card`;
+
+        const cardElement = document.createElement(tag);
+        cardElement.setConfig(card);
+        cardElement.hass = hass();
+
+        customCard.appendChild(cardElement);
+        provideHass(cardElement);
 
         let style = "";
         if(customCard.dataset.style) {
@@ -139,22 +159,49 @@ class HomeKitCard extends LitElement {
           style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .states .state .state__uom { font-size: 13px; } .header .icon { color: #f7d959; }";
         }
 
-        if(style != "") {
+        if(style!= "") {
           let itterations = 0;
-          let interval = setInterval(function () {
-            let el = customCard.children[0];
-            if(el) {
+          let interval = setInterval(function() {
+            if(cardElement && cardElement.shadowRoot) {
               window.clearInterval(interval);
-
               var styleElement = document.createElement('style');
               styleElement.innerHTML = style;
-              el.shadowRoot.appendChild(styleElement);
-
-            } else if (++itterations === 10 ) {
+              cardElement.shadowRoot.appendChild(styleElement);
+            } else if(++itterations === 10) {
               window.clearInterval(interval);
             }
           }, 100);
         }
+      }
+
+
+        
+        
+        // customCard.config = card;
+
+        // let style = "";
+        // if(customCard.dataset.style) {
+        //   style = customCard.dataset.style;
+        // } else if(customCard.dataset.card == 'custom:mini-graph-card') {
+        //   style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .states .state .state__uom { font-size: 13px; } .header .icon { color: #f7d959; }";
+        // }
+
+        // if(style != "") {
+        //   let itterations = 0;
+        //   let interval = setInterval(function () {
+        //     let el = customCard.children[0];
+        //     if(el) {
+        //       window.clearInterval(interval);
+
+        //       var styleElement = document.createElement('style');
+        //       styleElement.innerHTML = style;
+        //       el.shadowRoot.appendChild(styleElement);
+
+        //     } else if (++itterations === 10 ) {
+        //       window.clearInterval(interval);
+        //     }
+        //   }, 100);
+        // }
     });
   }
 
@@ -499,22 +546,27 @@ class HomeKitCard extends LitElement {
                         }
                       } else if(ent.card && !ent.custom) {
                         entityCount++;
+                        var stateObj = {state: ''};
+                        offStates = ['off', 'unavailable'];
+                        if(ent.entity) {
+                          if(ent.offStates) {
+                            offStates = ent.offStates;
+                          }
+                          stateObj = this.hass.states[ent.entity];
+                        }
+
                         if(ent.tap_action) {
                           return html`
-                            <homekit-button class="button on event${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${JSON.stringify(ent)}" data-type="'card'" data-row="${JSON.stringify(row)}">
-                                <div class="button-inner">
-                                  <card-maker nohass data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
-                                  </card-maker>
+                            <homekit-button class="${ent.entity ? stateObj.state != '' && offStates.includes(stateObj.state) ? 'button' : ' button on' : 'button on'} event${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${JSON.stringify(ent)}" data-type="'card'" data-row="${JSON.stringify(row)}">
+                                <div class="button-inner card-tile" data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
                                 </div>
                             </homekit-button>
                           ${entityCount == 3 ? html`<div class="break"></div>`:html``}
                         `
                         } else {
                           return html`
-                              <homekit-button class="button on${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}">
-                                  <div class="button-inner">
-                                    <card-maker nohass data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
-                                    </card-maker>
+                              <homekit-button class="${ent.entity ? stateObj.state != '' && offStates.includes(stateObj.state) ? 'button' : ' button on' : 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}">
+                                  <div class="button-inner card-tile" data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
                                   </div>
                               </homekit-button>
                             ${entityCount == 3 ? html`<div class="break"></div>`:html``}
@@ -522,8 +574,16 @@ class HomeKitCard extends LitElement {
                         }
                       } else if(ent.custom) {
                         entityCount++;
+                        var stateObj = {state: ''};
+                        offStates = ['off', 'unavailable'];
+                        if(ent.entity) {
+                          if(ent.offStates) {
+                            offStates = ent.offStates;
+                          }
+                          stateObj = this.hass.states[ent.entity];
+                        }
                         return html`
-                          <homekit-button class="button on event${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${JSON.stringify(ent)}" data-type="'custom'" data-row="${JSON.stringify(row)}">
+                          <homekit-button class="${ent.entity ? stateObj.state != '' && offStates.includes(stateObj.state) ? 'button' : ' button on' : 'button on'} event${ent.noPadding ? ' no-padding': ''}${ent.wider ? ' size-2': ''}${ent.higher ? ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${JSON.stringify(ent)}" data-type="'custom'" data-row="${JSON.stringify(row)}">
                               <div class="button-inner">
                                 <span class="icon on${ent.spin === true ? ' spin':''}${ent.image ? ' image':''}">
                                   ${ent.image ? html`
@@ -1286,10 +1346,6 @@ class HomeKitCard extends LitElement {
           min-width: auto;
           padding: 0;
         }
-      }
-
-      card-maker {
-        height:100%;
       }
 
       .spin {      
