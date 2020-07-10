@@ -508,8 +508,8 @@ The `tileOnRow:` is **not required** but optional. If you do not set this, the c
 
 | Name | Type | Default | Supported options | Description |
 | ----------------- | ------ | -------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `action` | string | `toggle` | `more-info`, `toggle`, `call-service`, `none`, `navigate`, `url` | Action to perform |
-| `entity` | string | none | Any entity id | **Only valid for `action: more-info` and `action: toggle`** to call `more-info` pop-up for this entity or `toggle` this entity |
+| `action` | string | `toggle` | `popup`, `more-info`, `toggle`, `call-service`, `none`, `navigate`, `url` | Action to perform. `popup` falls back to `more-info` if popup type is not specified |
+| `entity` | string | none | Any entity id | **Only valid for `action: more-info`, `action: popup` and `action: toggle`** to perform an action on the specified entity |
 | `navigation_path` | string | none | Eg: `/lovelace/0/` | Path to navigate to (e.g. `/lovelace/0/`) when action defined as navigate |
 | `url_path` | string | none | Eg: `https://www.google.fr` | URL to open on click when action is `url`. The URL will open in a new tab |
 | `service` | string | none | Any service | Service to call (e.g. `media_player.media_play_pause`) when `action` defined as `call-service` |
