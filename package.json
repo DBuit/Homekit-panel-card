@@ -22,7 +22,8 @@
     "home-assistant-js-websocket": "^4.4.0",
     "lit-element": "^2.2.1",
     "lit-html": "^1.1.2",
-    "prevent-ghost-click": "0.0.1"
+    "prevent-ghost-click": "0.0.1",
+    "xregexp": "^4.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
@@ -46,7 +47,8 @@
     "rollup-plugin-terser": "^5.2.0",
     "rollup-plugin-typescript2": "^0.24.3",
     "rollup-plugin-uglify": "^6.0.3",
-    "typescript": "^3.7.5"
+    "typescript": "^3.7.5",
+    "acorn": "^7.3.1"
   },
   "scripts": {
     "start": "rollup -c --watch",

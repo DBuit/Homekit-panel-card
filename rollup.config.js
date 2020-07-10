@@ -36,6 +36,7 @@ export default [
     output: {
       dir: 'dist',
       format: 'es',
+      sourcemap: 'inline',
     },
     plugins: [...plugins],
   },

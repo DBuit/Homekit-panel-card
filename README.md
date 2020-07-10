@@ -215,8 +215,38 @@ In the above example we only set the `entity:` for a tile that is enough to let 
 | `higher` | boolean | optional | false | If true the tile will be the height of 2 tiles |
 | `halfheight` | boolean | optional | false | If true the tile will be half the height of 1 tile (Best used in combination with wider to make sure the information fits the tile) |
 | `slider` | boolean | optional | false | If true a slider element is added to the tile to control the lights brightness |
+| `hide` | template | optional | "[[[ [template](#template-hide-or-customclass) ]]]" | With the use of JS in a template you can hide/show a tile |
+| `conditionalClass` | template | optional | "[[[ [template](#template-hide-or-customclass) ]]]" | With the use of JS in a template you can add a css class to a tile and in the style part of the card you can change the style any way you want |
 
+##### Template hide or customClass
 
+JS templates can be used for 2 config option on your tile.
+1. Hide
+With hide you can hide/show a tile based on a confition in the template. For example hide a tile when light is on or show it when the brightness is lower than a value.
+2. conditionalClass
+With conditionalClass you can add a css class to a tile. that does not do anything but this class in combination with a custom css style makes it possible to make a tile red for example when your tempeture goes below a value.
+
+The template code i borrowed from the custom bottom card for most part: https://github.com/custom-cards/button-card#javascript-templates
+
+Example code:
+
+```
+  - entity: light.beganegrond
+    name: Lichtstrip
+    hide: >
+      [[[
+        var bri = states['light.beganegrond'].attributes.brightness;
+        return bri > 200;
+      ]]]
+    conditionalClass: >
+      [[[
+        var bri = states['light.beganegrond'].attributes.brightness;
+        if (bri < 200)
+          return "redtile";
+        else
+          return "";
+      ]]]
+```
 
 ##### Custom popup
 
