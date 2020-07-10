@@ -134,10 +134,8 @@ class HomeKitCard extends LitElement {
       };
       card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
 
-      console.log(card);
-
       if(!card || typeof card !== "object" || !card.type) {
-        console.log('Bottom card config error!')
+        console.log('Card tile config error!')
       } else {
         let tag = card.type;
         if(tag.startsWith(this.CUSTOM_TYPE_PREFIX))
@@ -173,35 +171,6 @@ class HomeKitCard extends LitElement {
           }, 100);
         }
       }
-
-
-        
-        
-        // customCard.config = card;
-
-        // let style = "";
-        // if(customCard.dataset.style) {
-        //   style = customCard.dataset.style;
-        // } else if(customCard.dataset.card == 'custom:mini-graph-card') {
-        //   style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .states .state .state__uom { font-size: 13px; } .header .icon { color: #f7d959; }";
-        // }
-
-        // if(style != "") {
-        //   let itterations = 0;
-        //   let interval = setInterval(function () {
-        //     let el = customCard.children[0];
-        //     if(el) {
-        //       window.clearInterval(interval);
-
-        //       var styleElement = document.createElement('style');
-        //       styleElement.innerHTML = style;
-        //       el.shadowRoot.appendChild(styleElement);
-
-        //     } else if (++itterations === 10 ) {
-        //       window.clearInterval(interval);
-        //     }
-        //   }, 100);
-        // }
     });
   }
 
