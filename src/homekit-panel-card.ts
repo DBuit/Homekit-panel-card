@@ -120,6 +120,42 @@ class HomeKitCard extends LitElement {
     
   }
 
+  _createElement(customCard, tag, card) {
+    const cardElement = document.createElement(tag);
+    try {
+      cardElement.setConfig(card);
+    } catch (err) {
+      console.log('card tile error', card);
+      console.log(err.message);
+    }
+    cardElement.setConfig(card);
+    cardElement.hass = hass();
+
+    customCard.appendChild(cardElement);
+    provideHass(cardElement);
+
+    let style = "";
+    if(customCard.dataset.style) {
+      style = customCard.dataset.style;
+    } else if(customCard.dataset.card == 'custom:mini-graph-card') {
+      style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .states .state .state__uom { font-size: 13px; } .header .icon { color: #f7d959; }";
+    }
+
+    if(style!= "") {
+      let itterations = 0;
+      let interval = setInterval(function() {
+        if(cardElement && cardElement.shadowRoot) {
+          window.clearInterval(interval);
+          var styleElement = document.createElement('style');
+          styleElement.innerHTML = style;
+          cardElement.shadowRoot.appendChild(styleElement);
+        } else if(++itterations === 10) {
+          window.clearInterval(interval);
+        }
+      }, 100);
+    }
+  }
+
   firstUpdated() {
     var myNodelist = this.shadowRoot.querySelectorAll('homekit-button.event')
     for (var i = 0; i < myNodelist.length; i++) {
@@ -133,43 +169,29 @@ class HomeKitCard extends LitElement {
         type: customCard.dataset.card
       };
       card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
-
       if(!card || typeof card !== "object" || !card.type) {
-        console.log('Card tile config error!')
+        console.log('card tile error', card);
       } else {
         let tag = card.type;
         if(tag.startsWith(this.CUSTOM_TYPE_PREFIX))
           tag = tag.substr(this.CUSTOM_TYPE_PREFIX.length);
         else
           tag = `hui-${tag}-card`;
-
-        const cardElement = document.createElement(tag);
-        cardElement.setConfig(card);
-        cardElement.hass = hass();
-
-        customCard.appendChild(cardElement);
-        provideHass(cardElement);
-
-        let style = "";
-        if(customCard.dataset.style) {
-          style = customCard.dataset.style;
-        } else if(customCard.dataset.card == 'custom:mini-graph-card') {
-          style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .states .state .state__uom { font-size: 13px; } .header .icon { color: #f7d959; }";
-        }
-
-        if(style!= "") {
-          let itterations = 0;
-          let interval = setInterval(function() {
-            if(cardElement && cardElement.shadowRoot) {
-              window.clearInterval(interval);
-              var styleElement = document.createElement('style');
-              styleElement.innerHTML = style;
-              cardElement.shadowRoot.appendChild(styleElement);
-            } else if(++itterations === 10) {
-              window.clearInterval(interval);
-            }
-          }, 100);
-        }
+        console.log(tag);
+        let itterations = 0;
+        let _self = this;
+        let created = false;
+        let interval = setInterval(function() {
+          console.log('tile card iteration: ' + itterations);
+          if(customElements.get(tag)) {
+            window.clearInterval(interval);
+            created = true;
+            _self._createElement(customCard, tag, card)
+          } else if(++itterations === 10) {
+            window.clearInterval(interval);
+            console.log('card tile error', card);
+          }
+        }, 100);
       }
     });
   }
