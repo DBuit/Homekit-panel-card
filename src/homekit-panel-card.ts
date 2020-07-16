@@ -136,7 +136,7 @@ class HomeKitCard extends LitElement {
       if(customCard.dataset.style) {
         style = customCard.dataset.style;
       } else if(customCard.dataset.card == 'custom:mini-graph-card') {
-        style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .states .state .state__uom { font-size: 13px; } .header .icon { color: #f7d959; }";
+        style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .states .state .state__uom { font-size: 13px; margin-top: 0; line-height: normal; } .header .icon { color: #f7d959; }";
       }
       if(style!= "") {
         let itterations = 0;
@@ -1272,7 +1272,6 @@ class HomeKitCard extends LitElement {
         .header, .card-title, .homekit-card {
           width: 358px;
           text-align: left;
-          padding:0!important;
           margin: 0 auto;
         }
         .card-title {
