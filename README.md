@@ -32,6 +32,22 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 
 You can now render other lovelace cards like mini-graph-card inside a tile [See how to use this](#render-other-lovelace-cards)
 
+
+## Screenshots
+
+### Screenshots without columns
+
+![desktop home screenshot](screenshot-home.png "Desktop screenshot")
+![desktop screenshot](screenshot-tablet.png "Tablet screenshot")
+![mobile screenshot](screenshot-mobile.png "Mobile screenshot")
+
+### Screenshots with columns
+
+![desktop screenshot columns](screenshot-columns.png "Desktop columns screenshot")
+![tablet screenshot columns](screenshot-tablet-columns.png "Tablet columns screenshot")
+![mobile screenshot columns](screenshot-mobile-columns.png "Mobile columns screenshot ")
+
+
 ## Configuration
 
 ### Installation instructions
@@ -867,17 +883,3 @@ views:
                       - entity: switch.doorbell_restart
                       - entity: binary_sensor.doorbell_button
 ```
-
-## Screenshots
-
-### Screenshots without columns
-
-![desktop home screenshot](screenshot-home.png "Desktop screenshot")
-![desktop screenshot](screenshot-tablet.png "Tablet screenshot")
-![mobile screenshot](screenshot-mobile.png "Mobile screenshot")
-
-### Screenshots with columns
-
-![desktop screenshot columns](screenshot-columns.png "Desktop columns screenshot")
-![tablet screenshot columns](screenshot-tablet-columns.png "Tablet columns screenshot")
-![mobile screenshot columns](screenshot-mobile-columns.png "Mobile columns screenshot ")
