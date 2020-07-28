@@ -18,19 +18,6 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 
 <a href="https://www.buymeacoffee.com/ZrUK14i" target="_blank"><img height="41px" width="167px" src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee"></a>
 
-# TO DO
-
-- Multiple columns (we now got rows with a title)
-
-**Implemented**
-
-- Show graph on tile
-- Add HACS support
-- Add custom tap actions
-- Combine entities
-- Add more options for home like notifications, which entities are on for example
-
-You can now render other lovelace cards like mini-graph-card inside a tile [See how to use this](#render-other-lovelace-cards)
 
 ## Configuration
 
@@ -54,6 +41,10 @@ resources:
   url: /local/homekit-panel-card.js
   type: module
 ```
+
+**Wanna use the popup functionality?**
+
+Make sure you also install card-mod so the custom styles can be applied to the popups: https://github.com/thomasloven/lovelace-card-mod
 
 ### Configure the card in your lovelace-ui.yaml
 
