@@ -16,7 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "@ctrl/tinycolor": "^2.6.0",
-    "card-tools": "github:thomasloven/lovelace-card-tools",
+    "card-tools": "github:thomasloven/lovelace-card-tools#master",
     "custom-card-helpers": "^1.6.5",
     "hammerjs": "^2.0.8",
     "home-assistant-js-websocket": "^4.4.0",
