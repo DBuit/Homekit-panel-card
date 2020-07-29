@@ -44,7 +44,9 @@ resources:
 
 **Wanna use the popup functionality?**
 
-Make sure you also install card-mod so the custom styles can be applied to the popups: https://github.com/thomasloven/lovelace-card-mod
+The popups use browser mod to display any lovelace card in a popup. To use the popups install browser mod: https://github.com/thomasloven/hass-browser_mod
+And also install card-mod so the custom styles can be applied to the popups: https://github.com/thomasloven/lovelace-card-mod
+
 
 ### Configure the card in your lovelace-ui.yaml
 

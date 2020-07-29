@@ -675,7 +675,7 @@ class HomeKitCard extends LitElement {
     return 1;
   }
 
-  _createPopup(entity_id, entity, row) {
+  async _createPopup(entity_id, entity, row) {
     if((row && row.popup) || entity.popup) {
       if(row.popup) {
           var popUpCard = Object.assign({}, row.popup, { entity: entity_id });
@@ -686,21 +686,16 @@ class HomeKitCard extends LitElement {
           var popUpCard = Object.assign({}, entity.popup, { entity: entity_id });
       }
       var popUpStyle = {
-          "position": "fixed",
-          "z-index": 999,
-          "top": 0,
-          "left": 0,
-          "height": "100%",
-          "width": "100%",
-          "display": "block",
-          "align-items": "center",
-          "justify-content": "center",
-          "background": "rgba(0, 0, 0, 0.8)",
-          "flex-direction": "column",
-          "margin": 0,
-          "--iron-icon-fill-color": "#FFF"
+        '$': ".mdc-dialog .mdc-dialog__container { width: 100%; } .mdc-dialog .mdc-dialog__container .mdc-dialog__surface { width:100%; }",
+        '.': ":host { --mdc-theme-surface: rgba(0,0,0,0); --secondary-background-color: rgba(0,0,0,0); --ha-card-background: rgba(0,0,0,0); --mdc-dialog-scrim-color: rgba(0,0,0,0.8); --mdc-dialog-min-height: 100%; --mdc-dialog-min-width: 100%; --mdc-dialog-max-width: 100%; } mwc-icon-button { color: #FFF; }"
       }
-      popUp('', popUpCard, false, popUpStyle);
+      var service_data = {
+        title: "test",
+        style: popUpStyle,
+        card: popUpCard,
+        deviceID: ['this']
+      }
+      var result = await this.hass.callService("browser_mod", "popup", service_data);
     } else {
       moreInfo(entity_id)
     }
