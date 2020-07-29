@@ -1050,6 +1050,8 @@ class HomeKitCard extends LitElement {
         color: var(--tile-name-text-color, rgba(0, 0, 0, 0.4));
         width: 100%;
         margin-top: auto;
+        margin-bottom: -5px;
+        padding-bottom: 5px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
