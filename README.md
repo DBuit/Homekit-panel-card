@@ -19,6 +19,22 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 <a href="https://www.buymeacoffee.com/ZrUK14i" target="_blank"><img height="41px" width="167px" src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee"></a>
 
 
+
+## Screenshots
+
+### Screenshots without columns
+
+![desktop home screenshot](screenshot-home.png "Desktop screenshot")
+![desktop screenshot](screenshot-tablet.png "Tablet screenshot")
+![mobile screenshot](screenshot-mobile.png "Mobile screenshot")
+
+### Screenshots with columns
+
+![desktop screenshot columns](screenshot-columns.png "Desktop columns screenshot")
+![tablet screenshot columns](screenshot-tablet-columns.png "Tablet columns screenshot")
+![mobile screenshot columns](screenshot-mobile-columns.png "Mobile columns screenshot ")
+
+
 ## Configuration
 
 ### Installation instructions
@@ -860,17 +876,3 @@ views:
                       - entity: switch.doorbell_restart
                       - entity: binary_sensor.doorbell_button
 ```
-
-## Screenshots
-
-### Screenshots without columns
-
-![desktop home screenshot](screenshot-home.png "Desktop screenshot")
-![desktop screenshot](screenshot-tablet.png "Tablet screenshot")
-![mobile screenshot](screenshot-mobile.png "Mobile screenshot")
-
-### Screenshots with columns
-
-![desktop screenshot columns](screenshot-columns.png "Desktop columns screenshot")
-![tablet screenshot columns](screenshot-tablet-columns.png "Tablet columns screenshot")
-![mobile screenshot columns](screenshot-mobile-columns.png "Mobile columns screenshot ")
