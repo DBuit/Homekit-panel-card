@@ -8,7 +8,6 @@ import {
 } from 'custom-card-helpers';
 import tinycolor, { TinyColor } from '@ctrl/tinycolor';
 import { LitElement, html, css } from "card-tools/src/lit-element";
-import { popUp } from "card-tools/src/popup";
 import { moreInfo } from "card-tools/src/more-info";
 import { provideHass } from "card-tools/src/hass";
 import { parseTemplate } from "card-tools/src/templates.js";
@@ -692,7 +691,7 @@ class HomeKitCard extends LitElement {
         '.': ":host { --mdc-theme-surface: rgba(0,0,0,0); --secondary-background-color: rgba(0,0,0,0); --ha-card-background: rgba(0,0,0,0); --mdc-dialog-scrim-color: rgba(0,0,0,0.8); --mdc-dialog-min-height: 100%; --mdc-dialog-min-width: 100%; --mdc-dialog-max-width: 100%; } mwc-icon-button { color: #FFF; }"
       }
       var service_data = {
-        title: "",
+        title: " ",
         style: popUpStyle,
         card: popUpCard,
         deviceID: ['this']
