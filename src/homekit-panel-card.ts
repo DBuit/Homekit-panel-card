@@ -806,6 +806,13 @@ class HomeKitCard extends LitElement {
         --idle-color: #00CC66;
         --unknown-color: #bac;
       }
+
+      :host::after {
+        display: table;
+        content: '';
+        clear: both;
+      }
+
       .card-title {
           margin-bottom:-10px;
           padding-left: 4px;
