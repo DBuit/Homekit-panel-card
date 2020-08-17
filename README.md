@@ -100,6 +100,7 @@ in the card we can define some global configuration below you can find these opt
 | `titleColor` | number | optional |  | Titles above a row of tiles is colored by them this can overwrite this color |
 | `horizontalScroll` | boolean | optional | false | Default when a tile doesn't fit on the screen it goes to a next row, when you enable this it won't break to a next row but it will be scrollable |
 | `enableColumns` | boolean | optional | false | When enabled you can make rows with a title and tiles but also define columns within these rows |
+| `masonry` | boolean | optional | false | When enabled it will order the tiles by size and makes sure there are no blank space on a row. This is usefull when using wider and higher options on a tile so everything fits nicely, check out the website of the plugin builder to get an idea of what it does: https://masonry.desandro.com/ |
 | `statePositionTop` | boolean | optional | false | Default the brightness (for lights) and last_changed (for sensors) is shown in the title next to the current state (on/off) when this is true this state if chown next to the icon in a circle (inspired by: https://community-home-assistant-assets.s3.dualstack.us-west-2.amazonaws.com/optimized/3X/d/c/dcf67fccb5fa3772b2db6d38aeef307d01ba3bc8_2_1380x862.jpeg) |
 | `style` | string | optional | css | Use the style option to add extra CSS default there is a list of variables to easily overwrite colors, sizes of the tiles see the list of variables under the table |
 
@@ -218,13 +219,14 @@ In the above example we only set the `entity:` for a tile that is enough to let 
 | `state` | boolean | optional | false | The tile show extra state info like brightness for lights and last_changed for sensors on the tile you can also set an entity here and the state of this entity is shown on that place |
 | `statePath` | boolean | optional | false | In combination with `state` you can also display other values besided the entities state. for example you can set this to `attributes.brightness` to display the brightness of the entity you have set in `state` |
 | `hideState` | boolean | optional | false | When you do not wan't the last updated or brightness for lights is displayed you can hide the state by setting this to true |
-
 | `tap_action` | number | optional | See [actions](#action-options) | can be used to customize the action on tap/click (lights and switches have already a tap action) |
 | `hold_action` | boolean | optional | See [actions](#action-options) | Set a custom action for hold, default it opens the more-info pop-up |
 | `double_tap_action` | boolean | optional | See [actions](#action-options) | Set a custom action for double tap. If no double tap is defined this will default trigger the tap action |
 | `spin` | boolean | optional | false | If true this will let the icon spin when the entity is on |
 | `wider` | boolean | optional | false | If true the tile will be the size of 2 tiles |
+| `widerSize` | number | optional | 1,2,3,4,5 or 6 | When wider is enable it makes the tile default 2 tiles width, width widerSize you can make make it up to 6 tiles width |
 | `higher` | boolean | optional | false | If true the tile will be the height of 2 tiles |
+| `higherSize` | number | optional | 1,2,3,4,5 or 6 | When higher is enable it makes the tile default 2 tiles width, width higherSize you can make make it up to 6 tiles width |
 | `halfheight` | boolean | optional | false | If true the tile will be half the height of 1 tile (Best used in combination with wider to make sure the information fits the tile) |
 | `slider` | boolean | optional | false | If true a slider element is added to the tile to control the lights brightness |
 | `hide` | template | optional | "[[[ [template](#template-hide-or-customclass) ]]]" | With the use of JS in a template you can hide/show a tile |
