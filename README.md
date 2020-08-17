@@ -216,6 +216,9 @@ In the above example we only set the `entity:` for a tile that is enough to let 
 | `name` | string | optional | You can overwrite the name shown on the tile |
 | `offStates` | array | optional | - "paused" | Default the "off" and "unavailable" state will show the tile greyed out but you can set your own list of states that should be considered as off |
 | `state` | boolean | optional | false | The tile show extra state info like brightness for lights and last_changed for sensors on the tile you can also set an entity here and the state of this entity is shown on that place |
+| `statePath` | boolean | optional | false | In combination with `state` you can also display other values besided the entities state. for example you can set this to `attributes.brightness` to display the brightness of the entity you have set in `state` |
+| `hideState` | boolean | optional | false | When you do not wan't the last updated or brightness for lights is displayed you can hide the state by setting this to true |
+
 | `tap_action` | number | optional | See [actions](#action-options) | can be used to customize the action on tap/click (lights and switches have already a tap action) |
 | `hold_action` | boolean | optional | See [actions](#action-options) | Set a custom action for hold, default it opens the more-info pop-up |
 | `double_tap_action` | boolean | optional | See [actions](#action-options) | Set a custom action for double tap. If no double tap is defined this will default trigger the tap action |

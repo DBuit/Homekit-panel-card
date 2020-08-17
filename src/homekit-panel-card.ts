@@ -176,46 +176,48 @@ class HomeKitCard extends LitElement {
   }
 
   _renderState(ent, stateObj, offStates, type) {
-    if(type == 'light' && (stateObj.attributes.brightness || ent.state)) {
-      if(this.statePositionTop) {
-        return this._renderCircleState(ent, stateObj, type);
-      } else {
-        return html`
-          <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}">${this._renderStateValue(ent, stateObj, type)}</span>
-        `;
-      }
-    } else if((type == "sensor" || type == "binary_sensor") && (stateObj.last_changed || ent.state)) {
-      if(this.statePositionTop) {
-        return this._renderCircleState(ent, stateObj, type);
-      } else {
-        return html`
-          <span class="previous">${this._renderStateValue(ent, stateObj, type)}</span>
-        `;
-      }
-    } else if((type == "switch" || type =="input_boolean") && ent.state) {
-      if(this.statePositionTop) {
-        return this._renderCircleState(ent, stateObj, type);
-      } else {
-        return html`
-          <span class="value on">${this._renderStateValue(ent, stateObj, type)}</span>
-        `;
-      }
-    } else if(type == "climate" && stateObj.attributes.temperature) {
-      if(this.statePositionTop) {
-        return this._renderCircleState(ent, stateObj, type);
-      } else {
-        return html`
-          <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}">${this._renderStateValue(ent, stateObj, type)}</span>
-        `;
-      }
-    } else {
-      if(ent.state) {
+    if(!ent.hideState) {
+      if(type == 'light' && (stateObj.attributes.brightness || ent.state)) {
+        if(this.statePositionTop) {
+          return this._renderCircleState(ent, stateObj, type);
+        } else {
+          return html`
+            <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}">${this._renderStateValue(ent, stateObj, type)}</span>
+          `;
+        }
+      } else if((type == "sensor" || type == "binary_sensor") && (stateObj.last_changed || ent.state)) {
+        if(this.statePositionTop) {
+          return this._renderCircleState(ent, stateObj, type);
+        } else {
+          return html`
+            <span class="previous">${this._renderStateValue(ent, stateObj, type)}</span>
+          `;
+        }
+      } else if((type == "switch" || type =="input_boolean") && ent.state) {
         if(this.statePositionTop) {
           return this._renderCircleState(ent, stateObj, type);
         } else {
           return html`
             <span class="value on">${this._renderStateValue(ent, stateObj, type)}</span>
           `;
+        }
+      } else if(type == "climate" && stateObj.attributes.temperature) {
+        if(this.statePositionTop) {
+          return this._renderCircleState(ent, stateObj, type);
+        } else {
+          return html`
+            <span class=" ${offStates.includes(stateObj.state) ? 'value': 'value on'}">${this._renderStateValue(ent, stateObj, type)}</span>
+          `;
+        }
+      } else {
+        if(ent.state) {
+          if(this.statePositionTop) {
+            return this._renderCircleState(ent, stateObj, type);
+          } else {
+            return html`
+              <span class="value on">${this._renderStateValue(ent, stateObj, type)}</span>
+            `;
+          }
         }
       }
     }
@@ -233,21 +235,38 @@ class HomeKitCard extends LitElement {
       </svg>
     `;
   }
+
+  _getValue(state, statePath) {
+    var stateObj = this.hass.states[state];
+    var path = statePath.split('.');
+    for(var pathItem of path) {
+      if(stateObj[pathItem]) {
+        stateObj = stateObj[pathItem];
+      } else {
+        stateObj = null;
+      }
+    }
+    return stateObj;
+  }
+
   _renderStateValue(ent, stateObj, type) {
     if(type == 'light') {
       return html`
         ${stateObj.attributes.brightness && !ent.state ? html`${Math.round(stateObj.attributes.brightness/2.55)}%` : html``}
-        ${ent.state ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+        ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+        ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
       `;
     } else if(type == "sensor" || type == "binary_sensor") {
       
       return html`
         ${stateObj.last_changed && !ent.state ?  html`${ this._calculateTime(stateObj.last_changed) }` : html``}
-        ${ent.state ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}`:html``}
+        ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}`:html``}
+        ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
       `;
     } else if(type == "switch" || type =="input_boolean") {
       return html`
-        ${ent.state ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+        ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+        ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
       `;
     } else if(type == "climate") {
       return html`
@@ -255,7 +274,8 @@ class HomeKitCard extends LitElement {
       `;
     } else {
       return html`
-      ${ent.state ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+        ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+        ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
       `;
     }
   }
