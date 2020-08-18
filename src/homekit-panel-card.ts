@@ -551,7 +551,7 @@ class HomeKitCard extends LitElement {
 
                         if(ent.tap_action) {
                           return html`
-                            <homekit-button class="${ent.entity ? stateObj.state != '' && offStates.includes(stateObj.state) ? 'button' : ' button on' : 'button on'} event${ent.noPadding ? ' no-padding': ''}${ent.wider ? ent.widerSize ? ' size-'+ent.widerSize : ' size-2': ''}${ent.higher ? ent.higherSize ? ' height-'+ent.higherSize :  ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${JSON.stringify(ent)}" data-type="'card'" data-row="${JSON.stringify(row)}">
+                            <homekit-button class="${ent.entity ? stateObj.state != '' && offStates.includes(stateObj.state) ? 'button' : ' button on' : 'button on'} event${ent.noPadding ? ' no-padding': ''}${ent.wider ? ent.widerSize ? ' size-'+ent.widerSize : ' size-2': ''}${ent.higher ? ent.higherSize ? ' height-'+ent.higherSize :  ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}${ent.hide && this._getTemplate(undefined, ent.hide) ? ' hide':''}${ent.conditionalClass ? ' '+this._getTemplate(undefined, ent.conditionalClass):''}" data-ent="${JSON.stringify(ent)}" data-type="'card'" data-row="${JSON.stringify(row)}">
                                 <div class="button-inner card-tile" data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
                                 </div>
                             </homekit-button>
@@ -559,7 +559,7 @@ class HomeKitCard extends LitElement {
                         `
                         } else {
                           return html`
-                              <homekit-button class="${ent.entity ? stateObj.state != '' && offStates.includes(stateObj.state) ? 'button' : ' button on' : 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ent.widerSize ? ' size-'+ent.widerSize : ' size-2': ''}${ent.higher ? ent.higherSize ? ' height-'+ent.higherSize :  ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}">
+                              <homekit-button class="${ent.entity ? stateObj.state != '' && offStates.includes(stateObj.state) ? 'button' : ' button on' : 'button on'}${ent.noPadding ? ' no-padding': ''}${ent.wider ? ent.widerSize ? ' size-'+ent.widerSize : ' size-2': ''}${ent.higher ? ent.higherSize ? ' height-'+ent.higherSize :  ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}${ent.hide && this._getTemplate(undefined, ent.hide) ? ' hide':''}${ent.conditionalClass ? ' '+this._getTemplate(undefined, ent.conditionalClass):''}">
                                   <div class="button-inner card-tile" data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
                                   </div>
                               </homekit-button>
@@ -577,7 +577,7 @@ class HomeKitCard extends LitElement {
                           stateObj = this.hass.states[ent.entity];
                         }
                         return html`
-                          <homekit-button class="${ent.entity ? stateObj.state != '' && offStates.includes(stateObj.state) ? 'button' : ' button on' : 'button on'} event${ent.noPadding ? ' no-padding': ''}${ent.wider ? ent.widerSize ? ' size-'+ent.widerSize : ' size-2': ''}${ent.higher ? ent.higherSize ? ' height-'+ent.higherSize :  ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}" data-ent="${JSON.stringify(ent)}" data-type="'custom'" data-row="${JSON.stringify(row)}">
+                          <homekit-button class="${ent.entity ? stateObj.state != '' && offStates.includes(stateObj.state) ? 'button' : ' button on' : 'button on'} event${ent.noPadding ? ' no-padding': ''}${ent.wider ? ent.widerSize ? ' size-'+ent.widerSize : ' size-2': ''}${ent.higher ? ent.higherSize ? ' height-'+ent.higherSize :  ' height-2': ''}${ent.halfheight ? ' height-half': ''}${this.tileHoldAnimation ? ' animate':''}${ent.hide && this._getTemplate(undefined, ent.hide) ? ' hide':''}${ent.conditionalClass ? ' '+this._getTemplate(undefined, ent.conditionalClass):''}" data-ent="${JSON.stringify(ent)}" data-type="'custom'" data-row="${JSON.stringify(row)}">
                               <div class="button-inner">
                                 <span class="icon on${ent.spin === true ? ' spin':''}${ent.image ? ' image':''}">
                                   ${ent.image ? html`
