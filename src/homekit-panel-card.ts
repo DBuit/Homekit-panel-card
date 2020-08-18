@@ -991,12 +991,52 @@ class HomeKitCard extends LitElement {
         width: calc(var(--tile-width, 100px) * 1.2);
         height: 120px;
       }
-      .button.no-padding.size-2 {
-        width: calc(var(--tile-width, 100px) * 2.5);
+      // .button.no-padding.size-2 {
+      //   width: calc(var(--tile-width, 100px) * 2.5);
+      // }
+      // .button.no-padding.height-2 {
+      //   height:calc(var(--tile-height, 100px) * 2.5);
+      // }
+
+
+
+
+      .button.size-2.no-padding {
+        width: calc((var(--tile-width, 100px) * 2.26) + 20px);
       }
-      .button.no-padding.height-2 {
-        height:calc(var(--tile-height, 100px) * 2.5);
+      .button.size-3.no-padding {
+        width: calc((var(--tile-width, 100px) * 3.52) + 20px);
       }
+      .button.size-4.no-padding {
+        width: calc((var(--tile-width, 100px) * 4.78) + 20px);
+      }
+      .button.size-5.no-padding {
+        width: calc((var(--tile-width, 100px) * 6.04) + 20px);
+      }
+      .button.size-6.no-padding {
+        width: calc((var(--tile-width, 100px) * 7.3) + 20px);
+      }
+      .button.height-2.no-padding {
+        height:calc((var(--tile-height, 100px) * 2.26) + 20px);
+      }
+      .button.height-3.no-padding {
+        height:calc((var(--tile-height, 100px) * 3.52) + 20px);
+      }
+      .button.height-4.no-padding {
+        height:calc((var(--tile-height, 100px) * 4.78) + 20px);
+      }
+      .button.height-5.no-padding {
+        height:calc((var(--tile-height, 100px) * 6.04) + 20px);
+      }
+      .button.height-6.no-padding {
+        height:calc((var(--tile-height, 100px) * 7.3) + 20px);
+      }
+
+
+
+
+
+
       .button.no-padding.height-half {
         height:calc(var(--tile-height, 100px) * 0.6);
       }
