@@ -953,94 +953,83 @@ class HomeKitCard extends LitElement {
         font-weight:300;
         touch-action: auto!important;
       }
-      .button.size-2 {
-        width: calc(var(--tile-width, 100px) * 2.26);
-      }
-      .button.size-3 {
-        width: calc(var(--tile-width, 100px) * 3.52);
-      }
-      .button.size-4 {
-        width: calc(var(--tile-width, 100px) * 4.78);
-      }
-      .button.size-5 {
-        width: calc(var(--tile-width, 100px) * 6.04);
-      }
-      .button.size-6 {
-        width: calc(var(--tile-width, 100px) * 7.3);
-      }
-      .button.height-2 {
-        height:calc(var(--tile-height, 100px) * 2.26);
-      }
-      .button.height-3 {
-        height:calc(var(--tile-height, 100px) * 3.52);
-      }
-      .button.height-4 {
-        height:calc(var(--tile-height, 100px) * 4.78);
-      }
-      .button.height-5 {
-        height:calc(var(--tile-height, 100px) * 6.04);
-      }
-      .button.height-6 {
-        height:calc(var(--tile-height, 100px) * 7.3);
-      }
+
       .button.height-half {
-        height:calc(var(--tile-height, 100px) * 0.5);
+        height:calc((var(--tile-height, 100px) * 0.5) - 10px);
       }
       .button.no-padding {
         padding: 0;
         width: calc(var(--tile-width, 100px) * 1.2);
         height: 120px;
       }
-      // .button.no-padding.size-2 {
-      //   width: calc(var(--tile-width, 100px) * 2.5);
-      // }
-      // .button.no-padding.height-2 {
-      //   height:calc(var(--tile-height, 100px) * 2.5);
-      // }
+      .button.no-padding.height-half {
+        height:calc(var(--tile-height, 100px) * 0.5);
+      }
 
+      .button.size-2 {
+        width: calc(var(--tile-width, 100px) * 2 + (20px * 1) + (6px * 2));
+      }
+      .button.size-3 {
+        width: calc(var(--tile-width, 100px) * 3 + (20px * 2) + (6px * 3));
+      }
+      .button.size-4 {
+        width: calc(var(--tile-width, 100px) * 4 + (20px * 3) + (6px * 4));
+      }
+      .button.size-5 {
+        width: calc(var(--tile-width, 100px) * 5 + (20px * 4) + (6px * 5));
+      }
+      .button.size-6 {
+        width: calc(var(--tile-width, 100px) * 6 + (20px * 5) + (6px * 6));
+      }
 
-
+      .button.height-2 {
+        height: calc(var(--tile-height, 100px) * 2 + (20px * 1) + (6px * 2));
+      }
+      .button.height-3 {
+        height: calc(var(--tile-height, 100px) * 3 + (20px * 2) + (6px * 3));
+      }
+      .button.height-4 {
+        height: calc(var(--tile-height, 100px) * 4 + (20px * 3) + (6px * 4));
+      }
+      .button.height-5 {
+        height: calc(var(--tile-height, 100px) * 5 + (20px * 4) + (6px * 5));
+      }
+      .button.height-6 {
+        height: calc(var(--tile-height, 100px) * 6 + (20px * 5) + (6px * 6));
+      }
 
       .button.size-2.no-padding {
-        width: calc((var(--tile-width, 100px) * 2.26) + 20px);
+        width: calc((var(--tile-width, 100px) * 2) + (20px * 1) + (6px * 2) + 20px);
       }
       .button.size-3.no-padding {
-        width: calc((var(--tile-width, 100px) * 3.52) + 20px);
+        width: calc((var(--tile-width, 100px) * 3) + (20px * 2) + (6px * 3) + 20px);
       }
       .button.size-4.no-padding {
-        width: calc((var(--tile-width, 100px) * 4.78) + 20px);
+        width: calc((var(--tile-width, 100px) * 4) + (20px * 3) + (6px * 4) + 20px);
       }
       .button.size-5.no-padding {
-        width: calc((var(--tile-width, 100px) * 6.04) + 20px);
+        width: calc((var(--tile-width, 100px) * 5) + (20px * 4) + (6px * 5) + 20px);
       }
       .button.size-6.no-padding {
-        width: calc((var(--tile-width, 100px) * 7.3) + 20px);
+        width: calc((var(--tile-width, 100px) * 6) + (20px * 5) + (6px * 6) + 20px);
       }
+
       .button.height-2.no-padding {
-        height:calc((var(--tile-height, 100px) * 2.26) + 20px);
+        height: calc((var(--tile-height, 100px) * 2) + (20px * 1) + (6px * 2) + 20px);
       }
       .button.height-3.no-padding {
-        height:calc((var(--tile-height, 100px) * 3.52) + 20px);
+        height: calc((var(--tile-height, 100px) * 3) + (20px * 2) + (6px * 3) + 20px);
       }
       .button.height-4.no-padding {
-        height:calc((var(--tile-height, 100px) * 4.78) + 20px);
+        height: calc((var(--tile-height, 100px) * 4) + (20px * 3) + (6px * 4) + 20px);
       }
       .button.height-5.no-padding {
-        height:calc((var(--tile-height, 100px) * 6.04) + 20px);
+        height: calc((var(--tile-height, 100px) * 5) + (20px * 4) + (6px * 5) + 20px);
       }
       .button.height-6.no-padding {
-        height:calc((var(--tile-height, 100px) * 7.3) + 20px);
+        height: calc((var(--tile-height, 100px) * 6) + (20px * 5) + (6px * 6) + 20px);
       }
-
-
-
-
-
-
-      .button.no-padding.height-half {
-        height:calc(var(--tile-height, 100px) * 0.6);
-      }
-
+      
       .button input[type="range"] {
         pointer-events: none;
         outline: 0;
@@ -1350,28 +1339,81 @@ class HomeKitCard extends LitElement {
           width:var(--tile-width-mobile, 90px);
           height:var(--tile-height-mobile, 90px);
         }
-        .button.size-2 {
-          width: calc(var(--tile-width-mobile, 90px) * 2.28888888889);
-        }
-        .button.height-2 {
-          height: calc(var(--tile-height-mobile, 90px) * 2.28888888889);
-        }
         .button.height-half {
-          height: calc(var(--tile-height-mobile, 90px) * 0.5);
+          height: calc((var(--tile-height-mobile, 90px) * 0.5) - 10px);
         }
         .button.no-padding {
           width: calc(var(--tile-width-mobile, 90px) * 1.22);
           height: calc(var(--tile-height-mobile, 90px) * 1.22);
         }
-        .button.no-padding.size-2 {
-          width: calc(var(--tile-width-mobile, 90px) * 2.55555555556);
-        }
-        .button.no-padding.height-2 {
-          height: calc(var(--tile-height-mobile, 90px) * 2.55555555556);
-        }
         .button.no-padding.height-half {
-          height: calc(var(--tile-height-mobile, 90px) * 0.6);
+          height: calc(var(--tile-height-mobile, 90px) * 0.5);
         }
+
+        .button.size-2 {
+          width: calc(var(--tile-width-mobile, 90px) * 2 + (20px * 1) + (6px * 2));
+        }
+        .button.size-3 {
+          width: calc(var(--tile-width-mobile, 90px) * 3 + (20px * 2) + (6px * 3));
+        }
+        .button.size-4 {
+          width: calc(var(--tile-width-mobile, 90px) * 4 + (20px * 3) + (6px * 4));
+        }
+        .button.size-5 {
+          width: calc(var(--tile-width-mobile, 90px) * 5 + (20px * 4) + (6px * 5));
+        }
+        .button.size-6 {
+          width: calc(var(--tile-width-mobile, 90px) * 6 + (20px * 5) + (6px * 6));
+        }
+  
+        .button.height-2 {
+          height: calc(var(--tile-height-mobile, 90px) * 2 + (20px * 1) + (6px * 2));
+        }
+        .button.height-3 {
+          height: calc(var(--tile-height-mobile, 90px) * 3 + (20px * 2) + (6px * 3));
+        }
+        .button.height-4 {
+          height: calc(var(--tile-height-mobile, 90px) * 4 + (20px * 3) + (6px * 4));
+        }
+        .button.height-5 {
+          height: calc(var(--tile-height-mobile, 90px) * 5 + (20px * 4) + (6px * 5));
+        }
+        .button.height-6 {
+          height: calc(var(--tile-height-mobile, 90px) * 6 + (20px * 5) + (6px * 6));
+        }
+  
+        .button.size-2.no-padding {
+          width: calc((var(--tile-width-mobile, 90px) * 2) + (20px * 1) + (6px * 2) + 20px);
+        }
+        .button.size-3.no-padding {
+          width: calc((var(--tile-width-mobile, 90px) * 3) + (20px * 2) + (6px * 3) + 20px);
+        }
+        .button.size-4.no-padding {
+          width: calc((var(--tile-width-mobile, 90px) * 4) + (20px * 3) + (6px * 4) + 20px);
+        }
+        .button.size-5.no-padding {
+          width: calc((var(--tile-width-mobile, 90px) * 5) + (20px * 4) + (6px * 5) + 20px);
+        }
+        .button.size-6.no-padding {
+          width: calc((var(--tile-width-mobile, 90px) * 6) + (20px * 5) + (6px * 6) + 20px);
+        }
+  
+        .button.height-2.no-padding {
+          height: calc((var(--tile-height-mobile, 90px) * 2) + (20px * 1) + (6px * 2) + 20px);
+        }
+        .button.height-3.no-padding {
+          height: calc((var(--tile-height-mobile, 90px) * 3) + (20px * 2) + (6px * 3) + 20px);
+        }
+        .button.height-4.no-padding {
+          height: calc((var(--tile-height-mobile, 90px) * 4) + (20px * 3) + (6px * 4) + 20px);
+        }
+        .button.height-5.no-padding {
+          height: calc((var(--tile-height-mobile, 90px) * 5) + (20px * 4) + (6px * 5) + 20px);
+        }
+        .button.height-6.no-padding {
+          height: calc((var(--tile-height-mobile, 90px) * 6) + (20px * 5) + (6px * 6) + 20px);
+        }
+
         .container {
           padding-left:0;
         }
