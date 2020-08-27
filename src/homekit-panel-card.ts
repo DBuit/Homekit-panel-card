@@ -967,67 +967,67 @@ class HomeKitCard extends LitElement {
       }
 
       .button.size-2 {
-        width: calc(var(--tile-width, 100px) * 2 + (20px * 1) + (6px * 2));
+        width: calc(var(--tile-width, 100px) * 2 + (20px * 1) + (5px * 2));
       }
       .button.size-3 {
-        width: calc(var(--tile-width, 100px) * 3 + (20px * 2) + (6px * 3));
+        width: calc(var(--tile-width, 100px) * 3 + (20px * 2) + (5px * 3));
       }
       .button.size-4 {
-        width: calc(var(--tile-width, 100px) * 4 + (20px * 3) + (6px * 4));
+        width: calc(var(--tile-width, 100px) * 4 + (20px * 3) + (5px * 4));
       }
       .button.size-5 {
-        width: calc(var(--tile-width, 100px) * 5 + (20px * 4) + (6px * 5));
+        width: calc(var(--tile-width, 100px) * 5 + (20px * 4) + (5px * 5));
       }
       .button.size-6 {
-        width: calc(var(--tile-width, 100px) * 6 + (20px * 5) + (6px * 6));
+        width: calc(var(--tile-width, 100px) * 6 + (20px * 5) + (5px * 6));
       }
 
       .button.height-2 {
-        height: calc(var(--tile-height, 100px) * 2 + (20px * 1) + (6px * 2));
+        height: calc(var(--tile-height, 100px) * 2 + (20px * 1) + (5px * 2));
       }
       .button.height-3 {
-        height: calc(var(--tile-height, 100px) * 3 + (20px * 2) + (6px * 3));
+        height: calc(var(--tile-height, 100px) * 3 + (20px * 2) + (5px * 3));
       }
       .button.height-4 {
-        height: calc(var(--tile-height, 100px) * 4 + (20px * 3) + (6px * 4));
+        height: calc(var(--tile-height, 100px) * 4 + (20px * 3) + (5px * 4));
       }
       .button.height-5 {
-        height: calc(var(--tile-height, 100px) * 5 + (20px * 4) + (6px * 5));
+        height: calc(var(--tile-height, 100px) * 5 + (20px * 4) + (5px * 5));
       }
       .button.height-6 {
-        height: calc(var(--tile-height, 100px) * 6 + (20px * 5) + (6px * 6));
+        height: calc(var(--tile-height, 100px) * 6 + (20px * 5) + (5px * 6));
       }
 
       .button.size-2.no-padding {
-        width: calc((var(--tile-width, 100px) * 2) + (20px * 1) + (6px * 2) + 20px);
+        width: calc((var(--tile-width, 100px) * 2) + (20px * 1) + (5px * 2) + 20px);
       }
       .button.size-3.no-padding {
-        width: calc((var(--tile-width, 100px) * 3) + (20px * 2) + (6px * 3) + 20px);
+        width: calc((var(--tile-width, 100px) * 3) + (20px * 2) + (5px * 3) + 20px);
       }
       .button.size-4.no-padding {
-        width: calc((var(--tile-width, 100px) * 4) + (20px * 3) + (6px * 4) + 20px);
+        width: calc((var(--tile-width, 100px) * 4) + (20px * 3) + (5px * 4) + 20px);
       }
       .button.size-5.no-padding {
-        width: calc((var(--tile-width, 100px) * 5) + (20px * 4) + (6px * 5) + 20px);
+        width: calc((var(--tile-width, 100px) * 5) + (20px * 4) + (5px * 5) + 20px);
       }
       .button.size-6.no-padding {
-        width: calc((var(--tile-width, 100px) * 6) + (20px * 5) + (6px * 6) + 20px);
+        width: calc((var(--tile-width, 100px) * 6) + (20px * 5) + (5px * 6) + 20px);
       }
 
       .button.height-2.no-padding {
-        height: calc((var(--tile-height, 100px) * 2) + (20px * 1) + (6px * 2) + 20px);
+        height: calc((var(--tile-height, 100px) * 2) + (20px * 1) + (5px * 2) + 20px);
       }
       .button.height-3.no-padding {
-        height: calc((var(--tile-height, 100px) * 3) + (20px * 2) + (6px * 3) + 20px);
+        height: calc((var(--tile-height, 100px) * 3) + (20px * 2) + (5px * 3) + 20px);
       }
       .button.height-4.no-padding {
-        height: calc((var(--tile-height, 100px) * 4) + (20px * 3) + (6px * 4) + 20px);
+        height: calc((var(--tile-height, 100px) * 4) + (20px * 3) + (5px * 4) + 20px);
       }
       .button.height-5.no-padding {
-        height: calc((var(--tile-height, 100px) * 5) + (20px * 4) + (6px * 5) + 20px);
+        height: calc((var(--tile-height, 100px) * 5) + (20px * 4) + (5px * 5) + 20px);
       }
       .button.height-6.no-padding {
-        height: calc((var(--tile-height, 100px) * 6) + (20px * 5) + (6px * 6) + 20px);
+        height: calc((var(--tile-height, 100px) * 6) + (20px * 5) + (5px * 6) + 20px);
       }
       
       .button input[type="range"] {
@@ -1351,67 +1351,67 @@ class HomeKitCard extends LitElement {
         }
 
         .button.size-2 {
-          width: calc(var(--tile-width-mobile, 90px) * 2 + (20px * 1) + (6px * 2));
+          width: calc(var(--tile-width-mobile, 90px) * 2 + (20px * 1) + (5px * 2));
         }
         .button.size-3 {
-          width: calc(var(--tile-width-mobile, 90px) * 3 + (20px * 2) + (6px * 3));
+          width: calc(var(--tile-width-mobile, 90px) * 3 + (20px * 2) + (5px * 3));
         }
         .button.size-4 {
-          width: calc(var(--tile-width-mobile, 90px) * 4 + (20px * 3) + (6px * 4));
+          width: calc(var(--tile-width-mobile, 90px) * 4 + (20px * 3) + (5px * 4));
         }
         .button.size-5 {
-          width: calc(var(--tile-width-mobile, 90px) * 5 + (20px * 4) + (6px * 5));
+          width: calc(var(--tile-width-mobile, 90px) * 5 + (20px * 4) + (5px * 5));
         }
         .button.size-6 {
-          width: calc(var(--tile-width-mobile, 90px) * 6 + (20px * 5) + (6px * 6));
+          width: calc(var(--tile-width-mobile, 90px) * 6 + (20px * 5) + (5px * 6));
         }
   
         .button.height-2 {
-          height: calc(var(--tile-height-mobile, 90px) * 2 + (20px * 1) + (6px * 2));
+          height: calc(var(--tile-height-mobile, 90px) * 2 + (20px * 1) + (5px * 2));
         }
         .button.height-3 {
-          height: calc(var(--tile-height-mobile, 90px) * 3 + (20px * 2) + (6px * 3));
+          height: calc(var(--tile-height-mobile, 90px) * 3 + (20px * 2) + (5px * 3));
         }
         .button.height-4 {
-          height: calc(var(--tile-height-mobile, 90px) * 4 + (20px * 3) + (6px * 4));
+          height: calc(var(--tile-height-mobile, 90px) * 4 + (20px * 3) + (5px * 4));
         }
         .button.height-5 {
-          height: calc(var(--tile-height-mobile, 90px) * 5 + (20px * 4) + (6px * 5));
+          height: calc(var(--tile-height-mobile, 90px) * 5 + (20px * 4) + (5px * 5));
         }
         .button.height-6 {
-          height: calc(var(--tile-height-mobile, 90px) * 6 + (20px * 5) + (6px * 6));
+          height: calc(var(--tile-height-mobile, 90px) * 6 + (20px * 5) + (5px * 6));
         }
   
         .button.size-2.no-padding {
-          width: calc((var(--tile-width-mobile, 90px) * 2) + (20px * 1) + (6px * 2) + 20px);
+          width: calc((var(--tile-width-mobile, 90px) * 2) + (20px * 1) + (5px * 2) + 20px);
         }
         .button.size-3.no-padding {
-          width: calc((var(--tile-width-mobile, 90px) * 3) + (20px * 2) + (6px * 3) + 20px);
+          width: calc((var(--tile-width-mobile, 90px) * 3) + (20px * 2) + (5px * 3) + 20px);
         }
         .button.size-4.no-padding {
-          width: calc((var(--tile-width-mobile, 90px) * 4) + (20px * 3) + (6px * 4) + 20px);
+          width: calc((var(--tile-width-mobile, 90px) * 4) + (20px * 3) + (5px * 4) + 20px);
         }
         .button.size-5.no-padding {
-          width: calc((var(--tile-width-mobile, 90px) * 5) + (20px * 4) + (6px * 5) + 20px);
+          width: calc((var(--tile-width-mobile, 90px) * 5) + (20px * 4) + (5px * 5) + 20px);
         }
         .button.size-6.no-padding {
-          width: calc((var(--tile-width-mobile, 90px) * 6) + (20px * 5) + (6px * 6) + 20px);
+          width: calc((var(--tile-width-mobile, 90px) * 6) + (20px * 5) + (5px * 6) + 20px);
         }
   
         .button.height-2.no-padding {
-          height: calc((var(--tile-height-mobile, 90px) * 2) + (20px * 1) + (6px * 2) + 20px);
+          height: calc((var(--tile-height-mobile, 90px) * 2) + (20px * 1) + (5px * 2) + 20px);
         }
         .button.height-3.no-padding {
-          height: calc((var(--tile-height-mobile, 90px) * 3) + (20px * 2) + (6px * 3) + 20px);
+          height: calc((var(--tile-height-mobile, 90px) * 3) + (20px * 2) + (5px * 3) + 20px);
         }
         .button.height-4.no-padding {
-          height: calc((var(--tile-height-mobile, 90px) * 4) + (20px * 3) + (6px * 4) + 20px);
+          height: calc((var(--tile-height-mobile, 90px) * 4) + (20px * 3) + (5px * 4) + 20px);
         }
         .button.height-5.no-padding {
-          height: calc((var(--tile-height-mobile, 90px) * 5) + (20px * 4) + (6px * 5) + 20px);
+          height: calc((var(--tile-height-mobile, 90px) * 5) + (20px * 4) + (5px * 5) + 20px);
         }
         .button.height-6.no-padding {
-          height: calc((var(--tile-height-mobile, 90px) * 6) + (20px * 5) + (6px * 6) + 20px);
+          height: calc((var(--tile-height-mobile, 90px) * 6) + (20px * 5) + (5px * 6) + 20px);
         }
 
         .container {
