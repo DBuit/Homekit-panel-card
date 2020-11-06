@@ -19,22 +19,6 @@ Do you have ideas for a custom pop-up create an issue then I can see if I can he
 <a href="https://www.buymeacoffee.com/ZrUK14i" target="_blank"><img height="41px" width="167px" src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee"></a>
 
 
-
-## Screenshots
-
-### Screenshots without columns
-
-![desktop home screenshot](screenshot-home.png "Desktop screenshot")
-![desktop screenshot](screenshot-tablet.png "Tablet screenshot")
-![mobile screenshot](screenshot-mobile.png "Mobile screenshot")
-
-### Screenshots with columns
-
-![desktop screenshot columns](screenshot-columns.png "Desktop columns screenshot")
-![tablet screenshot columns](screenshot-tablet-columns.png "Tablet columns screenshot")
-![mobile screenshot columns](screenshot-mobile-columns.png "Mobile columns screenshot ")
-
-
 ## Configuration
 
 ### Installation instructions
@@ -224,9 +208,9 @@ In the above example we only set the `entity:` for a tile that is enough to let 
 | `double_tap_action` | boolean | optional | See [actions](#action-options) | Set a custom action for double tap. If no double tap is defined this will default trigger the tap action |
 | `spin` | boolean | optional | false | If true this will let the icon spin when the entity is on |
 | `wider` | boolean | optional | false | If true the tile will be the size of 2 tiles |
-| `widerSize` | number | optional | 1,2,3,4,5 or 6 | When wider is enable it makes the tile default 2 tiles width, width widerSize you can make make it up to 6 tiles width |
+| `widerSize` | number | optional | 1,2,3,4,5 or 6 | When wider is enable it makes the default tile width 2 tiles wide, with widerSize you can make make it up to 6 tiles wide |
 | `higher` | boolean | optional | false | If true the tile will be the height of 2 tiles |
-| `higherSize` | number | optional | 1,2,3,4,5 or 6 | When higher is enable it makes the tile default 2 tiles width, width higherSize you can make make it up to 6 tiles width |
+| `higherSize` | number | optional | 1,2,3,4,5 or 6 | When higher is enable it makes the default tile height 2 tiles high, with higherSize you can make make it up to 6 tiles high |
 | `halfheight` | boolean | optional | false | If true the tile will be half the height of 1 tile (Best used in combination with wider to make sure the information fits the tile) |
 | `slider` | boolean | optional | false | If true a slider element is added to the tile to control the lights brightness |
 | `hide` | template | optional | "[[[ [template](#template-hide-or-customclass) ]]]" | With the use of JS in a template you can hide/show a tile |
@@ -881,3 +865,21 @@ views:
                       - entity: switch.doorbell_restart
                       - entity: binary_sensor.doorbell_button
 ```
+
+## Screenshots
+
+### Screenshots without columns
+
+![desktop home screenshot](screenshot-home.png "Desktop screenshot")
+
+![desktop screenshot](screenshot-tablet.png "Tablet screenshot")
+
+<img src="https://github.com/DBuit/Homekit-panel-card/raw/master/screenshot-mobile.png" width="300px">
+
+### Screenshots with columns
+
+![desktop screenshot columns](screenshot-columns.png "Desktop columns screenshot")
+
+![tablet screenshot columns](screenshot-tablet-columns.png "Tablet columns screenshot")
+
+<img src="https://github.com/DBuit/Homekit-panel-card/raw/master/screenshot-mobile-columns.png" width="300px">
