@@ -7,13 +7,13 @@ import {
     toggleEntity
 } from 'custom-card-helpers';
 import tinycolor, {TinyColor} from '@ctrl/tinycolor';
-import {css, html, LitElement} from "card-tools/src/lit-element";
-import {moreInfo} from "card-tools/src/more-info";
-import {provideHass} from "card-tools/src/hass";
-import {parseTemplate} from "card-tools/src/templates.js";
-import {createCard} from "card-tools/src/lovelace-element.js";
+import { css, html, LitElement } from "card-tools/src/lit-element";
+import { moreInfo } from "card-tools/src/more-info";
+import { provideHass } from "card-tools/src/hass";
+import { parseTemplate } from "card-tools/src/templates.js";
+import { createCard } from "card-tools/src/lovelace-element.js";
 import 'hammerjs';
-import {HassEntity} from 'home-assistant-js-websocket';
+import { HassEntity } from 'home-assistant-js-websocket';
 import Masonry from 'masonry-layout'
 
 class HomeKitCard extends LitElement {
@@ -119,7 +119,6 @@ class HomeKitCard extends LitElement {
         ${this.enableColumns ? this._renderRows() : this._renderEntities(this.config.entities)}
       </div>
     `;
-
     }
 
     firstUpdated() {
@@ -686,26 +685,30 @@ class HomeKitCard extends LitElement {
         switch (tapAction.action) {
             case "popup":
                 this._createPopup((tapAction.entity || entity.entity), entity, row);
+                if (tapAction.haptic) forwardHaptic(tapAction.haptic);
                 break;
             case "more-info":
                 if (tapAction.entity || tapAction.camera_image) {
                     moreInfo(tapAction.entity ? tapAction.entity : tapAction.camera_image!);
+                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
                 }
                 break;
             case "navigate":
                 if (tapAction.navigation_path) {
                     navigate(window, tapAction.navigation_path);
+                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
                 }
                 break;
             case "url":
                 if (tapAction.url_path) {
                     window.open(tapAction.url_path);
+                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
                 }
                 break;
             case "toggle":
                 if (tapAction.entity) {
                     toggleEntity(this.hass, tapAction.entity!);
-                    forwardHaptic("success");
+                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
                 }
                 break;
             case "call-service": {
@@ -715,7 +718,7 @@ class HomeKitCard extends LitElement {
                 }
                 const [domain, service] = tapAction.service.split(".", 2);
                 this.hass.callService(domain, service, tapAction.service_data);
-                forwardHaptic("success");
+                if (tapAction.haptic) forwardHaptic(tapAction.haptic);
             }
         }
     }
