@@ -544,6 +544,7 @@ The `tileOnRow:` is **not required** but optional. If you do not set this, the c
 | `url_path` | string | none | Eg: `https://www.google.fr` | URL to open on click when action is `url`. The URL will open in a new tab |
 | `service` | string | none | Any service | Service to call (e.g. `media_player.media_play_pause`) when `action` defined as `call-service` |
 | `service_data` | object | none | Any service data | Service data to include (e.g. `entity_id: media_player.bedroom`)|
+| `haptic` | string | none | `success`, `warning`, `failure`, `light`, `medium`, `heavy`, `selection` | Haptic feedback for the <a href="https://companion.home-assistant.io/" target="_blank">iOS Companion App</a>
 | `confirmation` | boolean or object | none | See [confirmation](#confirmation-options) | Present a confirmation dialog before performing the action |
 
 #### Confirmation options

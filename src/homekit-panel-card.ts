@@ -1,19 +1,19 @@
 import {
-    computeStateDisplay,
     computeDomain,
+    computeStateDisplay,
     domainIcon,
-    toggleEntity,
+    forwardHaptic,
     navigate,
-    forwardHaptic
+    toggleEntity
 } from 'custom-card-helpers';
 import tinycolor, {TinyColor} from '@ctrl/tinycolor';
-import {LitElement, html, css} from "card-tools/src/lit-element";
-import {moreInfo} from "card-tools/src/more-info";
-import {provideHass} from "card-tools/src/hass";
-import {parseTemplate} from "card-tools/src/templates.js";
-import {createCard} from "card-tools/src/lovelace-element.js";
+import { css, html, LitElement } from "card-tools/src/lit-element";
+import { moreInfo } from "card-tools/src/more-info";
+import { provideHass } from "card-tools/src/hass";
+import { parseTemplate } from "card-tools/src/templates.js";
+import { createCard } from "card-tools/src/lovelace-element.js";
 import 'hammerjs';
-import {HassEntity} from 'home-assistant-js-websocket';
+import { HassEntity } from 'home-assistant-js-websocket';
 import Masonry from 'masonry-layout'
 
 class HomeKitCard extends LitElement {
@@ -60,22 +60,22 @@ class HomeKitCard extends LitElement {
     }
 
     addHammer(el) {
-        var hammer = new Hammer(el, {});
-        var $this = this;
+        const hammer = new Hammer(el, {});
+        const $this = this;
         hammer.on("tap doubletap pressup press panmove", function (ev) {
             ev.preventDefault();
-            var dataset: any = ev.target.dataset;
-            var ent = JSON.parse(dataset.ent);
-            var row = JSON.parse(dataset.row);
+            const dataset: any = ev.target.dataset;
+            const ent = JSON.parse(dataset.ent);
+            const row = JSON.parse(dataset.row);
             $this.doubleTapped = false;
             if (ev.type == 'tap') {
                 $this.doubleTapped = false;
-                var timeoutTime = 200;
+                let timeoutTime = 200;
                 if (!ent.double_tap_action) {
                     timeoutTime = 0;
                 }
                 setTimeout(function () {
-                    if ($this.doubleTapped === false) {
+                    if (!$this.doubleTapped) {
                         ev.target.classList.remove('longpress');
                         $this._handleClick(ev.type, ent, dataset.type, row)
                     }
@@ -84,7 +84,7 @@ class HomeKitCard extends LitElement {
                 if (ev.type == 'doubletap') {
                     $this.doubleTapped = true;
                 }
-                var dataset: any = ev.target.dataset;
+                const dataset: any = ev.target.dataset;
                 if (ev.type == 'press') {
                     ev.target.classList.add('longpress');
                 } else if (ev.type == 'panmove') {
@@ -119,16 +119,15 @@ class HomeKitCard extends LitElement {
         ${this.enableColumns ? this._renderRows() : this._renderEntities(this.config.entities)}
       </div>
     `;
-
     }
 
     firstUpdated() {
-        var myNodelist = this.shadowRoot.querySelectorAll('homekit-button.event')
-        for (var i = 0; i < myNodelist.length; i++) {
+        const myNodelist = this.shadowRoot.querySelectorAll('homekit-button.event')
+        for (let i = 0; i < myNodelist.length; i++) {
             this.addHammer(myNodelist[i]);
         }
         this.shadowRoot.querySelectorAll(".card-tile").forEach(customCard => {
-            var card = {
+            let card = {
                 type: customCard.dataset.card
             };
             card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
@@ -143,10 +142,10 @@ class HomeKitCard extends LitElement {
             }
             if (style != "") {
                 let itterations = 0;
-                let interval = setInterval(function () {
+                const interval = setInterval(function () {
                     if (cardElement && cardElement.shadowRoot) {
                         window.clearInterval(interval);
-                        var styleElement = document.createElement('style');
+                        const styleElement = document.createElement('style');
                         styleElement.innerHTML = style;
                         cardElement.shadowRoot.appendChild(styleElement);
                     } else if (++itterations === 10) {
@@ -157,11 +156,11 @@ class HomeKitCard extends LitElement {
         });
 
         if (this.masonry) {
-            console.log("MASONRY");
-            var windowInnerWidth = window.innerWidth;
-            console.log(windowInnerWidth);
+            //console.log("MASONRY");
+            const windowInnerWidth = window.innerWidth;
+            //console.log(windowInnerWidth);
 
-            var masonryColumWidth = 120;
+            let masonryColumWidth = 120;
             if (windowInnerWidth <= 768) {
                 masonryColumWidth = 110;
             }
@@ -263,9 +262,9 @@ class HomeKitCard extends LitElement {
     }
 
     _getValue(state, statePath) {
-        var stateObj = this.hass.states[state];
-        var path = statePath.split('.');
-        for (var pathItem of path) {
+        let stateObj = this.hass.states[state];
+        const path = statePath.split('.');
+        for (const pathItem of path) {
             if (stateObj[pathItem]) {
                 stateObj = stateObj[pathItem];
             } else {
@@ -278,31 +277,31 @@ class HomeKitCard extends LitElement {
     _renderStateValue(ent, stateObj, type) {
         if (type == 'light') {
             return html`
-        ${stateObj.attributes.brightness && !ent.state ? html`${Math.round(stateObj.attributes.brightness / 2.55)}%` : html``}
-        ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
-        ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
-      `;
+                ${stateObj.attributes.brightness && !ent.state ? html`${Math.round(stateObj.attributes.brightness / 2.55)}%` : html``}
+                ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+                ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
+              `;
         } else if (type == "sensor" || type == "binary_sensor") {
 
             return html`
-        ${stateObj.last_changed && !ent.state ? html`${this._calculateTime(stateObj.last_changed)}` : html``}
-        ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
-        ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
-      `;
+                ${stateObj.last_changed && !ent.state ? html`${this._calculateTime(stateObj.last_changed)}` : html``}
+                ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+                ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
+              `;
         } else if (type == "switch" || type == "input_boolean") {
             return html`
-        ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
-        ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
-      `;
+                ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+                ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
+              `;
         } else if (type == "climate") {
             return html`
-        ${stateObj.attributes.temperature ? html`${stateObj.attributes.temperature}&#176;` : html``}
-      `;
+                ${stateObj.attributes.temperature ? html`${stateObj.attributes.temperature}&#176;` : html``}
+              `;
         } else {
             return html`
-        ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
-        ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
-      `;
+                ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+                ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
+              `;
         }
     }
 
@@ -335,18 +334,18 @@ class HomeKitCard extends LitElement {
     _renderEntities(entities) {
         return html`
       ${entities.map(row => {
-            var entityCount = 0;
+            let entityCount = 0;
             return html`
             <div class="card-title" style="${this.rowTitleColor ? 'color:' + this.rowTitleColor : ''}">${row.title}</div>
-                <div class="homekit-card${this.horizontalScroll === true ? ' scroll' : ''}${this.masonry === true ? ' masonry' : ''}">
+                <div class="homekit-card${this.horizontalScroll === true ? ' scroll' : ''}${this.masonry ? ' masonry' : ''}">
                     ${row.entities.map(ent => {
                 if (!ent.card && !ent.custom) {
-                    var offStates = ['off', 'unavailable'];
+                    let offStates = ['off', 'unavailable'];
                     if (ent.offStates) {
                         offStates = ent.offStates;
                     }
                     const stateObj = this.hass.states[ent.entity];
-                    var color = '#f7d959';
+                    let color: string;
                     if (entityCount == 3) {
                         entityCount = 0;
                     }
@@ -359,7 +358,7 @@ class HomeKitCard extends LitElement {
                     } else {
                         color = this._getColorForLightEntity(stateObj, this.useTemperature, this.useBrightness);
                     }
-                    var type = ent.entity.split('.')[0];
+                    const type = ent.entity.split('.')[0];
                     if (type == "light") {
                         entityCount++;
                         if (!ent.slider) {
@@ -369,7 +368,7 @@ class HomeKitCard extends LitElement {
                                       <span class="icon${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}${ent.image ? ' image' : ''}" style="${!offStates.includes(stateObj.state) ? 'color:' + color + ';' : ''}">
 
                                         ${ent.image ? html`
-                                          <img src="${ent.offImage ? offStates.includes(stateObj.state) ? ent.offImage : ent.image : ent.image}" />
+                                          <img src="${ent.offImage ? offStates.includes(stateObj.state) ? ent.offImage : ent.image : ent.image}" alt="${ent.name || stateObj.attributes.friendly_name}" />
                                         ` : html`
                                           <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin' : ""}"/>
                                         `}
@@ -392,7 +391,7 @@ class HomeKitCard extends LitElement {
                                       <span class="icon${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}${ent.image ? ' image' : ''}" style="${!offStates.includes(stateObj.state) ? 'color:' + color + ';' : ''}">
           
                                         ${ent.image ? html`
-                                          <img src="${ent.offImage ? offStates.includes(stateObj.state) ? ent.offImage : ent.image : ent.image}" />
+                                          <img src="${ent.offImage ? offStates.includes(stateObj.state) ? ent.offImage : ent.image : ent.image}" alt="${ent.name || stateObj.attributes.friendly_name}" />
                                         ` : html`
                                           <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" class=" ${ent.spin && stateObj.state === "on" ? 'spin' : ""}"/>
                                         `}
@@ -414,11 +413,14 @@ class HomeKitCard extends LitElement {
                     } else if (type == "sensor" || type == "binary_sensor") {
                         entityCount++;
                         return stateObj ? html`
-                              <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ent.widerSize ? ' size-' + ent.widerSize : ' size-2' : ''}${ent.higher ? ent.higherSize ? ' height-' + ent.higherSize : ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide' : ''}${ent.conditionalClass ? ' ' + this._getTemplate(stateObj, ent.conditionalClass) : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
+                              <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ent.widerSize ? ' size-' + ent.widerSize : ' size-2' : ''}${ent.higher ? ent.higherSize ? ' height-' + ent.higherSize : ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide' : ''}${ent.conditionalClass ? ' ' + this._getTemplate(stateObj, ent.conditionalClass) : ''}" 
+                                              data-ent="${JSON.stringify(ent)}" 
+                                              data-type="${type}" 
+                                              data-row="${JSON.stringify(row)}">
                                   <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon' : 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}${ent.image ? ' image' : ''}">
                                       ${ent.image ? html`
-                                        <img src="${ent.offImage ? offStates.includes(stateObj.state) ? ent.offImage : ent.image : ent.image}" />
+                                        <img src="${ent.offImage ? offStates.includes(stateObj.state) ? ent.offImage : ent.image : ent.image}" alt="${ent.name || stateObj.attributes.friendly_name}" />
                                       ` : html`
                                         <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                       `}
@@ -441,7 +443,7 @@ class HomeKitCard extends LitElement {
                                   <div class="button-inner">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon' : 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}${ent.image ? ' image' : ''}">
                                       ${ent.image ? html`
-                                        <img src="${ent.offImage ? offStates.includes(stateObj.state) ? ent.offImage : ent.image : ent.image}" />
+                                        <img src="${ent.offImage ? offStates.includes(stateObj.state) ? ent.offImage : ent.image : ent.image}" alt="${ent.name || stateObj.attributes.friendly_name}" />
                                       ` : html`
                                         <ha-icon icon="${ent.offIcon ? offStates.includes(stateObj.state) ? ent.offIcon : ent.icon : ent.icon || stateObj.attributes.icon || domainIcon(computeDomain(stateObj.entity_id), stateObj.state)}" />
                                       `}
@@ -480,7 +482,7 @@ class HomeKitCard extends LitElement {
                             : this._notFound(ent);
                     } else if (type == "climate") {
                         entityCount++;
-                        var modes = {
+                        const modes = {
                             auto: "hass:calendar-repeat",
                             heat_cool: "hass:autorenew",
                             heat: "hass:fire",
@@ -489,7 +491,7 @@ class HomeKitCard extends LitElement {
                             fan_only: "hass:fan",
                             dry: "hass:water-percent",
                         };
-                        var mode: any = '';
+                        let mode: any;
                         if (stateObj.state == 'off') {
                             mode = 'off';
                         } else if (stateObj.attributes.hvac_action == 'heating') {
@@ -542,8 +544,8 @@ class HomeKitCard extends LitElement {
                     }
                 } else if (ent.card && !ent.custom) {
                     entityCount++;
-                    var stateObj = {state: ''};
-                    offStates = ['off', 'unavailable'];
+                    let stateObj = {state: ''};
+                    let offStates = ['off', 'unavailable'];
                     if (ent.entity) {
                         if (ent.offStates) {
                             offStates = ent.offStates;
@@ -570,8 +572,8 @@ class HomeKitCard extends LitElement {
                     }
                 } else if (ent.custom) {
                     entityCount++;
-                    var stateObj = {state: ''};
-                    offStates = ['off', 'unavailable'];
+                    let stateObj = {state: ''};
+                    let offStates = ['off', 'unavailable'];
                     if (ent.entity) {
                         if (ent.offStates) {
                             offStates = ent.offStates;
@@ -583,7 +585,7 @@ class HomeKitCard extends LitElement {
                               <div class="button-inner">
                                 <span class="icon on${ent.spin === true ? ' spin' : ''}${ent.image ? ' image' : ''}">
                                   ${ent.image ? html`
-                                    <img src="${ent.image}" />
+                                    <img src="${ent.image}" alt="" />
                                   ` : html`
                                     <ha-icon icon="${ent.icon}" />
                                   `}
@@ -614,10 +616,9 @@ class HomeKitCard extends LitElement {
         if (this.config.home === true && this.config.rules) {
             parseTemplate(this.hass, this.config.rules).then((c) => {
                 if (c) {
-                    var result = c.match(/<li>([^]*?)<\/li>/g).map(function (val) {
+                    this.renderedRules = c.match(/<li>([^]*?)<\/li>/g).map(function (val) {
                         return val.replace(/<\/?li>/g, '');
                     });
-                    this.renderedRules = result;
                 }
             });
         }
@@ -645,7 +646,7 @@ class HomeKitCard extends LitElement {
     }
 
     _handleClick(action, entity, type, row) {
-        var state = null;
+        let state = null;
         if (entity.entity) {
             state = this.hass.states[entity.entity];
         }
@@ -684,26 +685,30 @@ class HomeKitCard extends LitElement {
         switch (tapAction.action) {
             case "popup":
                 this._createPopup((tapAction.entity || entity.entity), entity, row);
+                if (tapAction.haptic) forwardHaptic(tapAction.haptic);
                 break;
             case "more-info":
                 if (tapAction.entity || tapAction.camera_image) {
                     moreInfo(tapAction.entity ? tapAction.entity : tapAction.camera_image!);
+                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
                 }
                 break;
             case "navigate":
                 if (tapAction.navigation_path) {
                     navigate(window, tapAction.navigation_path);
+                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
                 }
                 break;
             case "url":
                 if (tapAction.url_path) {
                     window.open(tapAction.url_path);
+                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
                 }
                 break;
             case "toggle":
                 if (tapAction.entity) {
                     toggleEntity(this.hass, tapAction.entity!);
-                    forwardHaptic("success");
+                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
                 }
                 break;
             case "call-service": {
@@ -713,7 +718,7 @@ class HomeKitCard extends LitElement {
                 }
                 const [domain, service] = tapAction.service.split(".", 2);
                 this.hass.callService(domain, service, tapAction.service_data);
-                forwardHaptic("success");
+                if (tapAction.haptic) forwardHaptic(tapAction.haptic);
             }
         }
     }
@@ -724,25 +729,27 @@ class HomeKitCard extends LitElement {
 
     async _createPopup(entity_id, entity, row) {
         if ((row && row.popup) || entity.popup) {
+            let popUpCard: object;
             if (row.popup) {
-                var popUpCard = Object.assign({}, row.popup, {entity: entity_id});
+                popUpCard = Object.assign({}, row.popup, {entity: entity_id});
                 if (entity.popupExtend) {
-                    var popUpCard = Object.assign({}, popUpCard, entity.popupExtend);
+                    popUpCard = Object.assign({}, popUpCard, entity.popupExtend);
                 }
             } else {
-                var popUpCard = Object.assign({}, entity.popup, {entity: entity_id});
+                popUpCard = Object.assign({}, entity.popup, {entity: entity_id});
             }
-            var popUpStyle = {
+            const popUpStyle = {
                 '$': ".mdc-dialog .mdc-dialog__container { width: 100%; } .mdc-dialog .mdc-dialog__container .mdc-dialog__surface { width:100%; box-shadow:none; }",
                 '.': ":host { --mdc-theme-surface: rgba(0,0,0,0); --secondary-background-color: rgba(0,0,0,0); --ha-card-background: rgba(0,0,0,0); --mdc-dialog-scrim-color: rgba(0,0,0,0.8); --mdc-dialog-min-height: 100%; --mdc-dialog-min-width: 100%; --mdc-dialog-max-width: 100%; } mwc-icon-button { color: #FFF; }"
             }
-            var service_data = {
+            const service_data = {
                 title: " ",
                 style: popUpStyle,
                 card: popUpCard,
                 deviceID: ['this']
             }
-            var result = await this.hass.callService("browser_mod", "popup", service_data);
+            // eslint-disable-next-line no-unused-vars
+            const result = await this.hass.callService("browser_mod", "popup", service_data);
         } else {
             moreInfo(entity_id)
         }
@@ -785,7 +792,7 @@ class HomeKitCard extends LitElement {
 
 
     _getColorForLightEntity(stateObj, useTemperature, useBrightness) {
-        var color = this.config.default_color ? this.config.default_color : undefined;
+        let color = this.config.default_color ? this.config.default_color : undefined;
         if (stateObj) {
             if (stateObj.attributes.rgb_color) {
                 color = `rgb(${stateObj.attributes.rgb_color.join(',')})`;
