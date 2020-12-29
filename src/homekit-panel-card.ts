@@ -187,6 +187,9 @@ class HomeKitCard extends LitElement {
             return html`
           <div class="row">
             ${row.columns.map(column => {
+                if (column.collapse && this._hasAllEntitiesHidden(column)) {
+                    return ``;
+                }
                 return html`
                 <div class="col${column.tileOnRow ? ' fixed' : ''}" style="${column.tileOnRow ? '--tile-on-row:' + column.tileOnRow : ''}">
                   ${this._renderEntities(column.entities)}
@@ -198,6 +201,15 @@ class HomeKitCard extends LitElement {
         })}
     `;
     }
+
+    /**
+     * Returns true if all of the entities in this column are hidden
+     */
+    _hasAllEntitiesHidden(column) {
+        return column.entities.every(
+            row => row.entities.every(entity => entity.hide && this._getTemplate(this.hass.states[entity.entity], entity.hide))
+        )
+    }s
 
     _renderState(ent, stateObj, offStates, type) {
         if (!ent.hideState) {
