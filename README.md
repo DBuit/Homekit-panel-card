@@ -533,6 +533,29 @@ To make this work nicely on both big screens and small screens we need to know h
 
 The `tileOnRow:` is **not required** but optional. If you do not set this, the columns will not break to new lines, but the tiles will break which can give a weird look when scaling to smaller screens. It could also work for you, so just play with it!
 
+Using `collapse:` on the column in conjunction with `hide:` on your entities will mean the column no longer appears if all of the entities are hidden - useful if you have dynamic options on your dashboard.
+
+```
+views:
+  - title: "Example"
+    panel: true
+    cards:
+      - type: "custom:homekit-card"
+        rows:
+          - row: 1
+            columns:
+              - column: 1
+                tileOnRow: 2
+                collapse: true
+                entities:
+                  - title: Notifications
+                    entities: 
+                      - entity: input_boolean.trash
+                        name: Tap when trash has been taken out
+                        wider: true
+              - column: 2
+```
+
 
 #### Action options
 
