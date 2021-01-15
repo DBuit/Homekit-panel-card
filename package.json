@@ -24,7 +24,8 @@
     "lit-html": "^1.1.2",
     "masonry-layout": "^4.2.2",
     "prevent-ghost-click": "0.0.1",
-    "xregexp": "^4.3.0"
+    "xregexp": "^4.3.0",
+    "moment": "2.24.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

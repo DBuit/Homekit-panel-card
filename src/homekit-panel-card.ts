@@ -15,6 +15,7 @@ import { createCard } from "card-tools/src/lovelace-element.js";
 import 'hammerjs';
 import { HassEntity } from 'home-assistant-js-websocket';
 import Masonry from 'masonry-layout'
+import moment from 'moment/min/moment-with-locales';
 
 class HomeKitCard extends LitElement {
     config: any;
@@ -294,7 +295,6 @@ class HomeKitCard extends LitElement {
                 ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
               `;
         } else if (type == "sensor" || type == "binary_sensor") {
-
             return html`
                 ${stateObj.last_changed && !ent.state ? html`${this._calculateTime(stateObj.last_changed)}` : html``}
                 ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
@@ -439,7 +439,7 @@ class HomeKitCard extends LitElement {
                                     </span>
                                     <span class="${offStates.includes(stateObj.state) ? 'name' : 'name on'}">${ent.name || stateObj.attributes.friendly_name}</span>
                                     <span class="${offStates.includes(stateObj.state) ? 'state' : 'state on'}">
-                                      ${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}
+                                      ${stateObj.attributes.device_class === "timestamp" && ent.timestampFormat ? ent.timestampDiff ? html`${moment(moment().diff(moment(stateObj.state))).format(ent.timestampFormat)}` : html`${moment(stateObj.state).format(ent.timestampFormat)}` : computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}
                                       ${!this.statePositionTop ? this._renderState(ent, stateObj, offStates, type) : ''}
                                     </span>
                                     ${this.statePositionTop ? this._renderState(ent, stateObj, offStates, type) : ''}
