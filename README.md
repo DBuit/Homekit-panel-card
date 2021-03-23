@@ -226,7 +226,7 @@ With hide you can hide/show a tile based on a confition in the template. For exa
 2. conditionalClass
 With conditionalClass you can add a css class to a tile. that does not do anything but this class in combination with a custom css style makes it possible to make a tile red for example when your tempeture goes below a value.
 
-The template code i borrowed from the custom bottom card for most part: https://github.com/custom-cards/button-card#javascript-templates
+The template code i borrowed from the custom button card for most part: https://github.com/custom-cards/button-card#javascript-templates
 
 Example code:
 
