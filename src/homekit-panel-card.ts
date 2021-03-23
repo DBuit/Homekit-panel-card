@@ -757,8 +757,7 @@ class HomeKitCard extends LitElement {
             const service_data = {
                 title: " ",
                 style: popUpStyle,
-                card: popUpCard,
-                deviceID: ['this']
+                card: popUpCard
             }
             // eslint-disable-next-line no-unused-vars
             const result = await this.hass.callService("browser_mod", "popup", service_data);
