@@ -9,6 +9,7 @@ import {
 import tinycolor, {TinyColor} from '@ctrl/tinycolor';
 import { css, html, LitElement } from "card-tools/src/lit-element";
 import { moreInfo } from "card-tools/src/more-info";
+import { fireEvent } from "card-tools/src/event";
 import { provideHass } from "card-tools/src/hass";
 import { parseTemplate } from "card-tools/src/templates.js";
 import { createCard } from "card-tools/src/lovelace-element.js";
@@ -754,13 +755,16 @@ class HomeKitCard extends LitElement {
                 '$': ".mdc-dialog .mdc-dialog__container { width: 100%; } .mdc-dialog .mdc-dialog__container .mdc-dialog__surface { width:100%; box-shadow:none; }",
                 '.': ":host { --mdc-theme-surface: rgba(0,0,0,0); --secondary-background-color: rgba(0,0,0,0); --ha-card-background: rgba(0,0,0,0); --mdc-dialog-scrim-color: rgba(0,0,0,0.8); --mdc-dialog-min-height: 100%; --mdc-dialog-min-width: 100%; --mdc-dialog-max-width: 100%; } mwc-icon-button { color: #FFF; }"
             }
-            const service_data = {
-                title: " ",
-                style: popUpStyle,
-                card: popUpCard
+            const action = {
+                browser_mod: {
+                    command: "popup",
+                    title: " ",
+                    style: popUpStyle,
+                    card: popUpCard,
+                    deviceID: ['this']
+                }
             }
-            // eslint-disable-next-line no-unused-vars
-            const result = await this.hass.callService("browser_mod", "popup", service_data);
+            fireEvent("ll-custom", action);
         } else {
             moreInfo(entity_id)
         }
