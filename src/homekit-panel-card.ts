@@ -33,6 +33,7 @@ class HomeKitCard extends LitElement {
     rulesColor: any;
     useTemperature = false;
     useBrightness = false;
+    useRGB = false;
     CUSTOM_TYPE_PREFIX = "custom:";
     masonry = false;
 
@@ -53,6 +54,7 @@ class HomeKitCard extends LitElement {
         this.config = config;
         this.useTemperature = "useTemperature" in this.config ? this.config.useTemperature : false;
         this.useBrightness = "useBrightness" in this.config ? this.config.useBrightness : true;
+        this.useRGB = "useRGB" in this.config ? this.config.useRGB : true;
         this.rowTitleColor = this.config.titleColor ? this.config.titleColor : false;
         this.horizontalScroll = "horizontalScroll" in this.config ? this.config.fullscreen : false;
         this.enableColumns = "enableColumns" in this.config ? this.config.enableColumns : false;
@@ -370,7 +372,7 @@ class HomeKitCard extends LitElement {
                     if (ent.color) {
                         color = ent.color
                     } else {
-                        color = this._getColorForLightEntity(stateObj, this.useTemperature, this.useBrightness);
+                        color = this._getColorForLightEntity(stateObj, this.useTemperature, this.useBrightness, this.useRGB);
                     }
                     const type = ent.entity.split('.')[0];
                     if (type == "light") {
@@ -813,11 +815,13 @@ class HomeKitCard extends LitElement {
     }
 
 
-    _getColorForLightEntity(stateObj, useTemperature, useBrightness) {
-        let color = this.config.default_color ? this.config.default_color : undefined;
+    _getColorForLightEntity(stateObj, useTemperature, useBrightness, useRGB) {
+        let color = this.config.default_color ? this.config.default_color : this._getDefaultColorForState();
         if (stateObj) {
             if (stateObj.attributes.rgb_color) {
-                color = `rgb(${stateObj.attributes.rgb_color.join(',')})`;
+                if(useRGB) {
+                    color = `rgb(${stateObj.attributes.rgb_color.join(',')})`;
+                }
                 if (useBrightness && stateObj.attributes.brightness) {
                     color = this._applyBrightnessToColor(color, (stateObj.attributes.brightness + 245) / 5);
                 }

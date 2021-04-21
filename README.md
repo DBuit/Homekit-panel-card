@@ -79,6 +79,7 @@ in the card we can define some global configuration below you can find these opt
 | `rulesColor` | string | optional | "#FFF" | Default the text is white and this can be overwritten with a new color |
 | `tileHoldAnimation` | boolean | optional | false | When true the tile with grow in size when holding :) |
 | `title` | string | optional | "" | When home is true you can give your page a title |
+| `useRGB` | boolean | optional | true | When true the lights rgb value is used to color the icon |
 | `useBrightness` | boolean | optional | true | When true the lights brightness is used to color the icon |
 | `useTemperature` | boolean | optional | false | When true the temperature is used to color the icon |
 | `titleColor` | number | optional |  | Titles above a row of tiles is colored by them this can overwrite this color |
@@ -602,6 +603,7 @@ views:
         title: "Home"
         useBrightness: false
         useTemperature: false
+        useRGB: false
         titleColor: "#FFF"
         entities:
           - title: Navigatie
@@ -755,6 +757,7 @@ views:
         title: "Home"
         useBrightness: false
         useTemperature: false
+        useRGB: false
         titleColor: "#FFF"
         enableColumns: true
         statePositionTop: true
