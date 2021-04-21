@@ -4,7 +4,8 @@ import {
     domainIcon,
     forwardHaptic,
     navigate,
-    toggleEntity
+    toggleEntity,
+
 } from 'custom-card-helpers';
 import tinycolor, {TinyColor} from '@ctrl/tinycolor';
 import { css, html, LitElement } from "card-tools/src/lit-element";
@@ -732,6 +733,12 @@ class HomeKitCard extends LitElement {
                 const [domain, service] = tapAction.service.split(".", 2);
                 this.hass.callService(domain, service, tapAction.service_data);
                 if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                break;
+            }
+            case "fire-dom-event": {
+                fireEvent("ll-custom", tapAction);
+                if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                break;
             }
         }
     }
