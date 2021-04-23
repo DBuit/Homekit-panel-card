@@ -1128,7 +1128,86 @@ class HomeKitCard extends LitElement {
             top: calc(50% - (var(--slider-height, 120px) / 2));
             right: calc(50% - (var(--slider-width, 120px) / 2));
         }
+
+        .button.size-2 input[type="range"] {
+            width: calc((var(--slider-width, 120px) * 2) + (10px * 1) - 1px);
+            right: calc(50% - (((var(--slider-width, 120px) * 2) + (1 * 10px) - 1px) / 2));
+        }
         
+        .button.size-3 input[type="range"] {
+            width: calc((var(--slider-width, 120px) * 3) + (10px * 2) - 1px);
+            right: calc(50% - (((var(--slider-width, 120px) * 3) + (2 * 10px) - 1px) / 2));
+        }
+        
+        .button.size-4 input[type="range"] {
+            width: calc((var(--slider-width, 120px) * 4) + (10px * 3) - 1px);
+            right: calc(50% - (((var(--slider-width, 120px) * 4) + (3 * 10px) - 1px) / 2));
+        }
+        
+        .button.size-5 input[type="range"] {
+            width: calc((var(--slider-width, 120px) * 5) + (10px * 4) - 1px);
+            right: calc(50% - (((var(--slider-width, 120px) * 5) + (4 * 10px) - 1px) / 2));
+        }
+        
+        .button.size-6 input[type="range"] {
+            width: calc(
+                (var(--slider-width, 120px) * 6) + (10px * 5) - 1px
+            );
+            right: calc(50% - (((var(--slider-width, 120px) * 6) + (5 * 10px) - 1px) / 2));
+        }
+        .button.size-6 input[type="range"]::-webkit-slider-thumb {
+            box-shadow: -400px 0 0 410px var(--tile-on-background),
+                inset 0 0 0 80px var(--tile-background);
+        }
+
+        .button.height-2 input[type="range"] {
+            height: calc(
+                (var(--slider-height, 120px) * 2) + (10px * 1) - 1px
+            );
+            top: calc(50% - (((var(--slider-height, 120px) * 2) / 2) + (5px * 1)));
+        }
+        
+        .button.height-3 input[type="range"] {
+            height: calc(
+                (var(--slider-height, 120px) * 3) + (10px * 2) - 1px
+            );
+            top: calc(50% - (((var(--slider-height, 120px) * 3) / 2) + (5px * 2) - 0.5px));
+        }
+        
+        .button.height-4 input[type="range"] {
+            height: calc(
+                (var(--slider-height, 120px) * 4) + (10px * 3) - 1px
+            );
+            top: calc(50% - (((var(--slider-height, 120px) * 4) / 2) + (5px * 3)));
+        }
+        
+        .button.height-5 input[type="range"] {
+            height: calc(
+                (var(--slider-height, 120px) * 5) + (10px * 4) - 1px
+            );
+            top: calc(50% - (((var(--slider-height, 120px) * 5) / 2) + (5px * 4) - 0.5px));
+        }
+        
+        .button.height-6 input[type="range"] {
+            height: calc(
+                (var(--slider-height, 120px) * 6) + (10px * 5) - 1px
+            );
+            top: calc(50% - (((var(--slider-height, 120px) * 6) / 2) + (5px * 5)));
+        }
+
+        .button.height-half input[type="range"] {
+            height: calc((var(--slider-height, 120px) * 0.5) - 3px);
+            top: calc(50% - (((var(--slider-height, 120px) * 0.5) / 2) - 1px));
+        }
+        
+        .button.height-half input[type="range"]::-webkit-slider-runnable-track {
+            height: calc((var(--slider-height, 120px) * 0.5) - 3px);
+        }
+        
+        .button.height-half input[type="range"]::-webkit-slider-thumb {
+            top: calc((((var(--slider-height, 120px) * 0.5) - 80px) / 2));
+        }
+
         .button input[type="range"]::-webkit-slider-runnable-track {
             height: var(--slider-height, 120px);
             -webkit-appearance: none;
@@ -1154,37 +1233,6 @@ class HomeKitCard extends LitElement {
             transition: box-shadow 0.2s ease-in-out;
             position: relative;
             top: calc((var(--slider-height, 120px) - 80px) / 2);
-        }
-        
-        .button.size-2 input[type="range"] {
-            width: calc(var(--slider-width, 120px) * 2.26);
-            right: calc(50% - ((var(--slider-width, 120px) * 2.26) / 2));
-        }
-        
-        .button.height-2 input[type="range"] {
-            height: calc(var(--slider-height, 120px) * 2.26);
-            top: calc(50% - ((var(--slider-height, 120px) * 2.26) / 2));
-        }
-        
-        .button.height-2 input[type="range"]::-webkit-slider-runnable-track {
-            height: calc(var(--slider-height, 120px) * 2.26);
-        }
-        
-        .button.height-2 input[type="range"]::-webkit-slider-thumb {
-            top: calc(((var(--slider-height, 120px) * 2.26) - 80px) / 2);
-        }
-        
-        .button.height-half input[type="range"] {
-            height: calc(var(--slider-height, 120px) * 0.58333333333);
-            top: calc(50% - ((var(--slider-height, 120px) * 0.58333333333) / 2));
-        }
-        
-        .button.height-half input[type="range"]::-webkit-slider-runnable-track {
-            height: calc(var(--slider-height, 120px) * 0.58333333333);
-        }
-        
-        .button.height-half input[type="range"]::-webkit-slider-thumb {
-            top: calc(((var(--slider-height, 120px) * 0.58333333333) - 80px) / 2);
         }
         
         :host:last-child .button {
