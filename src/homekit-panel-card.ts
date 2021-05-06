@@ -250,6 +250,14 @@ class HomeKitCard extends LitElement {
             <span class=" ${offStates.includes(stateObj.state) ? 'value' : 'value on'}">${this._renderStateValue(ent, stateObj, type)}</span>
           `;
                 }
+            }  else if (type == "cover" && stateObj.attributes.current_position) {
+                if (this.statePositionTop) {
+                    return this._renderCircleState(ent, stateObj, type);
+                } else {
+                    return html`
+            <span class=" ${offStates.includes(stateObj.state) ? 'value' : 'value on'}">${this._renderStateValue(ent, stateObj, type)}</span>
+          `;
+                }
             } else {
                 if (ent.state) {
                     if (this.statePositionTop) {
@@ -265,9 +273,17 @@ class HomeKitCard extends LitElement {
     }
 
     _renderCircleState(ent, stateObj, type) {
+        let value;
+        let valuePercentage;
+        if (type == "cover") {
+          value = stateObj.attributes.current_position;
+          valuePercentage = value;
+        } else {
+          value = stateObj.attributes.brightness;
+          valuePercentage = value / 2.55;
+        }
         return html`
-      <svg class="circle-state" viewbox="0 0 100 100" style="${stateObj.attributes.brightness && !ent.state ? '--percentage:' + (stateObj.attributes.brightness / 2.55)
-            : ''}">
+      <svg class="circle-state" viewbox="0 0 100 100" style="${value && !ent.state ? '--percentage:' + valuePercentage : ''}">
         <path id="progress" stroke-width="3" stroke="#aaabad" fill="none"
               d="M50 10
                 a 40 40 0 0 1 0 80
@@ -312,6 +328,12 @@ class HomeKitCard extends LitElement {
         } else if (type == "climate") {
             return html`
                 ${stateObj.attributes.temperature ? html`${stateObj.attributes.temperature}&#176;` : html``}
+              `;
+        } else if (type == "cover") {
+            return html`
+                ${stateObj.attributes.current_position && !ent.state ? html`${stateObj.attributes.current_position}%` : html``}
+                ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
+                ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
               `;
         } else {
             return html`
