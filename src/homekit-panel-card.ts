@@ -1,13 +1,13 @@
 import {
-	computeDomain,
-	computeStateDisplay,
-	domainIcon,
-	forwardHaptic,
-	navigate,
-	toggleEntity,
+    computeDomain,
+    computeStateDisplay,
+    domainIcon,
+    forwardHaptic,
+    navigate,
+    toggleEntity,
 
 } from 'custom-card-helpers';
-import tinycolor, { TinyColor } from '@ctrl/tinycolor';
+import tinycolor, {TinyColor} from '@ctrl/tinycolor';
 import { css, html, LitElement } from "card-tools/src/lit-element";
 import { moreInfo } from "card-tools/src/more-info";
 import { fireEvent } from "card-tools/src/event";
@@ -20,90 +20,90 @@ import Masonry from 'masonry-layout'
 import moment from 'moment/min/moment-with-locales';
 
 class HomeKitCard extends LitElement {
-	config: any;
-	hass: any;
-	shadowRoot: any;
-	renderedRules: any = [];
-	rowTitleColor: any;
-	horizontalScroll: any;
-	enableColumns: any;
-	statePositionTop: any;
-	doubleTapped = false;
-	tileHoldAnimation = false;
-	rulesColor: any;
-	useTemperature = false;
-	useBrightness = false;
-	useRGB = false;
-	CUSTOM_TYPE_PREFIX = "custom:";
-	masonry = false;
+    config: any;
+    hass: any;
+    shadowRoot: any;
+    renderedRules: any = [];
+    rowTitleColor: any;
+    horizontalScroll: any;
+    enableColumns: any;
+    statePositionTop: any;
+    doubleTapped = false;
+    tileHoldAnimation = false;
+    rulesColor: any;
+    useTemperature = false;
+    useBrightness = false;
+    useRGB = false;
+    CUSTOM_TYPE_PREFIX = "custom:";
+    masonry = false;
 
-	static get properties() {
-		return {
-			hass: {},
-			config: {}
-		};
-	}
+    static get properties() {
+        return {
+            hass: {},
+            config: {}
+        };
+    }
 
-	setConfig(config) {
-		if (!config.entities && !config.rows) {
-			throw new Error("You need to define entities: or rows:");
-		}
-		if (!config.entities && config.rows && !config.enableColumns) {
-			throw new Error("If you use rows and columns you need to set enableColumns: true");
-		}
-		this.config = config;
-		this.useTemperature = "useTemperature" in this.config ? this.config.useTemperature : false;
-		this.useBrightness = "useBrightness" in this.config ? this.config.useBrightness : true;
-		this.useRGB = "useRGB" in this.config ? this.config.useRGB : true;
-		this.rowTitleColor = this.config.titleColor ? this.config.titleColor : false;
-		this.horizontalScroll = "horizontalScroll" in this.config ? this.config.fullscreen : false;
-		this.enableColumns = "enableColumns" in this.config ? this.config.enableColumns : false;
-		this.statePositionTop = "statePositionTop" in this.config ? this.config.statePositionTop : false;
-		this.tileHoldAnimation = "tileHoldAnimation" in this.config ? this.config.tileHoldAnimation : false;
-		this.rulesColor = this.config.rulesColor ? this.config.rulesColor : false;
-		this.masonry = "masonry" in this.config ? this.config.masonry : false;
-	}
+    setConfig(config) {
+        if (!config.entities && !config.rows) {
+            throw new Error("You need to define entities: or rows:");
+        }
+        if (!config.entities && config.rows && !config.enableColumns) {
+            throw new Error("If you use rows and columns you need to set enableColumns: true");
+        }
+        this.config = config;
+        this.useTemperature = "useTemperature" in this.config ? this.config.useTemperature : false;
+        this.useBrightness = "useBrightness" in this.config ? this.config.useBrightness : true;
+        this.useRGB = "useRGB" in this.config ? this.config.useRGB : true;
+        this.rowTitleColor = this.config.titleColor ? this.config.titleColor : false;
+        this.horizontalScroll = "horizontalScroll" in this.config ? this.config.fullscreen : false;
+        this.enableColumns = "enableColumns" in this.config ? this.config.enableColumns : false;
+        this.statePositionTop = "statePositionTop" in this.config ? this.config.statePositionTop : false;
+        this.tileHoldAnimation = "tileHoldAnimation" in this.config ? this.config.tileHoldAnimation : false;
+        this.rulesColor = this.config.rulesColor ? this.config.rulesColor : false;
+        this.masonry = "masonry" in this.config ? this.config.masonry : false;
+    }
 
-	addHammer(el) {
-		const hammer = new Hammer(el, {});
-		const $this = this;
-		hammer.on("tap doubletap pressup press panmove", function (ev) {
-			ev.preventDefault();
-			const dataset: any = ev.target.dataset;
-			const ent = JSON.parse(dataset.ent);
-			const row = JSON.parse(dataset.row);
-			$this.doubleTapped = false;
-			if (ev.type == 'tap') {
-				$this.doubleTapped = false;
-				let timeoutTime = 200;
-				if (!ent.double_tap_action) {
-					timeoutTime = 0;
-				}
-				setTimeout(function () {
-					if (!$this.doubleTapped) {
-						ev.target.classList.remove('longpress');
-						$this._handleClick(ev.type, ent, dataset.type, row)
-					}
-				}, timeoutTime);
-			} else {
-				if (ev.type == 'doubletap') {
-					$this.doubleTapped = true;
-				}
-				const dataset: any = ev.target.dataset;
-				if (ev.type == 'press') {
-					ev.target.classList.add('longpress');
-				} else if (ev.type == 'panmove') {
-					ev.target.classList.remove('longpress');
-				} else {
-					ev.target.classList.remove('longpress');
-					$this._handleClick(ev.type, ent, dataset.type, row)
-				}
-			}
-		});
-	}
+    addHammer(el) {
+        const hammer = new Hammer(el, {});
+        const $this = this;
+        hammer.on("tap doubletap pressup press panmove", function (ev) {
+            ev.preventDefault();
+            const dataset: any = ev.target.dataset;
+            const ent = JSON.parse(dataset.ent);
+            const row = JSON.parse(dataset.row);
+            $this.doubleTapped = false;
+            if (ev.type == 'tap') {
+                $this.doubleTapped = false;
+                let timeoutTime = 200;
+                if (!ent.double_tap_action) {
+                    timeoutTime = 0;
+                }
+                setTimeout(function () {
+                    if (!$this.doubleTapped) {
+                        ev.target.classList.remove('longpress');
+                        $this._handleClick(ev.type, ent, dataset.type, row)
+                    }
+                }, timeoutTime);
+            } else {
+                if (ev.type == 'doubletap') {
+                    $this.doubleTapped = true;
+                }
+                const dataset: any = ev.target.dataset;
+                if (ev.type == 'press') {
+                    ev.target.classList.add('longpress');
+                } else if (ev.type == 'panmove') {
+                    ev.target.classList.remove('longpress');
+                } else {
+                    ev.target.classList.remove('longpress');
+                    $this._handleClick(ev.type, ent, dataset.type, row)
+                }
+            }
+        });
+    }
 
-	render() {
-		return html`
+    render() {
+        return html`
       ${this.config.style ? html`
         <style>
           ${this.config.style}
@@ -115,8 +115,8 @@ class HomeKitCard extends LitElement {
                 ${this.config.title ? html`<h1 style="${this.rowTitleColor ? 'color:' + this.rowTitleColor : ''}">${this.config.title}</h1>` : html``}
                 <ul style="${this.rulesColor ? 'color:' + this.rulesColor : ''}">
                   ${this.renderedRules.map(rule => {
-			return html`<li>${rule}</li>`;
-		})}
+            return html`<li>${rule}</li>`;
+        })}
                 </ul>
             </div>
         ` : html``}
@@ -124,150 +124,150 @@ class HomeKitCard extends LitElement {
         ${this.enableColumns ? this._renderRows() : this._renderEntities(this.config.entities)}
       </div>
     `;
-	}
+    }
 
-	firstUpdated() {
-		const myNodelist = this.shadowRoot.querySelectorAll('homekit-button.event')
-		for (let i = 0; i < myNodelist.length; i++) {
-			this.addHammer(myNodelist[i]);
-		}
-		this.shadowRoot.querySelectorAll(".card-tile").forEach(customCard => {
-			let card = {
-				type: customCard.dataset.card
-			};
-			card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
-			const cardElement = createCard(card);
-			customCard.appendChild(cardElement);
-			provideHass(cardElement);
-			let style = "";
-			if (customCard.dataset.style) {
-				style = customCard.dataset.style;
-			} else if (customCard.dataset.card == 'custom:mini-graph-card') {
-				style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .states .state .state__uom { font-size: 13px; margin-top: 0; line-height: normal; } .header .icon { color: #f7d959; }";
-			}
-			if (style != "") {
-				let itterations = 0;
-				const interval = setInterval(function () {
-					if (cardElement && cardElement.shadowRoot) {
-						window.clearInterval(interval);
-						const styleElement = document.createElement('style');
-						styleElement.innerHTML = style;
-						cardElement.shadowRoot.appendChild(styleElement);
-					} else if (++itterations === 10) {
-						window.clearInterval(interval);
-					}
-				}, 100);
-			}
-		});
+    firstUpdated() {
+        const myNodelist = this.shadowRoot.querySelectorAll('homekit-button.event')
+        for (let i = 0; i < myNodelist.length; i++) {
+            this.addHammer(myNodelist[i]);
+        }
+        this.shadowRoot.querySelectorAll(".card-tile").forEach(customCard => {
+            let card = {
+                type: customCard.dataset.card
+            };
+            card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
+            const cardElement = createCard(card);
+            customCard.appendChild(cardElement);
+            provideHass(cardElement);
+            let style = "";
+            if (customCard.dataset.style) {
+                style = customCard.dataset.style;
+            } else if (customCard.dataset.card == 'custom:mini-graph-card') {
+                style = ":host { height: 100%; } ha-card { background: transparent; color: #000; padding: 0!important; box-shadow: none; } .header { padding: 10px 10px 0 10px; } .header .name, .header .name .ellipsis { font-size: 13px!important; font-weight: 500; color: #000; opacity: 1; } .header icon { color: #f7d959; } .states { padding: 0 10px; } .states .state .state__value { font-size: 13px; } .states .state .state__uom { font-size: 13px; margin-top: 0; line-height: normal; } .header .icon { color: #f7d959; }";
+            }
+            if (style != "") {
+                let itterations = 0;
+                const interval = setInterval(function () {
+                    if (cardElement && cardElement.shadowRoot) {
+                        window.clearInterval(interval);
+                        const styleElement = document.createElement('style');
+                        styleElement.innerHTML = style;
+                        cardElement.shadowRoot.appendChild(styleElement);
+                    } else if (++itterations === 10) {
+                        window.clearInterval(interval);
+                    }
+                }, 100);
+            }
+        });
 
-		if (this.masonry) {
-			//console.log("MASONRY");
-			const windowInnerWidth = window.innerWidth;
-			//console.log(windowInnerWidth);
+        if (this.masonry) {
+            //console.log("MASONRY");
+            const windowInnerWidth = window.innerWidth;
+            //console.log(windowInnerWidth);
 
-			let masonryColumWidth = 120;
-			if (windowInnerWidth <= 768) {
-				masonryColumWidth = 110;
-			}
-			this.shadowRoot.querySelectorAll('.homekit-card').forEach(masonryItem => {
-				console.log(masonryItem);
-				new Masonry(masonryItem, {
-					itemSelector: 'homekit-button',
-					columnWidth: masonryColumWidth,
-					gutter: 6,
-				});
-			});
+            let masonryColumWidth = 120;
+            if (windowInnerWidth <= 768) {
+                masonryColumWidth = 110;
+            }
+            this.shadowRoot.querySelectorAll('.homekit-card').forEach(masonryItem => {
+                console.log(masonryItem);
+                new Masonry(masonryItem, {
+                    itemSelector: 'homekit-button',
+                    columnWidth: masonryColumWidth,
+                    gutter: 6,
+                });
+            });
 
 
-		}
-	}
+        }
+    }
 
-	updated() {
-		this._renderRules();
-	}
+    updated() {
+        this._renderRules();
+    }
 
-	_renderRows() {
-		return html`
+    _renderRows() {
+        return html`
       ${this.config.rows.map(row => {
-			return html`
+            return html`
           <div class="row">
             ${row.columns.map(column => {
-				if (column.collapse && this._hasAllEntitiesHidden(column)) {
-					return ``;
-				}
-				return html`
+                if (column.collapse && this._hasAllEntitiesHidden(column)) {
+                    return ``;
+                }
+                return html`
                 <div class="col${column.tileOnRow ? ' fixed' : ''}" style="${column.tileOnRow ? '--tile-on-row:' + column.tileOnRow : ''}">
                   ${this._renderEntities(column.entities)}
                 </div>
               `;
-			})}
+            })}
           </div>
         `;
-		})}
+        })}
     `;
-	}
+    }
 
-	/**
-	 * Returns true if all of the entities in this column are hidden
-	 */
-	_hasAllEntitiesHidden(column) {
-		return column.entities.every(
-			row => row.entities.every(entity => entity.hide && this._getTemplate(this.hass.states[entity.entity], entity.hide))
-		)
-	} s
+    /**
+     * Returns true if all of the entities in this column are hidden
+     */
+    _hasAllEntitiesHidden(column) {
+        return column.entities.every(
+            row => row.entities.every(entity => entity.hide && this._getTemplate(this.hass.states[entity.entity], entity.hide))
+        )
+    }s
 
-	_renderState(ent, stateObj, offStates, type) {
-		if (!ent.hideState) {
-			if (type == 'light' && (stateObj.attributes.brightness || ent.state)) {
-				if (this.statePositionTop) {
-					return this._renderCircleState(ent, stateObj, type);
-				} else {
-					return html`
+    _renderState(ent, stateObj, offStates, type) {
+        if (!ent.hideState) {
+            if (type == 'light' && (stateObj.attributes.brightness || ent.state)) {
+                if (this.statePositionTop) {
+                    return this._renderCircleState(ent, stateObj, type);
+                } else {
+                    return html`
             <span class=" ${offStates.includes(stateObj.state) ? 'value' : 'value on'}">${this._renderStateValue(ent, stateObj, type)}</span>
           `;
-				}
-			} else if ((type == "sensor" || type == "binary_sensor") && (stateObj.last_changed || ent.state)) {
-				if (this.statePositionTop) {
-					return this._renderCircleState(ent, stateObj, type);
-				} else {
-					return html`
+                }
+            } else if ((type == "sensor" || type == "binary_sensor") && (stateObj.last_changed || ent.state)) {
+                if (this.statePositionTop) {
+                    return this._renderCircleState(ent, stateObj, type);
+                } else {
+                    return html`
             <span class="previous">${this._renderStateValue(ent, stateObj, type)}</span>
           `;
-				}
-			} else if ((type == "switch" || type == "input_boolean") && ent.state) {
-				if (this.statePositionTop) {
-					return this._renderCircleState(ent, stateObj, type);
-				} else {
-					return html`
+                }
+            } else if ((type == "switch" || type == "input_boolean") && ent.state) {
+                if (this.statePositionTop) {
+                    return this._renderCircleState(ent, stateObj, type);
+                } else {
+                    return html`
             <span class="value on">${this._renderStateValue(ent, stateObj, type)}</span>
           `;
-				}
-			} else if (type == "climate" && stateObj.attributes.temperature) {
-				if (this.statePositionTop) {
-					return this._renderCircleState(ent, stateObj, type);
-				} else {
-					return html`
+                }
+            } else if (type == "climate" && stateObj.attributes.temperature) {
+                if (this.statePositionTop) {
+                    return this._renderCircleState(ent, stateObj, type);
+                } else {
+                    return html`
             <span class=" ${offStates.includes(stateObj.state) ? 'value' : 'value on'}">${this._renderStateValue(ent, stateObj, type)}</span>
           `;
-				}
-			} else {
-				if (ent.state) {
-					if (this.statePositionTop) {
-						return this._renderCircleState(ent, stateObj, type);
-					} else {
-						return html`
+                }
+            } else {
+                if (ent.state) {
+                    if (this.statePositionTop) {
+                        return this._renderCircleState(ent, stateObj, type);
+                    } else {
+                        return html`
               <span class="value on">${this._renderStateValue(ent, stateObj, type)}</span>
             `;
-					}
-				}
-			}
-		}
-	}
+                    }
+                }
+            }
+        }
+    }
 
-	_renderCircleState(ent, stateObj, type) {
-		return html`
+    _renderCircleState(ent, stateObj, type) {
+        return html`
       <svg class="circle-state" viewbox="0 0 100 100" style="${stateObj.attributes.brightness && !ent.state ? '--percentage:' + (stateObj.attributes.brightness / 2.55)
-				: ''}">
+            : ''}">
         <path id="progress" stroke-width="3" stroke="#aaabad" fill="none"
               d="M50 10
                 a 40 40 0 0 1 0 80
@@ -276,109 +276,109 @@ class HomeKitCard extends LitElement {
         <text id="count" x="50" y="50" fill="#7d7e80" text-anchor="middle" dy="7" font-size="20">${this._renderStateValue(ent, stateObj, type)}</text>
       </svg>
     `;
-	}
+    }
 
-	_getValue(state, statePath) {
-		let stateObj = this.hass.states[state];
-		const path = statePath.split('.');
-		for (const pathItem of path) {
-			if (stateObj[pathItem]) {
-				stateObj = stateObj[pathItem];
-			} else {
-				stateObj = null;
-			}
-		}
-		return stateObj;
-	}
+    _getValue(state, statePath) {
+        let stateObj = this.hass.states[state];
+        const path = statePath.split('.');
+        for (const pathItem of path) {
+            if (stateObj[pathItem]) {
+                stateObj = stateObj[pathItem];
+            } else {
+                stateObj = null;
+            }
+        }
+        return stateObj;
+    }
 
-	_renderStateValue(ent, stateObj, type) {
-		if (type == 'light') {
-			return html`
+    _renderStateValue(ent, stateObj, type) {
+        if (type == 'light') {
+            return html`
                 ${stateObj.attributes.brightness && !ent.state ? html`${Math.round(stateObj.attributes.brightness / 2.55)}%` : html``}
                 ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
                 ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
               `;
-		} else if (type == "sensor" || type == "binary_sensor") {
-			return html`
+        } else if (type == "sensor" || type == "binary_sensor") {
+            return html`
                 ${stateObj.last_changed && !ent.state ? html`${this._calculateTime(stateObj.last_changed)}` : html``}
                 ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
                 ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
               `;
-		} else if (type == "switch" || type == "input_boolean") {
-			return html`
+        } else if (type == "switch" || type == "input_boolean") {
+            return html`
                 ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
                 ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
               `;
-		} else if (type == "climate") {
-			return html`
+        } else if (type == "climate") {
+            return html`
                 ${stateObj.attributes.temperature ? html`${stateObj.attributes.temperature}&#176;` : html``}
               `;
-		} else {
-			return html`
+        } else {
+            return html`
                 ${ent.state && !ent.statePath ? html`${computeStateDisplay(this.hass.localize, this.hass.states[ent.state], this.hass.language)}` : html``}
                 ${ent.state && ent.statePath ? html`${this._getValue(ent.state, ent.statePath)}` : html``}
               `;
-		}
-	}
+        }
+    }
 
-	_evalTemplate(state: HassEntity | undefined, func: any): any {
-		/* eslint no-new-func: 0 */
-		try {
-			return new Function('states', 'entity', 'user', 'hass', 'variables', 'html', `'use strict'; ${func}`).call(
-				this,
-				this.hass!.states,
-				state,
-				this.hass!.user,
-				this.hass,
-				html,
-			);
-		} catch (e) {
-			const funcTrimmed = func.length <= 100 ? func.trim() : `${func.trim().substring(0, 98)}...`;
-			e.message = `${e.name}: ${e.message} in '${funcTrimmed}'`;
-			e.name = 'ButtonCardJSTemplateError';
-			throw e;
-		}
-	}
+    _evalTemplate(state: HassEntity | undefined, func: any): any {
+        /* eslint no-new-func: 0 */
+        try {
+            return new Function('states', 'entity', 'user', 'hass', 'variables', 'html', `'use strict'; ${func}`).call(
+                this,
+                this.hass!.states,
+                state,
+                this.hass!.user,
+                this.hass,
+                html,
+            );
+        } catch (e) {
+            const funcTrimmed = func.length <= 100 ? func.trim() : `${func.trim().substring(0, 98)}...`;
+            e.message = `${e.name}: ${e.message} in '${funcTrimmed}'`;
+            e.name = 'ButtonCardJSTemplateError';
+            throw e;
+        }
+    }
 
-	_getTemplate(state: HassEntity | undefined, value: any | undefined): any | undefined {
-		const trimmed = value.trim();
-		if (trimmed.substring(0, 3) === '[[[' && trimmed.slice(-3) === ']]]') {
-			return this._evalTemplate(state, trimmed.slice(3, -3));
-		}
-	}
+    _getTemplate(state: HassEntity | undefined, value: any | undefined): any | undefined {
+        const trimmed = value.trim();
+        if (trimmed.substring(0, 3) === '[[[' && trimmed.slice(-3) === ']]]') {
+            return this._evalTemplate(state, trimmed.slice(3, -3));
+        }
+    }
 
-	_renderEntities(entities) {
-		return html`
+    _renderEntities(entities) {
+        return html`
       ${entities.map(row => {
-			let entityCount = 0;
-			return html`
+            let entityCount = 0;
+            return html`
             <div class="card-title" style="${this.rowTitleColor ? 'color:' + this.rowTitleColor : ''}">${row.title}</div>
                 <div class="homekit-card${this.horizontalScroll === true ? ' scroll' : ''}${this.masonry ? ' masonry' : ''}">
                     ${row.entities.map(ent => {
-				if (!ent.card && !ent.custom) {
-					let offStates = ['off', 'unavailable'];
-					if (ent.offStates) {
-						offStates = ent.offStates;
-					}
-					const stateObj = this.hass.states[ent.entity];
-					let color: string;
-					if (entityCount == 3) {
-						entityCount = 0;
-					}
-					if (entityCount == 4) {
-						entityCount = 2;
-					}
+                if (!ent.card && !ent.custom) {
+                    let offStates = ['off', 'unavailable'];
+                    if (ent.offStates) {
+                        offStates = ent.offStates;
+                    }
+                    const stateObj = this.hass.states[ent.entity];
+                    let color: string;
+                    if (entityCount == 3) {
+                        entityCount = 0;
+                    }
+                    if (entityCount == 4) {
+                        entityCount = 2;
+                    }
 
-					if (ent.color) {
-						color = ent.color
-					} else {
-						color = this._getColorForLightEntity(stateObj, this.useTemperature, this.useBrightness, this.useRGB);
-					}
-					const type = ent.entity.split('.')[0];
-					if (type == "light") {
-						entityCount++;
-						if (!ent.slider) {
-							return stateObj ? html`
+                    if (ent.color) {
+                        color = ent.color
+                    } else {
+                        color = this._getColorForLightEntity(stateObj, this.useTemperature, this.useBrightness, this.useRGB);
+                    }
+                    const type = ent.entity.split('.')[0];
+                    if (type == "light") {
+                        entityCount++;
+                        if (!ent.slider) {
+                            return stateObj ? html`
                                 <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ent.widerSize ? ' size-' + ent.widerSize : ' size-2' : ''}${ent.higher ? ent.higherSize ? ' height-' + ent.higherSize : ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide' : ''}${ent.conditionalClass ? ' ' + this._getTemplate(stateObj, ent.conditionalClass) : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                     <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
                                       <span class="${offStates.includes(stateObj.state) ? 'icon' : 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}${ent.image ? ' image' : ''}">
@@ -399,9 +399,9 @@ class HomeKitCard extends LitElement {
                                 </homekit-button>
                               ${entityCount == 3 ? html`<div class="break"></div>` : html``}
                               `
-								: this._notFound(ent);
-						} else {
-							return stateObj ? html`
+                                : this._notFound(ent);
+                        } else {
+                            return stateObj ? html`
                                 <homekit-button class="event slider ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ent.widerSize ? ' size-' + ent.widerSize : ' size-2' : ''}${ent.higher ? ent.higherSize ? ' height-' + ent.higherSize : ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide' : ''}${ent.conditionalClass ? ' ' + this._getTemplate(stateObj, ent.conditionalClass) : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                     <div class="button-inner${this.statePositionTop ? ' state-top' : ''}">
                                       <span class="${offStates.includes(stateObj.state) ? 'icon' : 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}${ent.image ? ' image' : ''}">
@@ -424,11 +424,11 @@ class HomeKitCard extends LitElement {
                                 </homekit-button>
                               ${entityCount == 3 ? html`<div class="break"></div>` : html``}
                               `
-								: this._notFound(ent);
-						}
-					} else if (type == "sensor" || type == "binary_sensor") {
-						entityCount++;
-						return stateObj ? html`
+                                : this._notFound(ent);
+                        }
+                    } else if (type == "sensor" || type == "binary_sensor") {
+                        entityCount++;
+                        return stateObj ? html`
                               <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ent.widerSize ? ' size-' + ent.widerSize : ' size-2' : ''}${ent.higher ? ent.higherSize ? ' height-' + ent.higherSize : ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide' : ''}${ent.conditionalClass ? ' ' + this._getTemplate(stateObj, ent.conditionalClass) : ''}" 
                                               data-ent="${JSON.stringify(ent)}" 
                                               data-type="${type}" 
@@ -451,10 +451,10 @@ class HomeKitCard extends LitElement {
                               </homekit-button>
                             ${entityCount == 3 ? html`<div class="break"></div>` : html``}
                           `
-							: this._notFound(ent);
-					} else if (type == "switch" || type == "input_boolean") {
-						entityCount++;
-						return stateObj ? html`
+                            : this._notFound(ent);
+                    } else if (type == "switch" || type == "input_boolean") {
+                        entityCount++;
+                        return stateObj ? html`
                               <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ent.widerSize ? ' size-' + ent.widerSize : ' size-2' : ''}${ent.higher ? ent.higherSize ? ' height-' + ent.higherSize : ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide' : ''}${ent.conditionalClass ? ' ' + this._getTemplate(stateObj, ent.conditionalClass) : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon' : 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}${ent.image ? ' image' : ''}">
@@ -474,11 +474,11 @@ class HomeKitCard extends LitElement {
                               </homekit-button>
                             ${entityCount == 3 ? html`<div class="break"></div>` : html``}
                           `
-							: this._notFound(ent);
+                            : this._notFound(ent);
 
-					} else if (type == "weather") {
-						entityCount = entityCount + 2;
-						return stateObj ? html`
+                    } else if (type == "weather") {
+                        entityCount = entityCount + 2;
+                        return stateObj ? html`
                             ${entityCount == 4 ? html`<div class="break"></div>` : html``}
                               <homekit-button class="event button size-2 on${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide' : ''}${ent.conditionalClass ? ' ' + this._getTemplate(stateObj, ent.conditionalClass) : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
@@ -495,29 +495,29 @@ class HomeKitCard extends LitElement {
                               </homekit-button>
                             ${entityCount == 3 ? html`<div class="break"></div>` : html``}
                           `
-							: this._notFound(ent);
-					} else if (type == "climate") {
-						entityCount++;
-						const modes = {
-							auto: "hass:calendar-repeat",
-							heat_cool: "hass:autorenew",
-							heat: "hass:fire",
-							cool: "hass:snowflake",
-							off: "hass:power",
-							fan_only: "hass:fan",
-							dry: "hass:water-percent",
-						};
-						let mode: any;
-						if (stateObj.state == 'off') {
-							mode = 'off';
-						} else if (stateObj.attributes.hvac_action == 'heating') {
-							mode = 'heat';
-						} else if (stateObj.attributes.hvac_action == 'idle') {
-							mode = 'idle';
-						} else {
-							mode = stateObj.state in modes ? stateObj.state : "unknown-mode";
-						}
-						return stateObj ? html`
+                            : this._notFound(ent);
+                    } else if (type == "climate") {
+                        entityCount++;
+                        const modes = {
+                            auto: "hass:calendar-repeat",
+                            heat_cool: "hass:autorenew",
+                            heat: "hass:fire",
+                            cool: "hass:snowflake",
+                            off: "hass:power",
+                            fan_only: "hass:fan",
+                            dry: "hass:water-percent",
+                        };
+                        let mode: any;
+                        if (stateObj.state == 'off') {
+                            mode = 'off';
+                        } else if (stateObj.attributes.hvac_action == 'heating') {
+                            mode = 'heat';
+                        } else if (stateObj.attributes.hvac_action == 'idle') {
+                            mode = 'idle';
+                        } else {
+                            mode = stateObj.state in modes ? stateObj.state : "unknown-mode";
+                        }
+                        return stateObj ? html`
                               <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ent.widerSize ? ' size-' + ent.widerSize : ' size-2' : ''}${ent.higher ? ent.higherSize ? ' height-' + ent.higherSize : ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide' : ''}${ent.conditionalClass ? ' ' + this._getTemplate(stateObj, ent.conditionalClass) : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon climate ' + mode : 'icon climate on ' + mode}">
@@ -533,10 +533,10 @@ class HomeKitCard extends LitElement {
                               </homekit-button>
                             ${entityCount == 3 ? html`<div class="break"></div>` : html``}
                           `
-							: this._notFound(ent);
-					} else {
-						entityCount++;
-						return stateObj ? html`
+                            : this._notFound(ent);
+                    } else {
+                        entityCount++;
+                        return stateObj ? html`
                               <homekit-button class="event ${offStates.includes(stateObj.state) ? 'button' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ent.widerSize ? ' size-' + ent.widerSize : ' size-2' : ''}${ent.higher ? ent.higherSize ? ' height-' + ent.higherSize : ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}${ent.hide && this._getTemplate(stateObj, ent.hide) ? ' hide' : ''}${ent.conditionalClass ? ' ' + this._getTemplate(stateObj, ent.conditionalClass) : ''}" data-ent="${JSON.stringify(ent)}" data-type="${type}" data-row="${JSON.stringify(row)}">
                                   <div class="button-inner">
                                     <span class="${offStates.includes(stateObj.state) ? 'icon' : 'icon on'}${ent.spin === true && !offStates.includes(stateObj.state) ? ' spin' : ''}${ent.image ? ' image' : ''}">
@@ -556,47 +556,47 @@ class HomeKitCard extends LitElement {
                               </homekit-button>
                             ${entityCount == 3 ? html`<div class="break"></div>` : html``}
                           `
-							: this._notFound(ent);
-					}
-				} else if (ent.card && !ent.custom) {
-					entityCount++;
-					let stateObj = { state: '' };
-					let offStates = ['off', 'unavailable'];
-					if (ent.entity) {
-						if (ent.offStates) {
-							offStates = ent.offStates;
-						}
-						stateObj = this.hass.states[ent.entity];
-					}
+                            : this._notFound(ent);
+                    }
+                } else if (ent.card && !ent.custom) {
+                    entityCount++;
+                    let stateObj = {state: ''};
+                    let offStates = ['off', 'unavailable'];
+                    if (ent.entity) {
+                        if (ent.offStates) {
+                            offStates = ent.offStates;
+                        }
+                        stateObj = this.hass.states[ent.entity];
+                    }
 
-					if (ent.tap_action) {
-						return html`
+                    if (ent.tap_action) {
+                        return html`
                             <homekit-button class="${ent.entity ? stateObj.state != '' && offStates.includes(stateObj.state) ? 'button' : ' button on' : 'button on'} event${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ent.widerSize ? ' size-' + ent.widerSize : ' size-2' : ''}${ent.higher ? ent.higherSize ? ' height-' + ent.higherSize : ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}${ent.hide && this._getTemplate(undefined, ent.hide) ? ' hide' : ''}${ent.conditionalClass ? ' ' + this._getTemplate(undefined, ent.conditionalClass) : ''}" data-ent="${JSON.stringify(ent)}" data-type="'card'" data-row="${JSON.stringify(row)}">
                                 <div class="button-inner card-tile" data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
                                 </div>
                             </homekit-button>
                           ${entityCount == 3 ? html`<div class="break"></div>` : html``}
                         `
-					} else {
-						return html`
+                    } else {
+                        return html`
                               <homekit-button class="${ent.entity ? stateObj.state != '' && offStates.includes(stateObj.state) ? 'button' : ' button on' : 'button on'}${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ent.widerSize ? ' size-' + ent.widerSize : ' size-2' : ''}${ent.higher ? ent.higherSize ? ' height-' + ent.higherSize : ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}${ent.hide && this._getTemplate(undefined, ent.hide) ? ' hide' : ''}${ent.conditionalClass ? ' ' + this._getTemplate(undefined, ent.conditionalClass) : ''}">
                                   <div class="button-inner card-tile" data-card="${ent.card}" data-options="${JSON.stringify(ent.cardOptions)}" data-style="${ent.cardStyle ? ent.cardStyle : ''}">
                                   </div>
                               </homekit-button>
                             ${entityCount == 3 ? html`<div class="break"></div>` : html``}
                           `
-					}
-				} else if (ent.custom) {
-					entityCount++;
-					let stateObj = { state: '' };
-					let offStates = ['off', 'unavailable'];
-					if (ent.entity) {
-						if (ent.offStates) {
-							offStates = ent.offStates;
-						}
-						stateObj = this.hass.states[ent.entity];
-					}
-					return html`
+                    }
+                } else if (ent.custom) {
+                    entityCount++;
+                    let stateObj = {state: ''};
+                    let offStates = ['off', 'unavailable'];
+                    if (ent.entity) {
+                        if (ent.offStates) {
+                            offStates = ent.offStates;
+                        }
+                        stateObj = this.hass.states[ent.entity];
+                    }
+                    return html`
                           <homekit-button class="${ent.entity ? stateObj.state != '' && offStates.includes(stateObj.state) ? 'button' : ' button on' : 'button on'} event${ent.noPadding ? ' no-padding' : ''}${ent.wider ? ent.widerSize ? ' size-' + ent.widerSize : ' size-2' : ''}${ent.higher ? ent.higherSize ? ' height-' + ent.higherSize : ' height-2' : ''}${ent.halfheight ? ' height-half' : ''}${this.tileHoldAnimation ? ' animate' : ''}${ent.hide && this._getTemplate(undefined, ent.hide) ? ' hide' : ''}${ent.conditionalClass ? ' ' + this._getTemplate(undefined, ent.conditionalClass) : ''}" data-ent="${JSON.stringify(ent)}" data-type="'custom'" data-row="${JSON.stringify(row)}">
                               <div class="button-inner">
                                 <span class="icon on${ent.spin === true ? ' spin' : ''}${ent.image ? ' image' : ''}">
@@ -612,199 +612,199 @@ class HomeKitCard extends LitElement {
                           </homekit-button>
                         ${entityCount == 3 ? html`<div class="break"></div>` : html``}
                         `
-				}
-			})}
+                }
+            })}
                 </div>
             </div>
         `
-		})}
+        })}
     `;
-	}
+    }
 
-	_setBrightness(state, value) {
-		this.hass.callService("homeassistant", "turn_on", {
-			entity_id: state.entity_id,
-			brightness: value * 2.55
-		});
-	}
+    _setBrightness(state, value) {
+        this.hass.callService("homeassistant", "turn_on", {
+            entity_id: state.entity_id,
+            brightness: value * 2.55
+        });
+    }
 
-	_renderRules() {
-		if (this.config.home === true && this.config.rules) {
-			parseTemplate(this.hass, this.config.rules).then((c) => {
-				if (c) {
-					this.renderedRules = c.match(/<li>([^]*?)<\/li>/g).map(function (val) {
-						return val.replace(/<\/?li>/g, '');
-					});
-				}
-			});
-		}
-	}
+    _renderRules() {
+        if (this.config.home === true && this.config.rules) {
+            parseTemplate(this.hass, this.config.rules).then((c) => {
+                if (c) {
+                    this.renderedRules = c.match(/<li>([^]*?)<\/li>/g).map(function (val) {
+                        return val.replace(/<\/?li>/g, '');
+                    });
+                }
+            });
+        }
+    }
 
-	_calculateTime(lastUpdated) {
-		const currentDate = new Date();
-		const lastDate = new Date(lastUpdated);
+    _calculateTime(lastUpdated) {
+        const currentDate = new Date();
+        const lastDate = new Date(lastUpdated);
 
-		const diffMs = currentDate.getTime() - lastDate.getTime();
-		const diffDays = Math.floor(diffMs / 86400000); // days
-		const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
-		const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
-		const diffSecs = Math.round((((diffMs % 86400000) % 3600000) % 60000) / 1000);
+        const diffMs = currentDate.getTime() - lastDate.getTime();
+        const diffDays = Math.floor(diffMs / 86400000); // days
+        const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
+        const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+        const diffSecs = Math.round((((diffMs % 86400000) % 3600000) % 60000) / 1000);
 
-		if (diffDays > 0) {
-			return this.statePositionTop ? diffDays + 'd' : diffDays + ' days ago';
-		} else if (diffHrs > 0) {
-			return this.statePositionTop ? diffHrs + 'h' : diffHrs + ' hours ago';
-		} else if (diffMins > 0) {
-			return this.statePositionTop ? diffMins + 'm' : diffMins + ' minutes ago';
-		} else {
-			return this.statePositionTop ? diffSecs + 's' : diffSecs + ' seconds ago';
-		}
-	}
+        if (diffDays > 0) {
+            return this.statePositionTop ? diffDays + 'd' : diffDays + ' days ago';
+        } else if (diffHrs > 0) {
+            return this.statePositionTop ? diffHrs + 'h' : diffHrs + ' hours ago';
+        } else if (diffMins > 0) {
+            return this.statePositionTop ? diffMins + 'm' : diffMins + ' minutes ago';
+        } else {
+            return this.statePositionTop ? diffSecs + 's' : diffSecs + ' seconds ago';
+        }
+    }
 
-	_handleClick(action, entity, type, row) {
-		let state = null;
-		if (entity.entity) {
-			state = this.hass.states[entity.entity];
-		}
+    _handleClick(action, entity, type, row) {
+        let state = null;
+        if (entity.entity) {
+            state = this.hass.states[entity.entity];
+        }
 
-		if ((action == "tap" || action == "doubletap")) {
-			if (action == "doubletap" && entity.double_tap_action) {
-				this._customAction(entity.double_tap_action, entity, row);
-			} else if (entity.tap_action) {
-				this._customAction(entity.tap_action, entity, row);
-			} else if (type === "light" || type === "switch" || type === "input_boolean" || type === "group") {
-				this._toggle(state, entity.service);
-			}
-		} else if (action == "pressup") {
-			if (entity.hold_action) {
-				this._customAction(entity.hold_action, entity, row);
-			} else {
-				this._hold(state, entity, row);
-			}
-		}
-	}
+        if ((action == "tap" || action == "doubletap")) {
+            if (action == "doubletap" && entity.double_tap_action) {
+                this._customAction(entity.double_tap_action, entity, row);
+            } else if (entity.tap_action) {
+                this._customAction(entity.tap_action, entity, row);
+            } else if (type === "light" || type === "switch" || type === "input_boolean" || type === "group") {
+                this._toggle(state, entity.service);
+            }
+        } else if (action == "pressup") {
+            if (entity.hold_action) {
+                this._customAction(entity.hold_action, entity, row);
+            } else {
+                this._hold(state, entity, row);
+            }
+        }
+    }
 
-	_customAction(tapAction, entity, row) {
-		if (tapAction.confirmation) {
-			forwardHaptic("warning");
+    _customAction(tapAction, entity, row) {
+        if (tapAction.confirmation) {
+            forwardHaptic("warning");
 
-			if (
-				!confirm(
-					tapAction.confirmation.text ||
-					`Are you sure you want to ${tapAction.action}?`
-				)
-			) {
-				return;
-			}
-		}
+            if (
+                !confirm(
+                    tapAction.confirmation.text ||
+                    `Are you sure you want to ${tapAction.action}?`
+                )
+            ) {
+                return;
+            }
+        }
 
-		switch (tapAction.action) {
-			case "popup":
-				this._createPopup((tapAction.entity || entity.entity), entity, row);
-				if (tapAction.haptic) forwardHaptic(tapAction.haptic);
-				break;
-			case "more-info":
-				if (tapAction.entity || tapAction.camera_image) {
-					moreInfo(tapAction.entity ? tapAction.entity : tapAction.camera_image!);
-					if (tapAction.haptic) forwardHaptic(tapAction.haptic);
-				}
-				break;
-			case "navigate":
-				if (tapAction.navigation_path) {
-					navigate(window, tapAction.navigation_path);
-					if (tapAction.haptic) forwardHaptic(tapAction.haptic);
-				}
-				break;
-			case "url":
-				if (tapAction.url_path) {
-					window.open(tapAction.url_path);
-					if (tapAction.haptic) forwardHaptic(tapAction.haptic);
-				}
-				break;
-			case "toggle":
-				if (tapAction.entity) {
-					toggleEntity(this.hass, tapAction.entity!);
-					if (tapAction.haptic) forwardHaptic(tapAction.haptic);
-				}
-				break;
-			case "call-service": {
-				if (!tapAction.service) {
-					forwardHaptic("failure");
-					return;
-				}
-				const [domain, service] = tapAction.service.split(".", 2);
-				this.hass.callService(domain, service, tapAction.service_data);
-				if (tapAction.haptic) forwardHaptic(tapAction.haptic);
-				break;
-			}
-			case "fire-dom-event": {
-				fireEvent("ll-custom", tapAction);
-				if (tapAction.haptic) forwardHaptic(tapAction.haptic);
-				break;
-			}
-		}
-	}
+        switch (tapAction.action) {
+            case "popup":
+                this._createPopup((tapAction.entity || entity.entity), entity, row);
+                if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                break;
+            case "more-info":
+                if (tapAction.entity || tapAction.camera_image) {
+                    moreInfo(tapAction.entity ? tapAction.entity : tapAction.camera_image!);
+                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                }
+                break;
+            case "navigate":
+                if (tapAction.navigation_path) {
+                    navigate(window, tapAction.navigation_path);
+                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                }
+                break;
+            case "url":
+                if (tapAction.url_path) {
+                    window.open(tapAction.url_path);
+                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                }
+                break;
+            case "toggle":
+                if (tapAction.entity) {
+                    toggleEntity(this.hass, tapAction.entity!);
+                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                }
+                break;
+            case "call-service": {
+                if (!tapAction.service) {
+                    forwardHaptic("failure");
+                    return;
+                }
+                const [domain, service] = tapAction.service.split(".", 2);
+                this.hass.callService(domain, service, tapAction.service_data);
+                if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                break;
+            }
+            case "fire-dom-event": {
+                fireEvent("ll-custom", tapAction);
+                if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                break;
+            }
+        }
+    }
 
-	getCardSize() {
-		return 1;
-	}
+    getCardSize() {
+        return 1;
+    }
 
-	async _createPopup(entity_id, entity, row) {
-		if ((row && row.popup) || entity.popup) {
-			let popUpCard: object;
-			if (row.popup) {
-				popUpCard = Object.assign({}, row.popup, { entity: entity_id });
-				if (entity.popupExtend) {
-					popUpCard = Object.assign({}, popUpCard, entity.popupExtend);
-				}
-			} else {
-				popUpCard = Object.assign({}, entity.popup, { entity: entity_id });
-			}
-			const popUpStyle = {
-				'$': ".mdc-dialog .mdc-dialog__container { width: 100%; } .mdc-dialog .mdc-dialog__container .mdc-dialog__surface { width:100%; box-shadow:none; }",
-				'.': ":host { --mdc-theme-surface: rgba(0,0,0,0); --secondary-background-color: rgba(0,0,0,0); --ha-card-background: rgba(0,0,0,0); --mdc-dialog-scrim-color: rgba(0,0,0,0.8); --mdc-dialog-min-height: 100%; --mdc-dialog-min-width: 100%; --mdc-dialog-max-width: 100%; } mwc-icon-button { color: #FFF; }"
-			}
-			const action = {
-				browser_mod: {
-					command: "popup",
-					title: " ",
-					style: popUpStyle,
-					card: popUpCard,
-					deviceID: ['this']
-				}
-			}
-			fireEvent("ll-custom", action);
-		} else {
-			moreInfo(entity_id)
-		}
-	}
+    async _createPopup(entity_id, entity, row) {
+        if ((row && row.popup) || entity.popup) {
+            let popUpCard: object;
+            if (row.popup) {
+                popUpCard = Object.assign({}, row.popup, {entity: entity_id});
+                if (entity.popupExtend) {
+                    popUpCard = Object.assign({}, popUpCard, entity.popupExtend);
+                }
+            } else {
+                popUpCard = Object.assign({}, entity.popup, {entity: entity_id});
+            }
+            const popUpStyle = {
+                '$': ".mdc-dialog .mdc-dialog__container { width: 100%; } .mdc-dialog .mdc-dialog__container .mdc-dialog__surface { width:100%; box-shadow:none; }",
+                '.': ":host { --mdc-theme-surface: rgba(0,0,0,0); --secondary-background-color: rgba(0,0,0,0); --ha-card-background: rgba(0,0,0,0); --mdc-dialog-scrim-color: rgba(0,0,0,0.8); --mdc-dialog-min-height: 100%; --mdc-dialog-min-width: 100%; --mdc-dialog-max-width: 100%; } mwc-icon-button { color: #FFF; }"
+            }
+            const action = {
+                browser_mod: {
+                    command: "popup",
+                    title: " ",
+                    style: popUpStyle,
+                    card: popUpCard,
+                    deviceID: ['this']
+                }
+            }
+            fireEvent("ll-custom", action);
+        } else {
+            moreInfo(entity_id)
+        }
+    }
 
-	_toggle(state, service) {
-		this.hass.callService("homeassistant", service || "toggle", {
-			entity_id: state.entity_id
-		});
-	}
+    _toggle(state, service) {
+        this.hass.callService("homeassistant", service || "toggle", {
+            entity_id: state.entity_id
+        });
+    }
 
-	_hold(stateObj, entity, row) {
-		this._createPopup(stateObj.entity_id, entity, row);
-	}
+    _hold(stateObj, entity, row) {
+        this._createPopup(stateObj.entity_id, entity, row);
+    }
 
-	_getUnit(measure) {
-		const lengthUnit = this.hass.config.unit_system.length;
-		switch (measure) {
-			case "air_pressure":
-				return lengthUnit === "km" ? "hPa" : "inHg";
-			case "length":
-				return lengthUnit;
-			case "precipitation":
-				return lengthUnit === "km" ? "mm" : "in";
-			default:
-				return this.hass.config.unit_system[measure] || "";
-		}
-	}
+    _getUnit(measure) {
+        const lengthUnit = this.hass.config.unit_system.length;
+        switch (measure) {
+            case "air_pressure":
+                return lengthUnit === "km" ? "hPa" : "inHg";
+            case "length":
+                return lengthUnit;
+            case "precipitation":
+                return lengthUnit === "km" ? "mm" : "in";
+            default:
+                return this.hass.config.unit_system[measure] || "";
+        }
+    }
 
-	_notFound(ent) {
-		return html`
+    _notFound(ent) {
+        return html`
         <homekit-button class="not-found">
           <div class="button-inner">
             <span class="name">${ent.entity}</span>
@@ -812,67 +812,67 @@ class HomeKitCard extends LitElement {
           </div>
         </homekit-button>
     `;
-	}
+    }
 
 
-	_getColorForLightEntity(stateObj, useTemperature, useBrightness, useRGB) {
-		let color = this.config.default_color ? this.config.default_color : this._getDefaultColorForState();
-		if (stateObj) {
-			if (stateObj.attributes.rgb_color) {
-				if (useRGB) {
-					color = `rgb(${stateObj.attributes.rgb_color.join(',')})`;
-				}
-				if (useBrightness && stateObj.attributes.brightness) {
-					color = this._applyBrightnessToColor(color, (stateObj.attributes.brightness + 245) / 5);
-				}
-			} else if (useTemperature && stateObj.attributes.color_temp && stateObj.attributes.min_mireds && stateObj.attributes.max_mireds) {
-				color = this._getLightColorBasedOnTemperature(stateObj.attributes.color_temp, stateObj.attributes.min_mireds, stateObj.attributes.max_mireds);
-				if (useBrightness && stateObj.attributes.brightness) {
-					color = this._applyBrightnessToColor(color, (stateObj.attributes.brightness + 245) / 5);
-				}
-			} else if (useBrightness && stateObj.attributes.brightness) {
-				color = this._applyBrightnessToColor(this._getDefaultColorForState(), (stateObj.attributes.brightness + 245) / 5);
-			} else {
-				color = this._getDefaultColorForState();
-			}
-		}
-		return color;
-	}
+    _getColorForLightEntity(stateObj, useTemperature, useBrightness, useRGB) {
+        let color = this.config.default_color ? this.config.default_color : this._getDefaultColorForState();
+        if (stateObj) {
+            if (stateObj.attributes.rgb_color) {
+                if(useRGB) {
+                    color = `rgb(${stateObj.attributes.rgb_color.join(',')})`;
+                }
+                if (useBrightness && stateObj.attributes.brightness) {
+                    color = this._applyBrightnessToColor(color, (stateObj.attributes.brightness + 245) / 5);
+                }
+            } else if (useTemperature && stateObj.attributes.color_temp && stateObj.attributes.min_mireds && stateObj.attributes.max_mireds) {
+                color = this._getLightColorBasedOnTemperature(stateObj.attributes.color_temp, stateObj.attributes.min_mireds, stateObj.attributes.max_mireds);
+                if (useBrightness && stateObj.attributes.brightness) {
+                    color = this._applyBrightnessToColor(color, (stateObj.attributes.brightness + 245) / 5);
+                }
+            } else if (useBrightness && stateObj.attributes.brightness) {
+                color = this._applyBrightnessToColor(this._getDefaultColorForState(), (stateObj.attributes.brightness + 245) / 5);
+            } else {
+                color = this._getDefaultColorForState();
+            }
+        }
+        return color;
+    }
 
-	_applyBrightnessToColor(color, brightness) {
-		const colorObj = new TinyColor(this._getColorFromVariable(color));
-		if (colorObj.isValid) {
-			const validColor = colorObj.mix('black', 100 - brightness).toString();
-			if (validColor) return validColor;
-		}
-		return color;
-	}
+    _applyBrightnessToColor(color, brightness) {
+        const colorObj = new TinyColor(this._getColorFromVariable(color));
+        if (colorObj.isValid) {
+            const validColor = colorObj.mix('black', 100 - brightness).toString();
+            if (validColor) return validColor;
+        }
+        return color;
+    }
 
-	_getLightColorBasedOnTemperature(current, min, max) {
-		const high = new TinyColor('rgb(255, 160, 0)'); // orange-ish
-		const low = new TinyColor('rgb(166, 209, 255)'); // blue-ish
-		const middle = new TinyColor('white');
-		const mixAmount = (current - min) / (max - min) * 100;
-		if (mixAmount < 50) {
-			return tinycolor(low).mix(middle, mixAmount * 2).toRgbString();
-		} else {
-			return tinycolor(middle).mix(high, (mixAmount - 50) * 2).toRgbString();
-		}
-	}
+    _getLightColorBasedOnTemperature(current, min, max) {
+        const high = new TinyColor('rgb(255, 160, 0)'); // orange-ish
+        const low = new TinyColor('rgb(166, 209, 255)'); // blue-ish
+        const middle = new TinyColor('white');
+        const mixAmount = (current - min) / (max - min) * 100;
+        if (mixAmount < 50) {
+            return tinycolor(low).mix(middle, mixAmount * 2).toRgbString();
+        } else {
+            return tinycolor(middle).mix(high, (mixAmount - 50) * 2).toRgbString();
+        }
+    }
 
-	_getDefaultColorForState() {
-		return this.config.color_on ? this.config.color_on : '#f7d959';
-	}
+    _getDefaultColorForState() {
+        return this.config.color_on ? this.config.color_on : '#f7d959';
+    }
 
-	_getColorFromVariable(color: string): string {
-		if (typeof color !== "undefined" && color.substring(0, 3) === 'var') {
-			return window.getComputedStyle(document.documentElement).getPropertyValue(color.substring(4).slice(0, -1)).trim();
-		}
-		return color;
-	}
+    _getColorFromVariable(color: string): string {
+        if (typeof color !== "undefined" && color.substring(0, 3) === 'var') {
+            return window.getComputedStyle(document.documentElement).getPropertyValue(color.substring(4).slice(0, -1)).trim();
+        }
+        return color;
+    }
 
-	static get styles() {
-		return css`
+    static get styles() {
+        return css`
         :host {
             --auto-color: #ee7600;
             --eco-color: springgreen;
@@ -1729,7 +1729,7 @@ class HomeKitCard extends LitElement {
             }
         }
         `;
-	}
+    }
 }
 
 customElements.define("homekit-card", HomeKitCard);
