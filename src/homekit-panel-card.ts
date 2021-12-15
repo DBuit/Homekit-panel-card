@@ -1,3 +1,20 @@
+// ------------------------------------------------------------------------------------------
+//  HOMEKIT-PANEL-CARD
+// ------------------------------------------------------------------------------------------
+//  https://github.com/DBuit/Homekit-panel-card
+// ------------------------------------------------------------------------------------------
+
+// ##########################################################################################
+// ###   Global constants
+// ##########################################################################################
+
+const CARD_TITLE = 'HOMEKIT-PANEL-CARD';
+const CARD_VERSION = '0.6.2';
+
+// ##########################################################################################
+// ###   Import dependencies
+// ##########################################################################################
+
 import {
     computeDomain,
     computeStateDisplay,
@@ -8,7 +25,7 @@ import {
 
 } from 'custom-card-helpers';
 import tinycolor, {TinyColor} from '@ctrl/tinycolor';
-import { css, html, LitElement } from "card-tools/src/lit-element";
+import { LitElement, html, css } from 'lit-element';
 import { moreInfo } from "card-tools/src/more-info";
 import { fireEvent } from "card-tools/src/event";
 import { provideHass } from "card-tools/src/hass";
@@ -19,7 +36,15 @@ import { HassEntity } from 'home-assistant-js-websocket';
 import Masonry from 'masonry-layout'
 import moment from 'moment/min/moment-with-locales';
 
+// ##########################################################################################
+// ###   The actual Homekit Panel Card element
+// ##########################################################################################
+
 class HomeKitCard extends LitElement {
+
+    /* **************************************** *
+    *        Element's local properties        *
+    * **************************************** */
     config: any;
     hass: any;
     shadowRoot: any;
@@ -36,6 +61,9 @@ class HomeKitCard extends LitElement {
     useRGB = false;
     CUSTOM_TYPE_PREFIX = "custom:";
     masonry = false;
+    haptic = false;
+    doubleTapDisabledWhenNoActionSet = true;
+    doubleTapFallback = "tap";
 
     static get properties() {
         return {
@@ -62,6 +90,9 @@ class HomeKitCard extends LitElement {
         this.tileHoldAnimation = "tileHoldAnimation" in this.config ? this.config.tileHoldAnimation : false;
         this.rulesColor = this.config.rulesColor ? this.config.rulesColor : false;
         this.masonry = "masonry" in this.config ? this.config.masonry : false;
+        this.haptic = "haptic" in this.config ? this.config.haptic : false;
+        this.doubleTapFallback = "doubleTapFallback" in this.config ? this.config.doubleTapFallback : "tap";
+        this.doubleTapDisabledWhenNoActionSet = "doubleTapDisabledWhenNoActionSet" in this.config ? this.config.doubleTapDisabledWhenNoActionSet : true;
     }
 
     addHammer(el) {
@@ -76,7 +107,7 @@ class HomeKitCard extends LitElement {
             if (ev.type == 'tap') {
                 $this.doubleTapped = false;
                 let timeoutTime = 200;
-                if (!ent.double_tap_action) {
+                if (!ent.double_tap_action && $this.doubleTapDisabledWhenNoActionSet) {
                     timeoutTime = 0;
                 }
                 setTimeout(function () {
@@ -190,7 +221,7 @@ class HomeKitCard extends LitElement {
         return html`
       ${this.config.rows.map(row => {
             return html`
-          <div class="row">
+          <div class="row ${row.haptic || this.haptic ? ' haptic' : ''}">
             ${row.columns.map(column => {
                 if (column.collapse && this._hasAllEntitiesHidden(column)) {
                     return ``;
@@ -259,8 +290,12 @@ class HomeKitCard extends LitElement {
               <span class="value on">${this._renderStateValue(ent, stateObj, type)}</span>
             `;
                     }
+                } else {
+                    return html``;
                 }
             }
+        } else {
+            return html``;
         }
     }
 
@@ -612,6 +647,8 @@ class HomeKitCard extends LitElement {
                           </homekit-button>
                         ${entityCount == 3 ? html`<div class="break"></div>` : html``}
                         `
+                } else {
+                    return html``;
                 }
             })}
                 </div>
@@ -661,26 +698,41 @@ class HomeKitCard extends LitElement {
         }
     }
 
-    _handleClick(action, entity, type, row) {
+    _handleTapAction(entity, type, row) {
         let state = null;
         if (entity.entity) {
             state = this.hass.states[entity.entity];
         }
-
-        if ((action == "tap" || action == "doubletap")) {
+        if (entity.tap_action) {
+            this._customAction(entity.tap_action, entity, row);
+        } else if (type === "light" || type === "switch" || type === "input_boolean" || type === "group") {
+            this._toggle(state, entity.service);
+        }
+    }
+    _handleHoldAction(entity, row) {
+        let state = null;
+        if (entity.entity) {
+            state = this.hass.states[entity.entity];
+        }
+        if (entity.hold_action) {
+            this._customAction(entity.hold_action, entity, row);
+        } else {
+            this._hold(state, entity, row);
+        }
+    }
+    _handleClick(action, entity, type, row) {
+        if (action == "doubletap") {
             if (action == "doubletap" && entity.double_tap_action) {
                 this._customAction(entity.double_tap_action, entity, row);
-            } else if (entity.tap_action) {
-                this._customAction(entity.tap_action, entity, row);
-            } else if (type === "light" || type === "switch" || type === "input_boolean" || type === "group") {
-                this._toggle(state, entity.service);
+            } else if (this.doubleTapFallback == 'tap') {
+                this._handleTapAction(entity, type, row)
+            } else if (this.doubleTapFallback == 'hold') {
+                this._handleHoldAction(entity, row)
             }
+        } else if ((action == "tap" )) {
+            this._handleTapAction(entity, type, row)
         } else if (action == "pressup") {
-            if (entity.hold_action) {
-                this._customAction(entity.hold_action, entity, row);
-            } else {
-                this._hold(state, entity, row);
-            }
+            this._handleHoldAction(entity, row)
         }
     }
 
@@ -701,30 +753,30 @@ class HomeKitCard extends LitElement {
         switch (tapAction.action) {
             case "popup":
                 this._createPopup((tapAction.entity || entity.entity), entity, row);
-                if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                if (tapAction.haptic || this.haptic || row.haptic || entity.haptic) forwardHaptic(tapAction.haptic || this.haptic || row.haptic || entity.haptic);
                 break;
             case "more-info":
                 if (tapAction.entity || tapAction.camera_image) {
                     moreInfo(tapAction.entity ? tapAction.entity : tapAction.camera_image!);
-                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                    if (tapAction.haptic || this.haptic || row.haptic || entity.haptic) forwardHaptic(tapAction.haptic || this.haptic || row.haptic || entity.haptic);
                 }
                 break;
             case "navigate":
                 if (tapAction.navigation_path) {
                     navigate(window, tapAction.navigation_path);
-                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                    if (tapAction.haptic || this.haptic || row.haptic || entity.haptic) forwardHaptic(tapAction.haptic || this.haptic || row.haptic || entity.haptic);
                 }
                 break;
             case "url":
                 if (tapAction.url_path) {
                     window.open(tapAction.url_path);
-                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                    if (tapAction.haptic || this.haptic || row.haptic || entity.haptic) forwardHaptic(tapAction.haptic || this.haptic || row.haptic || entity.haptic);
                 }
                 break;
             case "toggle":
                 if (tapAction.entity) {
                     toggleEntity(this.hass, tapAction.entity!);
-                    if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                    if (tapAction.haptic || this.haptic || row.haptic || entity.haptic) forwardHaptic(tapAction.haptic || this.haptic || row.haptic || entity.haptic);
                 }
                 break;
             case "call-service": {
@@ -734,12 +786,12 @@ class HomeKitCard extends LitElement {
                 }
                 const [domain, service] = tapAction.service.split(".", 2);
                 this.hass.callService(domain, service, tapAction.service_data);
-                if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                if (tapAction.haptic || this.haptic || row.haptic || entity.haptic) forwardHaptic(tapAction.haptic || this.haptic || row.haptic || entity.haptic);
                 break;
             }
             case "fire-dom-event": {
                 fireEvent("ll-custom", tapAction);
-                if (tapAction.haptic) forwardHaptic(tapAction.haptic);
+                if (tapAction.haptic || this.haptic || row.haptic || entity.haptic) forwardHaptic(tapAction.haptic || this.haptic || row.haptic || entity.haptic);
                 break;
             }
         }
@@ -998,8 +1050,8 @@ class HomeKitCard extends LitElement {
         
         .button.no-padding {
             padding: 0;
-            width: calc(var(--tile-width, 100px) * 1.2);
-            height: 120px;
+            width: calc(var(--tile-width, 100px) + 20px);
+            height: calc(var(--tile-height, 100px) + 20px);
         }
         
         .button.no-padding.height-half {
@@ -1496,8 +1548,8 @@ class HomeKitCard extends LitElement {
             }
         
             .button.no-padding {
-                width: calc(var(--tile-width-mobile, 90px) * 1.22);
-                height: calc(var(--tile-height-mobile, 90px) * 1.22);
+                width: calc(var(--tile-width-mobile, 90px) + 20px);
+                height: calc(var(--tile-height-mobile, 90px) + 20px);
             }
         
             .button.no-padding.height-half {
@@ -1648,7 +1700,9 @@ class HomeKitCard extends LitElement {
         
             .header,
             .homekit-card {
-                width: 358px;
+                width: calc(
+                    (var(--tile-width-mobile, 90px) * 3) + 88px
+                );
                 text-align: left;
                 padding: 0;
                 margin: 0 auto;
@@ -1733,3 +1787,4 @@ class HomeKitCard extends LitElement {
 }
 
 customElements.define("homekit-card", HomeKitCard);
+console.info(`%c ${CARD_TITLE} \n%c Version: ${CARD_VERSION} `, 'color: chartreuse; background: black; font-weight: 700;', 'color: white; background: dimgrey; font-weight: 700;');

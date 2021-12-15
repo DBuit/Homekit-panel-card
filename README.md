@@ -88,6 +88,9 @@ in the card we can define some global configuration below you can find these opt
 | `masonry` | boolean | optional | false | When enabled it will order the tiles by size and makes sure there are no blank space on a row. This is usefull when using wider and higher options on a tile so everything fits nicely, check out the website of the plugin builder to get an idea of what it does: https://masonry.desandro.com/ |
 | `statePositionTop` | boolean | optional | false | Default the brightness (for lights) and last_changed (for sensors) is shown in the title next to the current state (on/off) when this is true this state if chown next to the icon in a circle (inspired by: https://community-home-assistant-assets.s3.dualstack.us-west-2.amazonaws.com/optimized/3X/d/c/dcf67fccb5fa3772b2db6d38aeef307d01ba3bc8_2_1380x862.jpeg) |
 | `style` | string | optional | css | Use the style option to add extra CSS default there is a list of variables to easily overwrite colors, sizes of the tiles see the list of variables under the table |
+| `haptic` | string | none | `success`, `warning`, `failure`, `light`, `medium`, `heavy`, `selection` | Haptic feedback for the <a href="https://companion.home-assistant.io/" target="_blank">iOS Companion App</a> |
+| `doubleTapFallback` | string | optional | tap | double tap default fallback to a tap action, you can also change this to hold so it will fallback to hold action which default opens the more info popup |
+| `doubleTapDisabledWhenNoActionSet` | boolean | optional | true | This works togheter with the `doubleTapFallback` so when this is set to false there is a little delay on tap actions to determine if it could be a double tap, by setting this to `true` double tap is not used so it will just be 2 single tap actions without any delay |
 
 
 **Css variables and default values**
@@ -175,10 +178,12 @@ So below `statePositionTop: true` in our example we add the following:
 
 As you can see we started with entities inside the entities we defined 1 item with a title rows and an empty list of more `entities`.
 These entities are the tiles we want to display in the row. let's add these tiles!
+You can also get haptic feedback for iOS user, this can be enabled globally or on each row by adding `haptic`.
 
 ```
         entities:
           - title: Row 1
+            haptic: success
             entities:
               - entity: light.zithoek
               - entity: binary_sensor.wasmachine_status
@@ -218,6 +223,7 @@ In the above example we only set the `entity:` for a tile that is enough to let 
 | `slider` | boolean | optional | false | If true a slider element is added to the tile to control the lights brightness |
 | `hide` | template | optional | "[[[ [template](#template-hide-or-customclass) ]]]" | With the use of JS in a template you can hide/show a tile |
 | `conditionalClass` | template | optional | "[[[ [template](#template-hide-or-customclass) ]]]" | With the use of JS in a template you can add a css class to a tile and in the style part of the card you can change the style any way you want |
+| `haptic` | string | none | `success`, `warning`, `failure`, `light`, `medium`, `heavy`, `selection` | Haptic feedback for the <a href="https://companion.home-assistant.io/" target="_blank">iOS Companion App</a> |
 
 ##### Template hide or customClass
 

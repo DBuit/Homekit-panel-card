@@ -11,20 +11,26 @@ const dev = process.env.ROLLUP_WATCH;
 const serveopts = {
   contentBase: ['./dist'],
   host: '0.0.0.0',
-  port: 5002,
+  port: 5000,
   allowCrossOrigin: true,
   headers: {
     'Access-Control-Allow-Origin': '*',
   },
+  sourcemap: false
 };
 
 const plugins = [
-  nodeResolve({}),
-  commonjs(),
-  typescript(),
-  json(),
+  nodeResolve({sourcemap: false}),
+  commonjs({sourcemap: false}),
+  typescript({
+    sourcemap: false,
+    typescript: require('typescript'),
+    objectHashIgnoreUnknownHack: true
+  }),
+  json({sourcemap: false}),
   babel({
     exclude: 'node_modules/**',
+    sourcemap: false
   }),
   dev && serve(serveopts),
   !dev && terser(),
@@ -36,7 +42,7 @@ export default [
     output: {
       dir: 'dist',
       format: 'es',
-      sourcemap: 'inline',
+      sourcemap: false
     },
     plugins: [...plugins],
   },
