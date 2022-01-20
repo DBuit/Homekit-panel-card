@@ -25,7 +25,7 @@ import {
 
 } from 'custom-card-helpers';
 import tinycolor, {TinyColor} from '@ctrl/tinycolor';
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from 'lit';
 import { moreInfo } from "card-tools/src/more-info";
 import { fireEvent } from "card-tools/src/event";
 import { provideHass } from "card-tools/src/hass";
