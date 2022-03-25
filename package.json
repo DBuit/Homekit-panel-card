@@ -42,7 +42,7 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-prettier": "^3.1.1",
     "lodash": ">=4.17.19",
-    "minimist": ">=1.2.3",
+    "minimist": ">=1.2.6",
     "prettier": "^1.18.2",
     "rollup": "^1.31.0",
     "rollup-plugin-babel": "^4.3.3",
