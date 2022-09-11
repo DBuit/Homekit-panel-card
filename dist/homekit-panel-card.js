@@ -24565,16 +24565,18 @@ class HomeKitCard extends LitElement {
                 popUpCard = Object.assign({}, entity.popup, { entity: entity_id });
             }
             const popUpStyle = {
-                '$': ".mdc-dialog .mdc-dialog__container { width: 100%; } .mdc-dialog .mdc-dialog__container .mdc-dialog__surface { width:100%; box-shadow:none; }",
-                '.': ":host { --mdc-theme-surface: rgba(0,0,0,0); --secondary-background-color: rgba(0,0,0,0); --ha-card-background: rgba(0,0,0,0); --mdc-dialog-scrim-color: rgba(0,0,0,0.8); --mdc-dialog-min-height: 100%; --mdc-dialog-min-width: 100%; --mdc-dialog-max-width: 100%; } mwc-icon-button { color: #FFF; }"
+                '.': ":host { --mdc-theme-surface: rgba(0,0,0,0); --secondary-background-color: rgba(0,0,0,0); --ha-card-background: rgba(0,0,0,0); --mdc-dialog-scrim-color: rgba(0,0,0,0.8); } mwc-icon-button { color: #FFF; }"
             };
             const action = {
                 browser_mod: {
-                    command: "popup",
-                    title: " ",
-                    style: popUpStyle,
-                    card: popUpCard,
-                    deviceID: ['this']
+                    service: "browser_mod.popup",
+                    data: {
+                        title: " ",
+                        style: popUpStyle,
+                        content: popUpCard,
+                        size: "fullscreen",
+                        deviceID: ['this']
+                    }
                 }
             };
             fireEvent("ll-custom", action);
